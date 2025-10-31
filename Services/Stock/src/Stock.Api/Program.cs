@@ -1,6 +1,7 @@
 using BuildingBlocks.Messaging.Config;
 using BuildingBlocks.Messaging.Extensions;
 using BuildingBlocks.Observability.Extensions;
+using BuildingBlocks.SharedKernel.Config;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Stock.Api.Extensions;
@@ -25,13 +26,8 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IDbTransactionManager, DbTransactionManager>();
 builder.Services.AddValidators();
 
-builder.Services.AddDbContext<StockDbContext>(options => 
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), sqlOptions =>
-    sqlOptions.EnableRetryOnFailure(
-        maxRetryCount: 5,
-        maxRetryDelay: TimeSpan.FromSeconds(10),
-        errorNumbersToAdd: null)
-    ));
+builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
+builder.Services.AddDbContext<StockDbContext>();
 
 builder.Services.Configure<RabbitMQSettings>(builder.Configuration.GetSection("RabbitMqSettings"));
 builder.Services.AddEventBus();

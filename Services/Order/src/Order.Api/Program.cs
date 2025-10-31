@@ -1,6 +1,7 @@
 using BuildingBlocks.Messaging.Config;
 using BuildingBlocks.Messaging.Extensions;
 using BuildingBlocks.Observability.Extensions;
+using BuildingBlocks.SharedKernel.Config;
 using Microsoft.EntityFrameworkCore;
 using Order.Api.Extensions;
 using Order.Application.Commands;
@@ -23,13 +24,8 @@ builder.Services.AddMediatR(cfg =>
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddValidators();
 
-builder.Services.AddDbContext<OrderDbContext>(options => 
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), sqlOptions => 
-    sqlOptions.EnableRetryOnFailure(
-        maxRetryCount: 5,
-        maxRetryDelay: TimeSpan.FromSeconds(10),
-        errorNumbersToAdd: null)
-    ));
+builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
+builder.Services.AddDbContext<OrderDbContext>();
 
 builder.Services.Configure<RabbitMQSettings>(builder.Configuration.GetSection("RabbitMqSettings"));
 builder.Services.AddEventBus();
