@@ -18,15 +18,12 @@ public static class ObservabilityExtensions
         {
             var path = context.Request.Path;
             var method = context.Request.Method;
-            var correlationId = context.TraceIdentifier;
 
-            Log.Information($"Handling request: {method} {path} CorrelationId={correlationId}");
+            var correlationId = context.Request.Headers["X-Correlation-ID"].FirstOrDefault();
 
             var watch = Stopwatch.StartNew();
             await next();
             watch.Stop();
-
-            Log.Information($"Finished handling request: {method} {path} CorrelationId={correlationId} in {watch.ElapsedMilliseconds}ms");
         });
 
         return app;
