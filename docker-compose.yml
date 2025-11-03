@@ -44,6 +44,8 @@ services:
       dockerfile: ./ApiGateways/Dockerfile
     ports:
       - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
       - order
       - stock
@@ -91,7 +93,7 @@ services:
       - micro_ecommerce
   
   user:
-    container_name: mscom_user
+    container_name: msecom_user
     build: 
       context: .
       dockerfile: ./Services/User/src/User.Api/Dockerfile
