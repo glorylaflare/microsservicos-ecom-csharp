@@ -2,9 +2,9 @@
 
 namespace ApiGateways.Extensions;
 
-public static class ResilienceExtensions
+public static class CircuitBreakerExtensions
 {
-    public static IServiceCollection AddResilienceService(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddCircuitBreaker(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHttpForwarder();
 

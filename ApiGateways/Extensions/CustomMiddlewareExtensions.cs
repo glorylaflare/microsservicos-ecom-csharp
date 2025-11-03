@@ -2,14 +2,24 @@
 
 namespace ApiGateways.Extensions
 {
-    public static class FallbackExtensions
+    public static class CustomMiddlewareExtensions
     {
-        public static IApplicationBuilder UseFallback(this IApplicationBuilder app)
+        public static IApplicationBuilder UseCustomMiddleware(this IApplicationBuilder app)
         {
             app.Use(async (context, next) =>
             {
                 try
                 {
+                    if (context.User.Identity?.IsAuthenticated == true)
+                    {
+                        var sub = context.User.FindFirst("sub")?.Value;
+
+                        if (!string.IsNullOrEmpty(sub))
+                        {
+                            context.Request.Headers["x-user-id"] = sub;
+                        }
+                    }
+
                     await next();
                 }
                 catch (BrokenCircuitException)
