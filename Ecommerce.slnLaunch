@@ -1,0 +1,27 @@
+[
+  {
+    "Name": "msecom_startup",
+    "Projects": [
+      {
+        "Path": "ApiGateways\\ApiGateways.csproj",
+        "Action": "Start",
+        "DebugTarget": "http"
+      },
+      {
+        "Path": "Services\\Order\\src\\Order.Api\\Order.Api.csproj",
+        "Action": "Start",
+        "DebugTarget": "http"
+      },
+      {
+        "Path": "Services\\Stock\\src\\Stock.Api\\Stock.Api.csproj",
+        "Action": "Start",
+        "DebugTarget": "http"
+      },
+      {
+        "Path": "Services\\User\\src\\User.Api\\User.Api.csproj",
+        "Action": "Start",
+        "DebugTarget": "http"
+      }
+    ]
+  }
+]
