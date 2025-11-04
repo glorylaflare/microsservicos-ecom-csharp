@@ -23,7 +23,6 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
     {
         _logger.Information("Handling {EventName} for product ID: {ProductId}", nameof(UpdateProductCommand), request.ProductId);
 
-        _logger.Debug("Validating UpdateProductCommand: {Request}", request);
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
@@ -36,15 +35,12 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
         
         try
         {
-            _logger.Debug("Retrieving product with ID: {ProductId}", request.ProductId);
             var product = await _productRepository.GetProductByIdAsync(request.ProductId);
             if (product is null)
             {
                 _logger.Warning("Product with ID {ProductId} not found", request.ProductId);
                 return Result.Fail($"Product with ID {request.ProductId} not found.");
             }
-
-            _logger.Debug("Updating product ID {ProductId} with new values", request.ProductId);
             product.UpdateProduct(
                 request.Name ?? product.Name,
                 request.Description ?? product.Description,

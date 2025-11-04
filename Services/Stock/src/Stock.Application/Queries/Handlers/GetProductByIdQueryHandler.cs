@@ -23,7 +23,6 @@ public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, R
         {
             _logger.Information("Handling {EventName} for Product ID {ProductId}", nameof(GetProductByIdQuery), request.Id);
 
-            _logger.Debug("Retrieving product with ID {ProductId} from repository", request.Id);
             var product = await _productRepository.GetProductByIdAsync(request.Id);
             if (product is null)
             {

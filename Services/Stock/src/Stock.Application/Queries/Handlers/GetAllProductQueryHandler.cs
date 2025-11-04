@@ -23,7 +23,6 @@ public class GetAllProductQueryHandler : IRequestHandler<GetAllProductsQuery, Re
         {
             _logger.Information("Handling {EventName}", nameof(GetAllProductsQuery));
 
-            _logger.Debug("Fetching all products from the repository");
             var products = await _productRepository.GetAllProductsAsync();
             if (products is null || !products.Any())
             {

@@ -27,7 +27,6 @@ public class AuthenticationUserCommandHandler : IRequestHandler<AuthenticateUser
     {
         _logger.Information("Handling {EventName} for email: {Email}", nameof(AuthenticateUserCommand), request.Email);
 
-        _logger.Debug("Validating AuthenticateUserCommand: {Request}", request);
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
@@ -40,7 +39,7 @@ public class AuthenticationUserCommandHandler : IRequestHandler<AuthenticateUser
 
         try
         {
-            _logger.Debug("Authenticating user with email: {Email}", request.Email);    
+            _logger.Information("Authenticating user with email: {Email}", request.Email);    
             var domain = _configuration["Auth0:Domain"];
             var clientId = _configuration["Auth0:ClientId"]!;
             var clientSecret = _configuration["Auth0:ClientSecret"]!;
@@ -49,7 +48,6 @@ public class AuthenticationUserCommandHandler : IRequestHandler<AuthenticateUser
             var authClient = new AuthenticationApiClient(
                 new Uri($"https://{domain}"));
 
-            _logger.Information("Requesting token for user with email: {Email}", request.Email);
             var tokenRequest = new ResourceOwnerTokenRequest
             {
                 ClientId = clientId,

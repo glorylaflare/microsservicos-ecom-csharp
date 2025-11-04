@@ -23,7 +23,6 @@ public class GetOrderByIdQueryHandler : IRequestHandler<GetOrderByIdQuery, Resul
         {
             _logger.Information("Handling {EventName} for Order ID: {OrderId}", nameof(GetOrderByIdQuery), request.Id);
 
-            _logger.Debug("Retrieving order with ID: {OrderId} from repository", request.Id);
             var order = await _orderRepository.GetOrderByIdAsync(request.Id);
             if (order is null)
             {

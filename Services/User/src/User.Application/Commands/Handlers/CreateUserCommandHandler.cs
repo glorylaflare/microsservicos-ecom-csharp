@@ -29,12 +29,11 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
     {
         _logger.Information("Handling {EventName} for user: {UserName}", nameof(CreateUserCommand), request.Username);
 
-        _logger.Debug("Validating CreateUserCommand: {Request}", request);
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
             var errors = validationResult.Errors
-                .Select(e => new FluentResults.Error(e.ErrorMessage));
+                .Select(e => new Error(e.ErrorMessage));
 
             _logger.Warning("Validation failed for CreateUserCommand: {Errors}", errors);
             return Result.Fail(errors);
@@ -67,6 +66,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
             await _userRepository.RegisterUserAsync(user);
             await _userRepository.SaveChangesAsync();
 
+            _logger.Information(clientId, "User {UserName} created successfully with ID {UserId}", request.Username, user.Id);
             return Result.Ok(user.Id);
         }
         catch (ApiException ex)

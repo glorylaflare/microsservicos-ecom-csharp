@@ -24,7 +24,6 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
     {
         _logger.Information("Handling {EventName} for product: {ProductName}", nameof(CreateProductCommand), request.Name);
 
-        _logger.Debug("Validating CreateProductCommand: {Request}", request);
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
@@ -37,21 +36,17 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
 
         try
         {
-            _logger.Debug("Creating new product with name: {ProductName}", request.Name);
             var product = new Product(
                 request.Name,
                 request.Description,
                 request.Price,
                 request.StockQuantity
             );
-
-            _logger.Debug("Adding product to repository: {Product}", product);
             await _productRepository.AddProductAsync(product);
             await _productRepository.SaveChangesAsync();
 
             _logger.Information("Product created successfully with ID: {ProductId}", product.Id);
             return Result.Ok(product.Id);
-
         }
         catch (Exception ex)
         {

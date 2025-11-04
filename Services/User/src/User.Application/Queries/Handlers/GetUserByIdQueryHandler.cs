@@ -23,7 +23,6 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<
         {
             _logger.Information("Handling {EventName} for UserId: {UserId}", nameof(GetUserByIdQuery), request.Id);
 
-            _logger.Debug("Fetching user with ID {UserId} from the repository", request.Id);
             var user = await _userRepository.GetUserByIdAsync(request.Id);
             if (user is null)
             {

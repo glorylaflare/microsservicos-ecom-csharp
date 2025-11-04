@@ -1,6 +1,7 @@
 ﻿using BuildingBlocks.Contracts;
 using BuildingBlocks.Contracts.Events;
 using BuildingBlocks.Messaging;
+using CorrelationId.Abstractions;
 using FluentResults;
 using FluentValidation;
 using MediatR;
@@ -13,14 +14,16 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
 {
     private readonly IOrderRepository _orderRepository;
     private readonly IValidator<CreateOrderCommand> _validator;
+    private readonly ICorrelationContextAccessor _correlationContextAccessor;
     private readonly IEventBus _eventBus;
     private readonly ILogger _logger;
 
-    public CreateOrderCommandHandler(IOrderRepository orderRepository, IValidator<CreateOrderCommand> validator, IEventBus eventBus)
+    public CreateOrderCommandHandler(IOrderRepository orderRepository, IValidator<CreateOrderCommand> validator, IEventBus eventBus, ICorrelationContextAccessor correlationContextAccessor)
     {
         _orderRepository = orderRepository;
         _validator = validator;
         _eventBus = eventBus;
+        _correlationContextAccessor = correlationContextAccessor;
         _logger = Log.ForContext<CreateOrderCommandHandler>();
     }
 
@@ -28,7 +31,6 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
     {
         _logger.Information("Handling {EventName} for {ItemsCount} items", nameof(CreateOrderCommand), request.Items.Count);
 
-        _logger.Debug("Validating CreateOrderCommand: {Request}", request);
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
@@ -42,19 +44,17 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
         try
         {
             var order = new Domain.Models.Order(request.Items);
-
-            _logger.Debug("Adding order to repository with temporary state {Order}", order);
             await _orderRepository.AddOrderAsync(order);
             await _orderRepository.SaveChangesAsync();
 
-            _logger.Information("Order created successfully with ID: {OrderId}", order.Id);
             var orderDto = order.Items
                 .Select(i => new OrderItemDto(i.ProductId, i.Quantity))
                 .ToList();
 
-            var evt = new OrderRequestedEvent(order.Id, orderDto);
+            var correlationId = _correlationContextAccessor.CorrelationContext.CorrelationId 
+                ?? Guid.NewGuid().ToString();
 
-            _logger.Debug("Publishing OrderRequestedEvent for order ID: {OrderId} with {OrderDto}", order.Id, orderDto);
+            var evt = new OrderRequestedEvent(order.Id, orderDto, correlationId);
             await _eventBus.PublishAsync(evt);
 
             _logger.Information("Order {OrderId} created successfully with {ItemsCount} items", order.Id, request.Items.Count);

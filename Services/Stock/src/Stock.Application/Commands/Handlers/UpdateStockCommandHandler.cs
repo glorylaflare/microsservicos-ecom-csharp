@@ -23,7 +23,6 @@ public class UpdateStockCommandHandler : IRequestHandler<UpdateStockCommand, Res
     {
         _logger.Information("Handling {EventName} for product ID: {ProductId}", nameof(UpdateStockCommand), request.ProductId);
 
-        _logger.Debug("Validating UpdateStockCommand: {Request}", request);
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
@@ -36,7 +35,6 @@ public class UpdateStockCommandHandler : IRequestHandler<UpdateStockCommand, Res
 
         try
         {
-            _logger.Debug("Retrieving product with ID: {ProductId}", request.ProductId);
             var product = await _productRepository.GetProductByIdAsync(request.ProductId);
             if (product is null)
             {
@@ -44,9 +42,7 @@ public class UpdateStockCommandHandler : IRequestHandler<UpdateStockCommand, Res
                 return Result.Fail($"Product with ID {request.ProductId} not found.");
             }
 
-            _logger.Debug("Decreasing stock for product ID {ProductId} by {Quantity}", request.ProductId, request.Quantity);
             product.DecreaseStock(request.Quantity);
-
             await _productRepository.SaveChangesAsync();
 
             _logger.Information("Stock for product ID {ProductId} updated successfully", request.ProductId);

@@ -23,7 +23,6 @@ public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, Result<
         {
             _logger.Information("Handling {EventName}", nameof(GetAllUsersQuery));
 
-            _logger.Debug("Fetching all users from the repository");
             var users = await _userRepository.GetAllUsersAsync();
             if (users is null || !users.Any())
             {
