@@ -2,8 +2,16 @@
 
 namespace BuildingBlocks.Contracts.Events;
 
-public record StockReservedEvent(
-    int OrderId, 
-    List<OrderItemDto> Items, 
-    decimal TotalAmount
-) : IntegrationEvent;
+public record StockReservedEvent : IntegrationEvent
+{
+    public int OrderId { get; init; }
+    public List<OrderItemDto> Items { get; init; }
+    public decimal TotalAmount { get; init; }
+
+    public StockReservedEvent(int orderId, List<OrderItemDto> items, decimal totalAmount, string correlationId) : base(correlationId)
+    {
+        OrderId = orderId;
+        Items = items;
+        TotalAmount = totalAmount;
+    }
+}

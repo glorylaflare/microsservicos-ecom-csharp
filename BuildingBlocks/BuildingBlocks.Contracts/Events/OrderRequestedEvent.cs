@@ -2,7 +2,15 @@
 
 namespace BuildingBlocks.Contracts.Events;
 
-public record OrderRequestedEvent(
-    int OrderId, 
-    List<OrderItemDto> Items
-) : IntegrationEvent;
+public record OrderRequestedEvent : IntegrationEvent
+{
+    public int OrderId { get; init; }
+    public List<OrderItemDto> Items { get; init; }
+
+    public OrderRequestedEvent(int orderId, List<OrderItemDto> items, string correlationId)
+        : base(correlationId)
+    {
+        OrderId = orderId;
+        Items = items;
+    }
+}
