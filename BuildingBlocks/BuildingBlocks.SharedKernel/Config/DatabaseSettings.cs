@@ -2,7 +2,7 @@
 
 public class DatabaseSettings
 {
-    public string Host { get; } = "sqlserver";
+    public required string Host { get; set; }
     public int Port { get; } = 1433;
     public required string Database { get; set; } 
     public string Username { get; } = "sa";
