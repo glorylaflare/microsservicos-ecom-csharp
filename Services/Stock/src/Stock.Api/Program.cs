@@ -1,9 +1,10 @@
 using BuildingBlocks.Messaging.Config;
 using BuildingBlocks.Messaging.Extensions;
 using BuildingBlocks.Observability.Extensions;
+using BuildingBlocks.Observability.Middlewares;
 using BuildingBlocks.SharedKernel.Config;
-using Microsoft.EntityFrameworkCore;
-using Serilog;
+using CorrelationId;
+using CorrelationId.DependencyInjection;
 using Stock.Api.Extensions;
 using Stock.Application.Commands;
 using Stock.Application.Consumers;
@@ -18,6 +19,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddDefaultCorrelationId();
+builder.Services.AddCustomLogging();
 
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssemblies(typeof(CreateProductCommand).Assembly));
@@ -26,18 +30,19 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IDbTransactionManager, DbTransactionManager>();
 builder.Services.AddValidators();
 
-builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
+builder.Services.Configure<DatabaseSettings>(
+    builder.Configuration.GetSection("DatabaseSettings"));
 builder.Services.AddDbContext<StockDbContext>();
 
-builder.Services.Configure<RabbitMQSettings>(builder.Configuration.GetSection("RabbitMqSettings"));
+builder.Services.Configure<RabbitMQSettings>(
+    builder.Configuration.GetSection("RabbitMqSettings"));
 builder.Services.AddEventBus();
 builder.Services.AddTransient<OrderRequestConsumer>();
 
-builder.Services.AddCustomLogging();
-
 var app = builder.Build();
 
-app.UseObservability();
+app.UseMiddleware<ErrorHandleMiddleware>();
+app.UseCorrelationId();
 
 await app.ConfigureEventBus();
 
@@ -48,15 +53,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<StockDbContext>();
-    db.Database.Migrate();
-    Log.Information("Stock Database Migrated Successfully");
-}
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

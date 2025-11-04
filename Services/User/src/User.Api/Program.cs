@@ -1,7 +1,8 @@
 using BuildingBlocks.Observability.Extensions;
+using BuildingBlocks.Observability.Middlewares;
 using BuildingBlocks.SharedKernel.Config;
-using Microsoft.EntityFrameworkCore;
-using Serilog;
+using CorrelationId;
+using CorrelationId.DependencyInjection;
 using User.Api.Extensions;
 using User.Application.Commands;
 using User.Domain.Interfaces;
@@ -14,6 +15,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddDefaultCorrelationId();
+builder.Services.AddCustomLogging();
 
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssemblies(typeof(CreateUserCommand).Assembly));
@@ -21,12 +25,14 @@ builder.Services.AddMediatR(cfg =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddValidators();
 
-builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
+builder.Services.Configure<DatabaseSettings>(
+    builder.Configuration.GetSection("DatabaseSettings"));
 builder.Services.AddDbContext<UserDbContext>();
 
-builder.Services.AddCustomLogging();
-
 var app = builder.Build();
+
+app.UseMiddleware<ErrorHandleMiddleware>();
+app.UseCorrelationId();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -35,15 +41,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<UserDbContext>();
-    db.Database.Migrate();
-    Log.Information("User Database Migrated Successfully");
-}
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
