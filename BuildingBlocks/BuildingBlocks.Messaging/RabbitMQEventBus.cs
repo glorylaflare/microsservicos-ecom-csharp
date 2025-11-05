@@ -135,7 +135,6 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
                     return;
                 }
 
-
                 var message = Encoding.UTF8.GetString(bytes);
                 var @event = JsonSerializer.Deserialize<T>(message, new JsonSerializerOptions
                 {

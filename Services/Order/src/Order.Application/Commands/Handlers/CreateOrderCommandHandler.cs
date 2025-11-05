@@ -1,7 +1,6 @@
 ﻿using BuildingBlocks.Contracts;
 using BuildingBlocks.Contracts.Events;
 using BuildingBlocks.Messaging;
-using CorrelationId.Abstractions;
 using FluentResults;
 using FluentValidation;
 using MediatR;
@@ -14,16 +13,14 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
 {
     private readonly IOrderRepository _orderRepository;
     private readonly IValidator<CreateOrderCommand> _validator;
-    private readonly ICorrelationContextAccessor _correlationContextAccessor;
     private readonly IEventBus _eventBus;
     private readonly ILogger _logger;
 
-    public CreateOrderCommandHandler(IOrderRepository orderRepository, IValidator<CreateOrderCommand> validator, IEventBus eventBus, ICorrelationContextAccessor correlationContextAccessor)
+    public CreateOrderCommandHandler(IOrderRepository orderRepository, IValidator<CreateOrderCommand> validator, IEventBus eventBus)
     {
         _orderRepository = orderRepository;
         _validator = validator;
         _eventBus = eventBus;
-        _correlationContextAccessor = correlationContextAccessor;
         _logger = Log.ForContext<CreateOrderCommandHandler>();
     }
 
@@ -51,8 +48,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
                 .Select(i => new OrderItemDto(i.ProductId, i.Quantity))
                 .ToList();
 
-            var correlationId = _correlationContextAccessor.CorrelationContext.CorrelationId 
-                ?? Guid.NewGuid().ToString();
+            var correlationId = Guid.NewGuid().ToString();
 
             var evt = new OrderRequestedEvent(order.Id, orderDto, correlationId);
             await _eventBus.PublishAsync(evt);

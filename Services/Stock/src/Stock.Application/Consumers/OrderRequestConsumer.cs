@@ -1,6 +1,5 @@
 ﻿using BuildingBlocks.Contracts.Events;
 using BuildingBlocks.Messaging;
-using CorrelationId.Abstractions;
 using Serilog;
 using Stock.Application.Interfaces;
 using Stock.Domain.Interfaces;
@@ -11,16 +10,14 @@ public class OrderRequestConsumer : IIntegrationEventHandler<OrderRequestedEvent
 {
     private readonly IProductRepository _productRepository;
     private readonly IDbTransactionManager _dbTransactionManager;
-    private readonly ICorrelationContextAccessor _correlationContextAccessor;
     private readonly IEventBus _eventBus;
     private readonly ILogger _logger;
 
-    public OrderRequestConsumer(IProductRepository productRepository, IEventBus eventBus, IDbTransactionManager dbTransactionManager, ICorrelationContextAccessor correlationContextAccessor)
+    public OrderRequestConsumer(IProductRepository productRepository, IEventBus eventBus, IDbTransactionManager dbTransactionManager)
     {
         _productRepository = productRepository;
         _eventBus = eventBus;
         _dbTransactionManager = dbTransactionManager;
-        _correlationContextAccessor = correlationContextAccessor;
         _logger = Log.ForContext<OrderRequestConsumer>();
     }
 
@@ -28,9 +25,7 @@ public class OrderRequestConsumer : IIntegrationEventHandler<OrderRequestedEvent
     {
         _logger.Information("Handling {EventName} for Order ID: {OrderId}", nameof(OrderRequestedEvent), @event.OrderId);
 
-        var correlationId =                         _correlationContextAccessor.CorrelationContext.CorrelationId
-            ?? @event.CorrelationId
-            ?? Guid.NewGuid().ToString();
+        var correlationId = @event.CorrelationId ?? Guid.NewGuid().ToString();
 
         try
         {
