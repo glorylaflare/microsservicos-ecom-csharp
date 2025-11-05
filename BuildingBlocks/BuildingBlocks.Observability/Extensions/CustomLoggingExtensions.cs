@@ -26,6 +26,7 @@ public static class CustomLoggingExtensions
                 outputTemplate: "{Timestamp:HH:mm:ss} [{Level:u3}] {Message:lj} {NewLine}{Exception}",
                 theme: customTheme,
                 applyThemeToRedirectedOutput: true)
+            .WriteTo.Seq("http://localhost:5341")
             .WriteTo.File(
                 path: "Logs/log-.txt",
                 rollingInterval: RollingInterval.Day,

@@ -3,7 +3,7 @@ version: '3.8'
 services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: msecom_sqlserver
+    container_name: sqlserver
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=yourStrong(!)Password
@@ -14,7 +14,7 @@ services:
       
   rabbitmq:
     image: rabbitmq:4.0-management-alpine
-    container_name: msecom_rabbitmq
+    container_name: rabbitmq
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
@@ -28,6 +28,17 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+  
+  seq:
+    image: datalust/seq:latest
+    container_name: seq
+    ports:
+      - "5341:80"
+    environment:
+      - ACCEPT_EULA=Y
+      - SEQ_FIRSTRUN_ADMINPASSWORD=yourStrong(!)Password 
+    networks:
+      - micro_ecommerce
 
 networks:
   micro_ecommerce:
