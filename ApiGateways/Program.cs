@@ -1,4 +1,5 @@
 using ApiGateways.Extensions;
+using ApiGateways.Middlewares;
 using BuildingBlocks.Observability.Extensions;
 using BuildingBlocks.Observability.Middlewares;
 using CorrelationId;
@@ -10,11 +11,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddDefaultCorrelationId();
 builder.Services.AddCustomLogging();
-
-builder.Services.AddReverseProxyServices(builder.Configuration);
 builder.Services.AddAuthenticationService(builder.Configuration).AddAuthorizationService();
+
+builder.Services.AddCircuitBreaker();
+builder.Services.AddReverseProxyServices(builder.Configuration);
 
 var app = builder.Build();
 
@@ -28,11 +31,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseHttpsRedirection();
+
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCustomMiddleware();
 app.MapReverseProxy();
 app.MapControllers();
-app.UseHttpsRedirection();
+app.UseUserContextMiddleware();
+app.UseCircuitBreakerHandlingMiddleware();
 app.Run();
