@@ -20,6 +20,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\..\..\BuildingBlocks\BuildingBlocks.Infra\BuildingBlocks.Infra.csproj" />
 		<ProjectReference Include="..\..\..\..\BuildingBlocks\BuildingBlocks.Observability\BuildingBlocks.Observability.csproj" />
 		<ProjectReference Include="..\User.Application\User.Application.csproj" />
 		<ProjectReference Include="..\User.Infra\User.Infra.csproj" />

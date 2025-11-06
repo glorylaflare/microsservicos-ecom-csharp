@@ -1,6 +1,7 @@
 using BuildingBlocks.Observability.Extensions;
 using BuildingBlocks.Observability.Middlewares;
 using BuildingBlocks.SharedKernel.Config;
+using BuildingBlocks.Infra.Extensions;
 using CorrelationId;
 using CorrelationId.DependencyInjection;
 using User.Api.Extensions;
@@ -30,6 +31,8 @@ builder.Services.Configure<DatabaseSettings>(
 builder.Services.AddDbContext<UserDbContext>();
 
 var app = builder.Build();
+
+await app.AddMigrateDatabase<UserDbContext>();
 
 app.UseMiddleware<ErrorHandleMiddleware>();
 app.UseCorrelationId();

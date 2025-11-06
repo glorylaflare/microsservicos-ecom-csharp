@@ -3,6 +3,7 @@ using BuildingBlocks.Messaging.Extensions;
 using BuildingBlocks.Observability.Extensions;
 using BuildingBlocks.Observability.Middlewares;
 using BuildingBlocks.SharedKernel.Config;
+using BuildingBlocks.Infra.Extensions;
 using CorrelationId;
 using CorrelationId.DependencyInjection;
 using Order.Api.Extensions;
@@ -39,6 +40,8 @@ builder.Services.AddTransient<StockRejectedConsumer>();
 builder.Services.AddTransient<StockReservedConsumer>();
 
 var app = builder.Build();
+
+await app.AddMigrateDatabase<OrderDbContext>();
 
 app.UseMiddleware<ErrorHandleMiddleware>();
 app.UseCorrelationId();
