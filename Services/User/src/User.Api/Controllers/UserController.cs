@@ -18,12 +18,12 @@ public class UserController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> GetAllUsers()
     {
         var result = await _mediator.Send(new GetAllUsersQuery());
         return result.IsFailed
-            ? BadRequest(result.Errors.Select(e => e.Message))
+            ? NotFound(result.Errors.Select(e => e.Message))
             : Ok(result.Value);
     }
 
