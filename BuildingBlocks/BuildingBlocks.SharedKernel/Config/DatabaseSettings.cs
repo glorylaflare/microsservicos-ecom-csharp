@@ -27,4 +27,14 @@ public class DatabaseSettings
             $"{pooling}" +
             $"MultipleActiveResultSets=true;";
     }
+    
+    public string ToConnectionStringWithoutPooling()
+    {
+        return
+            $"Server={Host},{Port};" +
+            $"Database={Database};" +
+            $"User Id={Username};Password={Password};" +
+            $"TrustServerCertificate={TrustServerCertificate};" +
+            $"MultipleActiveResultSets=true;";
+    }
 }
