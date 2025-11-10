@@ -41,7 +41,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
         try
         {
             var order = new Domain.Models.Order(request.Items);
-            await _orderRepository.AddOrderAsync(order);
+            await _orderRepository.AddAsync(order);
             await _orderRepository.SaveChangesAsync();
 
             var orderDto = order.Items

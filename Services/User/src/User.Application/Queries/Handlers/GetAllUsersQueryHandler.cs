@@ -1,19 +1,19 @@
 ﻿using FluentResults;
 using MediatR;
 using Serilog;
+using User.Application.Interfaces;
 using User.Application.Responses;
-using User.Domain.Interfaces;
 
 namespace User.Application.Queries.Handlers;
 
 public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, Result<IEnumerable<GetUserResponse>>>
 {
-    private readonly IUserRepository _userRepository;
+    private readonly IUserReadService _userService;
     private readonly ILogger _logger;
 
-    public GetAllUsersQueryHandler(IUserRepository userRepository)
+    public GetAllUsersQueryHandler(IUserReadService userService)
     {
-        _userRepository = userRepository;
+        _userService = userService;
         _logger = Log.ForContext<GetAllUsersQueryHandler>();
     }
 
@@ -23,7 +23,7 @@ public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, Result<
         {
             _logger.Information("Handling {EventName}", nameof(GetAllUsersQuery));
 
-            var users = await _userRepository.GetAllUsersAsync();
+            var users = await _userService.GetAllAsync();
             if (users is null || !users.Any())
             {
                 _logger.Warning("No users found in the repository");

@@ -4,8 +4,8 @@ namespace Stock.Domain.Interfaces;
 
 public interface IProductRepository
 {
-    Task AddProductAsync(Product product);
-    Task<Product?> GetProductByIdAsync(int productId);
-    Task<IEnumerable<Product>> GetAllProductsAsync();
+    Task<Product?> GetByIdAsync(int productId);
+    Task AddAsync(Product product);
+    void Update(Product product);
     Task SaveChangesAsync();
 }

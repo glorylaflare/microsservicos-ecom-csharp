@@ -63,7 +63,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
                 request.Email
             );
 
-            await _userRepository.RegisterUserAsync(user);
+            await _userRepository.AddAsync(user);
             await _userRepository.SaveChangesAsync();
 
             _logger.Information(clientId, "User {UserName} created successfully with ID {UserId}", request.Username, user.Id);

@@ -12,7 +12,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\..\..\BuildingBlocks\BuildingBlocks.Infra\BuildingBlocks.Infra.csproj" />
 		<ProjectReference Include="..\User.Application\User.Application.csproj" />
 		<ProjectReference Include="..\User.Domain\User.Domain.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Data\Migrations\" />
 	</ItemGroup>
 </Project>

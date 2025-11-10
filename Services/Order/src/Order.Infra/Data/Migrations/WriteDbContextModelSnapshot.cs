@@ -3,7 +3,6 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Order.Infra.Data.Context;
 
@@ -11,12 +10,10 @@ using Order.Infra.Data.Context;
 
 namespace Order.Infra.Data.Migrations
 {
-    [DbContext(typeof(OrderDbContext))]
-    [Migration("20251017132942_Initial_Migration")]
-    partial class Initial_Migration
+    [DbContext(typeof(WriteDbContext))]
+    partial class WriteDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

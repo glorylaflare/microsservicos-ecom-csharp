@@ -1,12 +1,12 @@
-﻿using Order.Domain.Models;
+﻿using BuildingBlocks.Infra.ReadModels;
 
 namespace Order.Application.Responses;
 
 public record GetOrderResponse(
     int Id,
-    List<OrderItem> Items,
+    IReadOnlyList<OrderItemReadModel> Items,
     decimal TotalAmount,
-    Status Status,
+    string Status,
     DateTime CreatedAt,
     DateTime? UpdatedAt
 );

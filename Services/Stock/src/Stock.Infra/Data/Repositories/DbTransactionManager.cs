@@ -6,9 +6,9 @@ namespace Stock.Infra.Data.Repositories;
 
 public class DbTransactionManager : IDbTransactionManager
 {
-    private readonly StockDbContext _context;
+    private readonly WriteDbContext _context;
 
-    public DbTransactionManager(StockDbContext context)
+    public DbTransactionManager(WriteDbContext context)
     {
         _context = context;
     }

@@ -2,20 +2,20 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace User.Infra.Data.Context;
+namespace Order.Infra.Data.Context;
 
-public class UserDbContext : DbContext
+public class WriteDbContext : DbContext
 {
     private readonly DatabaseSettings _databaseSettings;
 
-    public UserDbContext(
-        DbContextOptions<UserDbContext> options, 
-        IOptions<DatabaseSettings> databaseSettings) : base(options) 
+    public WriteDbContext(
+        DbContextOptions<WriteDbContext> options,
+        IOptions<DatabaseSettings> databaseSettings) : base(options)
     {
         _databaseSettings = databaseSettings.Value;
     }
 
-    public DbSet<Domain.Models.User> Users { get; set; }
+    public DbSet<Domain.Models.Order> Orders { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -32,8 +32,9 @@ public class UserDbContext : DbContext
         }
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(UserDbContext).Assembly);
-    }
+    protected override void OnModelCreating(ModelBuilder modelBuilder) =>
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(WriteDbContext).Assembly, MappingFilter);
+
+    private static bool MappingFilter(Type type) => 
+        type.Namespace != null && type.Namespace.EndsWith("Mappings.Write", StringComparison.Ordinal);
 }

@@ -6,25 +6,21 @@ namespace Order.Infra.Data.Repositories;
 
 public class OrderRepository : IOrderRepository
 {
-    private readonly OrderDbContext _context;
+    private readonly DbSet<Domain.Models.Order> _orders;
+    private readonly WriteDbContext _context;
 
-    public OrderRepository(OrderDbContext context)
+    public OrderRepository(WriteDbContext context)
     {
+        _orders = context.Orders;
         _context = context;
     }
 
-    public async Task AddOrderAsync(Domain.Models.Order order)
-    {
-        await _context.Orders.AddAsync(order);
-    }
+    public async Task<Domain.Models.Order?> GetByIdAsync(int orderId) => 
+        await _orders.FirstOrDefaultAsync(o => o.Id == orderId);
 
-    public async Task<Domain.Models.Order?> GetOrderByIdAsync(int orderId)
-    {
-        return await _context.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
-    }
+    public async Task AddAsync(Domain.Models.Order order) => await _orders.AddAsync(order);
 
-    public async Task SaveChangesAsync()
-    {
-        await _context.SaveChangesAsync();
-    }
+    public void Update(Domain.Models.Order order) => _orders.Update(order);
+
+    public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
 }

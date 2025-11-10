@@ -35,7 +35,7 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
         
         try
         {
-            var product = await _productRepository.GetProductByIdAsync(request.ProductId);
+            var product = await _productRepository.GetByIdAsync(request.ProductId);
             if (product is null)
             {
                 _logger.Warning("Product with ID {ProductId} not found", request.ProductId);
@@ -46,6 +46,7 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
                 request.Description ?? product.Description,
                 request.Price);
 
+            _productRepository.Update(product);
             await _productRepository.SaveChangesAsync();
 
             _logger.Information("Product ID {ProductId} updated successfully", request.ProductId);

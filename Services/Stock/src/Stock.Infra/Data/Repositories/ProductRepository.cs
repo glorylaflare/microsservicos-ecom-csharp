@@ -7,30 +7,21 @@ namespace Stock.Infra.Data.Repositories;
 
 public class ProductRepository : IProductRepository
 {
-    private readonly StockDbContext _context;
+    private readonly DbSet<Product> _products;
+    private readonly WriteDbContext _context;
 
-    public ProductRepository(StockDbContext context)
+    public ProductRepository(WriteDbContext context)
     {
+        _products = context.Products;
         _context = context;
     }
 
-    public async Task AddProductAsync(Product product)
-    {
-        await _context.Products.AddAsync(product);
-    }
+    public async Task<Product?> GetByIdAsync(int productId) => 
+        await _products.FirstOrDefaultAsync(p => p.Id == productId);
 
-    public async Task<IEnumerable<Product>> GetAllProductsAsync()
-    {
-        return await _context.Products.ToListAsync();
-    }
+    public async Task AddAsync(Product product) => await _products.AddAsync(product);
 
-    public async Task<Product?> GetProductByIdAsync(int productId)
-    {
-        return await _context.Products.FirstOrDefaultAsync(p => p.Id == productId);
-    }
+    public void Update(Product product) => _products.Update(product);
 
-    public async Task SaveChangesAsync()
-    {
-        await _context.SaveChangesAsync();
-    }
+    public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
 }

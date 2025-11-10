@@ -13,6 +13,7 @@ using Stock.Application.Interfaces;
 using Stock.Domain.Interfaces;
 using Stock.Infra.Data.Context;
 using Stock.Infra.Data.Repositories;
+using Stock.Infra.Data.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,11 +30,13 @@ builder.Services.AddMediatR(cfg =>
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IDbTransactionManager, DbTransactionManager>();
+builder.Services.AddScoped<IProductReadService, ProductReadService>();
 builder.Services.AddValidators();
 
 builder.Services.Configure<DatabaseSettings>(
     builder.Configuration.GetSection("DatabaseSettings"));
-builder.Services.AddDbContext<StockDbContext>();
+builder.Services.AddDbContext<WriteDbContext>();
+builder.Services.AddDbContext<ReadDbContext>();
 
 builder.Services.Configure<RabbitMQSettings>(
     builder.Configuration.GetSection("RabbitMqSettings"));
@@ -42,7 +45,7 @@ builder.Services.AddTransient<OrderRequestConsumer>();
 
 var app = builder.Build();
 
-await app.AddMigrateDatabase<StockDbContext>();
+await app.AddMigrateDatabase<WriteDbContext>();
 
 app.UseMiddleware<ErrorHandleMiddleware>();
 app.UseCorrelationId();

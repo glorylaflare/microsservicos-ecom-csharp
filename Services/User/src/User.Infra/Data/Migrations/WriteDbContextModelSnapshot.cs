@@ -3,7 +3,6 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using User.Infra.Data.Context;
 
@@ -11,12 +10,10 @@ using User.Infra.Data.Context;
 
 namespace User.Infra.Data.Migrations
 {
-    [DbContext(typeof(UserDbContext))]
-    [Migration("20251030185259_Initial_Migration")]
-    partial class Initial_Migration
+    [DbContext(typeof(WriteDbContext))]
+    partial class WriteDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,10 +30,15 @@ namespace User.Infra.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Auth0UserId")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
@@ -51,35 +53,13 @@ namespace User.Infra.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
-                });
+                    b.HasIndex("Auth0UserId")
+                        .IsUnique();
 
-            modelBuilder.Entity("User.Domain.Models.User", b =>
-                {
-                    b.OwnsOne("User.Domain.ValueObjects.Email", "Email", b1 =>
-                        {
-                            b1.Property<int>("UserId")
-                                .HasColumnType("int");
+                    b.HasIndex("Email")
+                        .IsUnique();
 
-                            b1.Property<string>("Address")
-                                .IsRequired()
-                                .HasMaxLength(255)
-                                .HasColumnType("nvarchar(255)")
-                                .HasColumnName("Email");
-
-                            b1.HasKey("UserId");
-
-                            b1.HasIndex("Address")
-                                .IsUnique();
-
-                            b1.ToTable("Users");
-
-                            b1.WithOwner()
-                                .HasForeignKey("UserId");
-                        });
-
-                    b.Navigation("Email")
-                        .IsRequired();
+                    b.ToTable("Users", (string)null);
                 });
 #pragma warning restore 612, 618
         }

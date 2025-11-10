@@ -35,7 +35,7 @@ public class OrderRequestConsumer : IIntegrationEventHandler<OrderRequestedEvent
             {
                 foreach (var item in @event.Items)
                 {
-                    var product = await _productRepository.GetProductByIdAsync(item.ProductId);
+                    var product = await _productRepository.GetByIdAsync(item.ProductId);
                     if (product is null)
                     {
                         throw new InvalidOperationException("Product not found.");
@@ -47,6 +47,7 @@ public class OrderRequestConsumer : IIntegrationEventHandler<OrderRequestedEvent
 
                     product.DecreaseStock(item.Quantity);
                     totalAmount += item.Quantity * product.Price;
+                    _productRepository.Update(product);
                 }
                 await _productRepository.SaveChangesAsync();
             });

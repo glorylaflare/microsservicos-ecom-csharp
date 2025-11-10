@@ -1,19 +1,19 @@
 ﻿using FluentResults;
 using MediatR;
 using Serilog;
+using User.Application.Interfaces;
 using User.Application.Responses;
-using User.Domain.Interfaces;
 
 namespace User.Application.Queries.Handlers;
 
 public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<GetUserResponse>>
 {
-    private readonly IUserRepository _userRepository;
+    private readonly IUserReadService _userService;
     private readonly ILogger _logger;
 
-    public GetUserByIdQueryHandler(IUserRepository userRepository)
+    public GetUserByIdQueryHandler(IUserReadService userService)
     {
-        _userRepository = userRepository;
+        _userService = userService;
         _logger = Log.ForContext<GetUserByIdQueryHandler>();
     }
 
@@ -23,7 +23,7 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<
         {
             _logger.Information("Handling {EventName} for UserId: {UserId}", nameof(GetUserByIdQuery), request.Id);
 
-            var user = await _userRepository.GetUserByIdAsync(request.Id);
+            var user = await _userService.GetByIdAsync(request.Id);
             if (user is null)
             {
                 _logger.Warning("User with ID {UserId} not found in the repository", request.Id);

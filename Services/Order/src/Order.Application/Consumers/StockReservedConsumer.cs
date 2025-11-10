@@ -22,7 +22,7 @@ public class StockReservedConsumer : IIntegrationEventHandler<StockReservedEvent
         {
             _logger.Information("Handling {EventName} for OrderId {OrderId}, TotalAmount {TotalAmount}", nameof(StockReservedEvent), @event.OrderId, @event.TotalAmount);
 
-            var order = await _orderRepository.GetOrderByIdAsync(@event.OrderId);
+            var order = await _orderRepository.GetByIdAsync(@event.OrderId);
             if (order is null)
             {
                 _logger.Warning("Order with ID {OrderId} not found", @event.OrderId);
@@ -31,6 +31,7 @@ public class StockReservedConsumer : IIntegrationEventHandler<StockReservedEvent
             order.SetTotalAmount(@event.TotalAmount);
             order.Confirmed();
 
+            _orderRepository.Update(order);
             await _orderRepository.SaveChangesAsync();
 
             _logger.Information("Order with ID {OrderId} has been confirmed with total amount {TotalAmount}", order.Id, @event.TotalAmount);

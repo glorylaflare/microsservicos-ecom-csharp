@@ -6,35 +6,19 @@ namespace User.Infra.Data.Repositories;
 
 public class UserRepository : IUserRepository
 {
-    private readonly UserDbContext _context;
+    private readonly DbSet<Domain.Models.User> _users;
+    private readonly WriteDbContext _context;
 
-    public UserRepository(UserDbContext context)
+    public UserRepository(WriteDbContext context)
     {
         _context = context;
+        _users = context.Users;
     }
 
-    public async Task RegisterUserAsync(Domain.Models.User user)
-    {
-        await _context.Users.AddAsync(user);
-    }
+    public async Task AddAsync(Domain.Models.User user) => await _users.AddAsync(user);
 
-    public async Task<IEnumerable<Domain.Models.User>> GetAllUsersAsync()
-    {
-        return await _context.Users.ToListAsync();
-    }
+    public async Task<Domain.Models.User?> GetByIdAsync(int userId) => 
+        await _users.FirstOrDefaultAsync(u => u.Id == userId);
 
-    public async Task<Domain.Models.User?> GetUserByIdAsync(int userId)
-    {
-        return await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
-    }
-
-    public async Task<Domain.Models.User?> GetUserByEmailAsync(string email)
-    {
-        return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
-    }
-
-    public async Task SaveChangesAsync()
-    {
-        await _context.SaveChangesAsync();
-    }
+    public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
 }

@@ -1,22 +1,21 @@
 ﻿using BuildingBlocks.SharedKernel.Config;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Stock.Domain.Models;
 
-namespace Stock.Infra.Data.Context;
+namespace User.Infra.Data.Context;
 
-public class StockDbContext : DbContext
+public class WriteDbContext : DbContext
 {
     private readonly DatabaseSettings _databaseSettings;
 
-    public StockDbContext(
-        DbContextOptions<StockDbContext> options,
+    public WriteDbContext(
+        DbContextOptions<WriteDbContext> options, 
         IOptions<DatabaseSettings> databaseSettings) : base(options) 
-    { 
+    {
         _databaseSettings = databaseSettings.Value;
     }
 
-    public DbSet<Product> Products { get; set; }
+    public DbSet<Domain.Models.User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -33,8 +32,9 @@ public class StockDbContext : DbContext
         }
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(StockDbContext).Assembly);
-    }
+    protected override void OnModelCreating(ModelBuilder modelBuilder) =>
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(WriteDbContext).Assembly, MappingFilter);
+
+    private static bool MappingFilter(Type type) => 
+        type.Namespace != null && type.Namespace.EndsWith("Mappings.Write", StringComparison.Ordinal);
 }

@@ -2,7 +2,8 @@
 
 public interface IOrderRepository
 {
-    Task AddOrderAsync(Models.Order order);
-    Task<Models.Order?> GetOrderByIdAsync(int orderId);
+    Task<Models.Order?> GetByIdAsync(int orderId);
+    Task AddAsync(Models.Order order);
+    void Update(Models.Order order);
     Task SaveChangesAsync();
 }

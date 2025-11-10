@@ -35,7 +35,7 @@ public class UpdateStockCommandHandler : IRequestHandler<UpdateStockCommand, Res
 
         try
         {
-            var product = await _productRepository.GetProductByIdAsync(request.ProductId);
+            var product = await _productRepository.GetByIdAsync(request.ProductId);
             if (product is null)
             {
                 _logger.Warning("Product with ID {ProductId} not found", request.ProductId);
@@ -43,6 +43,7 @@ public class UpdateStockCommandHandler : IRequestHandler<UpdateStockCommand, Res
             }
 
             product.DecreaseStock(request.Quantity);
+            _productRepository.Update(product);
             await _productRepository.SaveChangesAsync();
 
             _logger.Information("Stock for product ID {ProductId} updated successfully", request.ProductId);

@@ -1,19 +1,19 @@
 ﻿using FluentResults;
 using MediatR;
 using Serilog;
+using Stock.Application.Interfaces;
 using Stock.Application.Responses;
-using Stock.Domain.Interfaces;
 
 namespace Stock.Application.Queries.Handlers;
 
 public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, Result<GetProductResponse>>
 {
-    private readonly IProductRepository _productRepository;
+    private readonly IProductReadService _productService;
     private readonly ILogger _logger;
 
-    public GetProductByIdQueryHandler(IProductRepository productRepository)
+    public GetProductByIdQueryHandler(IProductReadService productService)
     {
-        _productRepository = productRepository;
+        _productService = productService;
         _logger = Log.ForContext<GetProductByIdQueryHandler>();
     }
 
@@ -23,7 +23,7 @@ public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, R
         {
             _logger.Information("Handling {EventName} for Product ID {ProductId}", nameof(GetProductByIdQuery), request.Id);
 
-            var product = await _productRepository.GetProductByIdAsync(request.Id);
+            var product = await _productService.GetByIdAsync(request.Id);
             if (product is null)
             {
                 _logger.Warning("Product with ID {ProductId} not found", request.Id);
