@@ -20,7 +20,8 @@ public class WriteDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        if (!optionsBuilder.IsConfigured)
+        if (!optionsBuilder.IsConfigured &&
+            optionsBuilder.Options.Extensions.All(e => e.GetType().Name != "InMemoryOptionsExtension"))
         {
             optionsBuilder.UseSqlServer(
                 _databaseSettings.ToConnectionString(),
