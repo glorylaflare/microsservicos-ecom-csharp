@@ -31,7 +31,6 @@ public class GetOrderByIdTests
             .Setup(s => s.GetByIdAsync(id))
             .ReturnsAsync(_orderReadModel);
 
-
         var response = new GetOrderResponse(
             _orderReadModel.Id,
             _orderReadModel.Items,
@@ -46,6 +45,7 @@ public class GetOrderByIdTests
         var result = await handler.Handle(_request, cancellationToken);
         //Assert
         result.IsSuccess.Should().BeTrue();
+        result.Value.Should().BeEquivalentTo(response);
     }
 
     [Fact]

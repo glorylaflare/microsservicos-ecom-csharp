@@ -14,34 +14,32 @@ public class OrderRepositoryTests
     {
         new OrderItem(productId: 1, quantity: 20)
     });
+    private readonly OrderRepository _repository;
 
     public OrderRepositoryTests(DatabaseFixture fixture)
     {
         _fixture = fixture;
+        _repository = new OrderRepository(_fixture._context);
     }
 
     [Fact]
     public async Task AddAsync_WhenValid_ShouldCreateOrder()
     {
-        //Arrange
-        var repository = new OrderRepository(_fixture._context);
         //Act
-        await repository.AddAsync(_order);
-        await repository.SaveChangesAsync();
-        var result = await repository.GetByIdAsync(_order.Id);
+        await _repository.AddAsync(_order);
+        await _repository.SaveChangesAsync();
+        var result = await _repository.GetByIdAsync(_order.Id);
         //Assert
         result.Should().NotBeNull();
     }
 
     [Fact]
     public async Task AddAsync_WhenValid_ShouldReturnStatusPending()
-    { 
-        //Arrange
-        var repository = new OrderRepository(_fixture._context);
+    {
         //Act
-        await repository.AddAsync(_order);
-        await repository.SaveChangesAsync();
-        var result = await repository.GetByIdAsync(_order.Id);
+        await _repository.AddAsync(_order);
+        await _repository.SaveChangesAsync();
+        var result = await _repository.GetByIdAsync(_order.Id);
         //Assert
         result!.Status.Should().Be(Status.Pending);
     }
@@ -50,14 +48,13 @@ public class OrderRepositoryTests
     public async Task Update_WhenValid_ShouldUpdateOrderStatus()
     {
         //Arrange
-        var repository = new OrderRepository(_fixture._context);
-        await repository.AddAsync(_order);
-        await repository.SaveChangesAsync();
+        await _repository.AddAsync(_order);
+        await _repository.SaveChangesAsync();
         //Act
         _order.Confirmed();
-        repository.Update(_order);
-        await repository.SaveChangesAsync();
-        var result = await repository.GetByIdAsync(_order.Id);
+        _repository.Update(_order);
+        await _repository.SaveChangesAsync();
+        var result = await _repository.GetByIdAsync(_order.Id);
         //Assert
         result!.Status.Should().Be(Status.Confirmed);
     }
