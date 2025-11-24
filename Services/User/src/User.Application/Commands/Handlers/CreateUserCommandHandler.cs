@@ -1,11 +1,9 @@
-﻿using Auth0.AuthenticationApi;
-using Auth0.AuthenticationApi.Models;
-using Auth0.Core.Exceptions;
+﻿using Auth0.Core.Exceptions;
 using FluentResults;
 using FluentValidation;
 using MediatR;
-using Microsoft.Extensions.Configuration;
 using Serilog;
+using User.Application.Interfaces;
 using User.Domain.Interfaces;
 
 namespace User.Application.Commands.Handlers;
@@ -14,14 +12,14 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
 {
     private readonly IUserRepository _userRepository;
     private readonly IValidator<CreateUserCommand> _validator;
-    private readonly IConfiguration _configuration;
+    private readonly IAuthService _authService;
     private readonly ILogger _logger;
 
-    public CreateUserCommandHandler(IUserRepository userRepository, IValidator<CreateUserCommand> validator, IConfiguration configuration)
+    public CreateUserCommandHandler(IUserRepository userRepository, IValidator<CreateUserCommand> validator, IAuthService authService)
     {
         _userRepository = userRepository;
         _validator = validator;
-        _configuration = configuration;
+        _authService = authService;
         _logger = Log.ForContext<CreateUserCommandHandler>();
     }
 
@@ -41,21 +39,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
 
         try
         {
-            var domain = _configuration["Auth0:Domain"]!;
-            var clientId = _configuration["Auth0:ClientId"]!;
-
-            var authClient = new AuthenticationApiClient(
-                new Uri($"https://{domain}/"));
-
-            var signupRequest = new SignupUserRequest
-            {
-                ClientId = clientId,
-                Email = request.Email,
-                Password = request.Password,
-                Connection = "Username-Password-Authentication"
-            };
-
-            var createdUser = await authClient.SignupUserAsync(signupRequest);
+            var createdUser = await _authService.SignupUserAsync(request.Username, request.Password);
 
             var user = new Domain.Models.User(
                 createdUser.Id,
@@ -66,7 +50,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
             await _userRepository.AddAsync(user);
             await _userRepository.SaveChangesAsync();
 
-            _logger.Information(clientId, "User {UserName} created successfully with ID {UserId}", request.Username, user.Id);
+            _logger.Information("User {UserName} created successfully with ID {UserId}", request.Username, user.Id);
             return Result.Ok(user.Id);
         }
         catch (ApiException ex)

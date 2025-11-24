@@ -1,11 +1,9 @@
-﻿using Auth0.AuthenticationApi;
-using Auth0.AuthenticationApi.Models;
-using Auth0.Core.Exceptions;
+﻿using Auth0.Core.Exceptions;
 using FluentResults;
 using FluentValidation;
 using MediatR;
-using Microsoft.Extensions.Configuration;
 using Serilog;
+using User.Application.Interfaces;
 using User.Application.Responses;
 
 namespace User.Application.Commands.Handlers;
@@ -13,13 +11,13 @@ namespace User.Application.Commands.Handlers;
 public class AuthenticationUserCommandHandler : IRequestHandler<AuthenticateUserCommand, Result<TokenResponse>>
 {
     private readonly IValidator<AuthenticateUserCommand> _validator;
-    private readonly IConfiguration _configuration;
+    private readonly IAuthService _authService;
     private readonly ILogger _logger;
 
-    public AuthenticationUserCommandHandler(IValidator<AuthenticateUserCommand> validator, IConfiguration configuration)
+    public AuthenticationUserCommandHandler(IValidator<AuthenticateUserCommand> validator, IAuthService authService)
     {
         _validator = validator;
-        _configuration = configuration;
+        _authService = authService;
         _logger = Log.ForContext<AuthenticationUserCommandHandler>();
     }
 
@@ -39,27 +37,7 @@ public class AuthenticationUserCommandHandler : IRequestHandler<AuthenticateUser
 
         try
         {
-            _logger.Information("Authenticating user with email: {Email}", request.Email);    
-            var domain = _configuration["Auth0:Domain"];
-            var clientId = _configuration["Auth0:ClientId"]!;
-            var clientSecret = _configuration["Auth0:ClientSecret"]!;
-            var audience = _configuration["Auth0:Audience"]!;
-
-            var authClient = new AuthenticationApiClient(
-                new Uri($"https://{domain}"));
-
-            var tokenRequest = new ResourceOwnerTokenRequest
-            {
-                ClientId = clientId,
-                ClientSecret = clientSecret,
-                Scope = "openid profile email",
-                Audience = audience,
-                Username = request.Email,
-                Password = request.Password,
-                Realm = "Username-Password-Authentication"
-            };
-
-            var tokenResponse = await authClient.GetTokenAsync(tokenRequest);
+            var tokenResponse = await _authService.GetTokenAsync(request.Email, request.Password);
             
             var response = new TokenResponse(
                 tokenResponse.AccessToken,
