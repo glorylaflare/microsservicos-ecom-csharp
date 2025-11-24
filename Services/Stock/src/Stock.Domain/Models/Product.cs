@@ -8,7 +8,7 @@ public class Product : EntityBase
     public string Description { get; private set; } = string.Empty;
     public decimal Price { get; private set; }
     public int StockQuantity { get; private set; }
-    public byte[] Version { get; private set; }
+    public byte[] Version { get; private set; } = BitConverter.GetBytes(DateTime.UtcNow.Ticks);
 
     protected Product() { }
 
