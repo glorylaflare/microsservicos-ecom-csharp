@@ -39,7 +39,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
 
         try
         {
-            var createdUser = await _authService.SignupUserAsync(request.Username, request.Password);
+            var createdUser = await _authService.SignupUserAsync(request.Email, request.Password);
 
             var user = new Domain.Models.User(
                 createdUser.Id,
