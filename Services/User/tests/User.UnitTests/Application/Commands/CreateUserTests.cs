@@ -1,7 +1,5 @@
-﻿using Auth0.AuthenticationApi;
-using Auth0.AuthenticationApi.Models;
+﻿using Auth0.AuthenticationApi.Models;
 using FluentAssertions;
-using Microsoft.Extensions.Configuration;
 using Moq;
 using User.Application.Commands;
 using User.Application.Commands.Handlers;
@@ -18,6 +16,11 @@ public class CreateUserTests
         "password123"
     );
 
+    private readonly SignupUserResponse _response = new SignupUserResponse
+    {
+        Id = "auth0|1234567890"
+    };
+
     private readonly Mock<IUserRepository> _mockRepo = new();
     private readonly Mock<FluentValidation.IValidator<CreateUserCommand>> _mockValidator = new();
     private readonly Mock<IAuthService> _mockAuth = new();
@@ -27,9 +30,9 @@ public class CreateUserTests
     {
         //Arrange
         var user = new User.Domain.Models.User(
+            _response.Id,
             _request.Username,
-            _request.Email,
-            _request.Password
+            _request.Email
         );
 
         var _cancellationToken = It.IsAny<CancellationToken>();
@@ -38,18 +41,20 @@ public class CreateUserTests
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
         _mockAuth
             .Setup(a => a.SignupUserAsync(_request.Email, _request.Password))
-            .ReturnsAsync(It.IsAny<SignupUserResponse>());
+            .ReturnsAsync(_response);
         _mockRepo
             .Setup(r => r.AddAsync(user))
             .Returns(Task.CompletedTask);
         _mockRepo
             .Setup(r => r.SaveChangesAsync())
             .Returns(Task.CompletedTask);
+
         var handler = new CreateUserCommandHandler(_mockRepo.Object, _mockValidator.Object, _mockAuth.Object);
         //Act
         var result = await handler.Handle(_request, _cancellationToken);
         //Assert
         result.IsSuccess.Should().BeTrue();
+        result.Value.Should().Be(user.Id);
     }
 
     [Fact]

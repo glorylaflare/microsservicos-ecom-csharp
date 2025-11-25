@@ -37,7 +37,11 @@ public class AuthenticationUserTests
             .Setup(x => x.GetTokenAsync(_request.Email, _request.Password))
             .ReturnsAsync(_tokenResponse);
 
-        var response = new TokenResponse(_tokenResponse.AccessToken, _tokenResponse.IdToken, _tokenResponse.ExpiresIn);
+        var response = new TokenResponse(
+            _tokenResponse.AccessToken, 
+            _tokenResponse.IdToken, 
+            _tokenResponse.ExpiresIn
+        );
 
         var handler = new AuthenticationUserCommandHandler(_mockValidator.Object, _mockAuth.Object);
         //Act
