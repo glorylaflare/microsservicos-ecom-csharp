@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>58f08994-eafe-48b9-8501-4475f3924197</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<DockerfileContext>..\..\..</DockerfileContext>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="CorrelationId" />
+		<PackageReference Include="Auth0.AuthenticationApi" />
+		<PackageReference Include="MediatR" />
+		<PackageReference Include="FluentResults" />
+		<PackageReference Include="FluentValidation" />
+		<PackageReference Include="Serilog" />
+		<PackageReference Include="Swashbuckle.AspNetCore" />
+	</ItemGroup>
+
+</Project>

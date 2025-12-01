@@ -1,8 +1,8 @@
-﻿using MediatR;
+﻿using Auth.Api.Commands;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using User.Application.Commands;
 
-namespace User.Api.Controllers;
+namespace Auth.Api.Controllers;
 
 [Route("api/auth")]
 [ApiController]
@@ -13,17 +13,6 @@ public class AuthController : ControllerBase
     public AuthController(IMediator mediator)
     {
         _mediator = mediator;
-    }
-
-    [HttpPost("register")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> Register([FromBody] CreateUserCommand command)
-    {
-        var result = await _mediator.Send(command);
-        return result.IsFailed
-            ? BadRequest(result.Errors.Select(e => e.Message))
-            : CreatedAtAction("GetUserById", "User", new { id = result.Value }, result);
     }
 
     [HttpPost("login")]

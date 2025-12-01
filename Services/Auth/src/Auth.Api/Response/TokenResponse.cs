@@ -1,4 +1,4 @@
-﻿namespace User.Application.Responses;
+﻿namespace Auth.Api.Responses;
 
 public record TokenResponse(
     string AccessToken,

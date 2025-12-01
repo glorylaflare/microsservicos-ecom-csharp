@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace User.Application.Commands;
+namespace Auth.Api.Commands;
 
 public class AuthenticateUserCommandValidator : AbstractValidator<AuthenticateUserCommand>
 {
@@ -17,6 +17,5 @@ public class AuthenticateUserCommandValidator : AbstractValidator<AuthenticateUs
             .Matches("[a-z]").WithMessage("Password must contain at least one lowercase letter.")
             .Matches("[0-9]").WithMessage("Password must contain at least one number.")
             .Matches("[^a-zA-Z0-9]").WithMessage("Password must contain at least one special character.");
-
     }
 }
