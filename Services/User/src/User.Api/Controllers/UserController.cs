@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using User.Application.Commands;
 using User.Application.Queries;
 
 namespace User.Api.Controllers;
@@ -36,5 +37,16 @@ public class UserController : ControllerBase
         return result.IsFailed
             ? NotFound(result.Errors.Select(e => e.Message))
             : Ok(result.Value);
+    }
+
+    [HttpPost("register")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> Register([FromBody] CreateUserCommand command)
+    {
+        var result = await _mediator.Send(command);
+        return result.IsFailed
+            ? BadRequest(result.Errors.Select(e => e.Message))
+            : CreatedAtAction("GetUserById", "User", new { id = result.Value }, result);
     }
 }
