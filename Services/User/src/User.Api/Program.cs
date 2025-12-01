@@ -11,6 +11,7 @@ using User.Infra.Data.Context;
 using User.Infra.Data.Repositories;
 using User.Application.Interfaces;
 using User.Infra.Data.Services;
+using User.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,7 @@ builder.Services.AddMediatR(cfg =>
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserReadService, UserReadService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddValidators();
 
 builder.Services.Configure<DatabaseSettings>(
