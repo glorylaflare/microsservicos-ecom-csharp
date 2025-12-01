@@ -1,18 +1,18 @@
-﻿using Auth0.Core.Exceptions;
+﻿using Auth.Api.Interfaces;
+using Auth.Api.Responses;
+using Auth0.Core.Exceptions;
 using FluentResults;
 using FluentValidation;
 using MediatR;
 using Serilog;
-using User.Application.Interfaces;
-using User.Application.Responses;
 
-namespace User.Application.Commands.Handlers;
+namespace Auth.Api.Commands.Handlers;
 
 public class AuthenticationUserCommandHandler : IRequestHandler<AuthenticateUserCommand, Result<TokenResponse>>
 {
     private readonly IValidator<AuthenticateUserCommand> _validator;
     private readonly IAuthService _authService;
-    private readonly ILogger _logger;
+    private readonly Serilog.ILogger _logger;
 
     public AuthenticationUserCommandHandler(IValidator<AuthenticateUserCommand> validator, IAuthService authService)
     {

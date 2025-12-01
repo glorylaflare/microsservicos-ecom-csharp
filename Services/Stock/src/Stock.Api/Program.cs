@@ -43,6 +43,8 @@ builder.Services.Configure<RabbitMQSettings>(
 builder.Services.AddEventBus();
 builder.Services.AddTransient<OrderRequestConsumer>();
 
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
 
 await app.AddMigrateDatabase<WriteDbContext>();
@@ -61,4 +63,5 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthorization();
 app.MapControllers();
+app.MapHealthChecks("/health");
 app.Run();

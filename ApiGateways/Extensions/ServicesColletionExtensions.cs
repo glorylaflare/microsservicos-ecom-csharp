@@ -8,6 +8,7 @@ public static class ServicesCollectionExtensions
 {
     public static IServiceCollection AddAuthenticationService(this IServiceCollection services, IConfiguration configuration)
     {
+        
         services.AddAuthentication("Bearer")
             .AddJwtBearer("Bearer", options =>
             {
@@ -26,7 +27,7 @@ public static class ServicesCollectionExtensions
                     ValidateIssuerSigningKey = true
                 };
             });
-
+        
         return services;
     }
 

@@ -36,6 +36,8 @@ builder.Services.Configure<DatabaseSettings>(
 builder.Services.AddDbContext<WriteDbContext>();
 builder.Services.AddDbContext<ReadDbContext>();
 
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
 
 await app.AddMigrateDatabase<WriteDbContext>();
@@ -52,4 +54,5 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthorization();
 app.MapControllers();
+app.MapHealthChecks("/health");
 app.Run();

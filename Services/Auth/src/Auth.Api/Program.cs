@@ -1,5 +1,7 @@
-using ApiGateways.Extensions;
-using ApiGateways.Middlewares;
+using Auth.Api.Commands;
+using Auth.Api.Extensions;
+using Auth.Api.Interfaces;
+using Auth.Api.Services;
 using BuildingBlocks.Observability.Extensions;
 using BuildingBlocks.Observability.Middlewares;
 using CorrelationId;
@@ -11,15 +13,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 builder.Services.AddDefaultCorrelationId();
 builder.Services.AddCustomLogging();
-builder.Services.AddAuthenticationService(builder.Configuration).AddAuthorizationService();
 
-builder.Services.AddCircuitBreaker();
-builder.Services.AddReverseProxyServices(builder.Configuration);
+builder.Services.AddMediatR(cfg =>
+    cfg.RegisterServicesFromAssemblies(typeof(AuthenticateUserCommand).Assembly));
 
-builder.Services.AddHealthChecksService();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddValidators();
+
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
@@ -33,19 +36,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
-app.UseRouting();
-
-app.UseAuthentication();
 app.UseAuthorization();
-
-app.MapReverseProxy();
 app.MapControllers();
-
-app.UseUserContextMiddleware();
-app.UseCircuitBreakerHandlingMiddleware();
-
-app.UseHealthChecksService();
-
+app.MapHealthChecks("/health");
 app.Run();
