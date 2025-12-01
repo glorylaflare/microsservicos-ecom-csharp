@@ -5,8 +5,6 @@ public class DatabaseSettings
     public required string Host { get; set; }
     public int Port { get; } = 1433;
     public required string Database { get; set; } 
-    public string Username { get; } = "sa";
-    public string Password { get; } = "yourStrong(!)Password";
     public bool TrustServerCertificate { get; } = true;
     public bool EnableConnectionPooling { get; } = true;
 
@@ -18,14 +16,14 @@ public class DatabaseSettings
         var pooling = EnableConnectionPooling ? 
             $"Min Pool Size={MinPoolSize};Max Pool Size={MaxPoolSize};" 
             : string.Empty;
-
-        return 
+        
+        return
             $"Server={Host},{Port};" +
             $"Database={Database};" +
-            $"User Id={Username};Password={Password};" +
             $"TrustServerCertificate={TrustServerCertificate};" +
             $"{pooling}" +
-            $"MultipleActiveResultSets=true;";
+            "MultipleActiveResultSets=true;" +
+            "Integrated Security=True;";
     }
     
     public string ToConnectionStringWithoutPooling()
@@ -33,8 +31,8 @@ public class DatabaseSettings
         return
             $"Server={Host},{Port};" +
             $"Database={Database};" +
-            $"User Id={Username};Password={Password};" +
             $"TrustServerCertificate={TrustServerCertificate};" +
-            $"MultipleActiveResultSets=true;";
+            "MultipleActiveResultSets=true;" +
+            "Integrated Security=True;";
     }
 }
