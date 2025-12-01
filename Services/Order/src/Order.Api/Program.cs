@@ -43,6 +43,8 @@ builder.Services.AddEventBus();
 builder.Services.AddTransient<StockRejectedConsumer>();
 builder.Services.AddTransient<StockReservedConsumer>();
 
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
 
 await app.AddMigrateDatabase<WriteDbContext>();
@@ -61,4 +63,5 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthorization();
 app.MapControllers();
+app.MapHealthChecks("/health");
 app.Run();

@@ -23,7 +23,7 @@
         "DebugTarget": "http"
       },
       {
-        "Path": "Services\\Auth\\Auth.Api\\Auth.Api.csproj",
+        "Path": "Services\\Auth\\src\\Auth.Api\\Auth.Api.csproj",
         "Action": "Start"
       }
     ]

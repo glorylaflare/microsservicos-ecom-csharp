@@ -22,6 +22,8 @@ builder.Services.AddMediatR(cfg =>
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddValidators();
 
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
 
 app.UseMiddleware<ErrorHandleMiddleware>();
@@ -34,10 +36,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
+app.MapHealthChecks("/health");
 app.Run();

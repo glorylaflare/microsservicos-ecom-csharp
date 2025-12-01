@@ -19,6 +19,8 @@ builder.Services.AddAuthenticationService(builder.Configuration).AddAuthorizatio
 builder.Services.AddCircuitBreaker();
 builder.Services.AddReverseProxyServices(builder.Configuration);
 
+builder.Services.AddHealthChecksService();
+
 var app = builder.Build();
 
 app.UseMiddleware<ErrorHandleMiddleware>();
@@ -34,10 +36,16 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseRouting();
+
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapReverseProxy();
 app.MapControllers();
+
 app.UseUserContextMiddleware();
 app.UseCircuitBreakerHandlingMiddleware();
+
+app.UseHealthChecksService();
+
 app.Run();
