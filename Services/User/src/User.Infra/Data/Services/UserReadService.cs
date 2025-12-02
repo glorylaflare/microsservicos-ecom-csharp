@@ -22,6 +22,7 @@ public class UserReadService : IUserReadService
                 Id = u.Id,
                 Username = u.Username,  
                 Email = u.Email,
+                Status = u.Status,
                 CreatedAt = u.CreatedAt,
                 UpdatedAt = u.UpdatedAt
             })
@@ -37,6 +38,7 @@ public class UserReadService : IUserReadService
                 Id = u.Id,
                 Username = u.Username,
                 Email = u.Email,
+                Status = u.Status,
                 CreatedAt = u.CreatedAt,
                 UpdatedAt = u.UpdatedAt
             })
@@ -51,6 +53,7 @@ public class UserReadService : IUserReadService
                 Id = u.Id,
                 Username = u.Username,
                 Email = u.Email,
+                Status = u.Status,
                 CreatedAt = u.CreatedAt,
                 UpdatedAt = u.UpdatedAt
             })

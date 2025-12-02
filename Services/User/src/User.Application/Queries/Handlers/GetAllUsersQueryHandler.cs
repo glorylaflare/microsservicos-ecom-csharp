@@ -34,7 +34,8 @@ public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, Result<
                 user.Id,
                 user.Username,
                 user.Email,
-                user.CreatedAt,
+                user.Status,
+                user.CreatedAt, 
                 user.UpdatedAt
             ));
 
