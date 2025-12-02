@@ -20,5 +20,8 @@ public class UserRepository : IUserRepository
     public async Task<Domain.Models.User?> GetByIdAsync(int userId) => 
         await _users.FirstOrDefaultAsync(u => u.Id == userId);
 
+    public async Task<Domain.Models.User?> GetByEmailAsync(string email) =>
+        await _users.FirstOrDefaultAsync(u => u.Email == email);
+
     public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
 }

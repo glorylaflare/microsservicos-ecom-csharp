@@ -34,6 +34,7 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<
                 user.Id,
                 user.Username,
                 user.Email,
+                user.Status,
                 user.CreatedAt,
                 user.UpdatedAt
             );

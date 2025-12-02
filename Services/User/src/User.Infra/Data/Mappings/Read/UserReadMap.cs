@@ -14,6 +14,7 @@ internal class UserReadMap : IEntityTypeConfiguration<UserReadModel>
         builder.Property(u => u.Id);
         builder.Property(u => u.Username);
         builder.Property(u => u.Email);
+        builder.Property(u => u.Status);
         builder.Property(o => o.CreatedAt);
         builder.Property(o => o.UpdatedAt);
     }

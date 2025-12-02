@@ -35,6 +35,7 @@ public class GetUserByIdTests
             _userReadModel.Id,
             _userReadModel.Username,
             _userReadModel.Email,
+            _userReadModel.Status,
             _userReadModel.CreatedAt,
             _userReadModel.UpdatedAt
         );

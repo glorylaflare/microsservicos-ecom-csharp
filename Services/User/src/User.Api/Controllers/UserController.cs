@@ -39,7 +39,7 @@ public class UserController : ControllerBase
             : Ok(result.Value);
     }
 
-    [HttpPost("register")]
+    [HttpPost("create")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> Register([FromBody] CreateUserCommand command)
@@ -47,6 +47,17 @@ public class UserController : ControllerBase
         var result = await _mediator.Send(command);
         return result.IsFailed
             ? BadRequest(result.Errors.Select(e => e.Message))
-            : CreatedAtAction("GetUserById", "User", new { id = result.Value }, result);
+            : CreatedAtAction(nameof(GetUserById), new { id = result.Value }, result);
+    }
+
+    [HttpPatch("deactivate")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> DeactivateUser([FromBody] DeactivateUserCommand command)
+    {
+        var result = await _mediator.Send(command);
+        return result.IsFailed
+            ? BadRequest(result.Errors.Select(e => e.Message))
+            : NoContent();
     }
 }

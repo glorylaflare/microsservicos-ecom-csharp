@@ -45,6 +45,7 @@ public class GetAllUserTests
             u.Id,
             u.Username,
             u.Email,
+            u.Status,
             u.CreatedAt,
             u.UpdatedAt
         ));
