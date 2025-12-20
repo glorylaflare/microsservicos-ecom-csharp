@@ -48,9 +48,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
                 .Select(i => new OrderItemDto(i.ProductId, i.Quantity))
                 .ToList();
 
-            var correlationId = Guid.NewGuid().ToString();
-
-            var evt = new OrderRequestedEvent(order.Id, orderDto, correlationId);
+            var evt = new OrderRequestedEvent(order.Id, orderDto);
             await _eventBus.PublishAsync(evt);
 
             _logger.Information("Order {OrderId} created successfully with {ItemsCount} items", order.Id, request.Items.Count);
