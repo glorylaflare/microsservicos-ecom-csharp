@@ -56,7 +56,7 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
         return channel;
     }
 
-    public async Task PublishAsync<T>(T @event) where T : IntegrationEvent
+    public async Task PublishAsync<T>(T @event) where T : IntegrationEventBase
     {
         _publishChannel = await EnsureConnectionAsync(_publishChannel);
         var exchangeName = typeof(T).Name;
@@ -71,7 +71,7 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
             DeliveryMode = DeliveryModes.Persistent,
             ContentType = "application/json",
             MessageId = Guid.NewGuid().ToString(),
-            CorrelationId = @event.CorrelationId,
+            CorrelationId = @event.EventId.ToString(),
             Type = typeof(T).FullName,
             Timestamp = new AmqpTimestamp(DateTimeOffset.UtcNow.ToUnixTimeSeconds())
         };
@@ -87,7 +87,7 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
     }
 
     public async Task SubscribeAsync<T, TH>()
-        where T : IntegrationEvent
+        where T : IntegrationEventBase
         where TH : IIntegrationEventHandler<T>
     {
         _consumerChannel = await EnsureConnectionAsync(_consumerChannel);
