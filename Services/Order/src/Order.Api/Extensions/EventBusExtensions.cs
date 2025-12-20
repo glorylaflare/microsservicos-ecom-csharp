@@ -12,7 +12,6 @@ public static class EventBusExtensions
 
         await eventBus.StartAsync(CancellationToken.None);
 
-        await eventBus.SubscribeAsync<StockReservedEvent, StockReservedConsumer>();
-        await eventBus.SubscribeAsync<StockRejectedEvent, StockRejectedConsumer>();
+        await eventBus.SubscribeAsync<StockReservationResultEvent, StockReservationResultConsumer>();
     }
 }

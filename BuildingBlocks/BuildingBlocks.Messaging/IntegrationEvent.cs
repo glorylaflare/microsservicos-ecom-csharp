@@ -1,15 +1,19 @@
-﻿using System.Diagnostics;
+﻿namespace BuildingBlocks.Messaging;
 
-namespace BuildingBlocks.Messaging;
-
-public abstract record IntegrationEvent
+public abstract record IntegrationEvent<TData> : IntegrationEventBase
 {
-    public Guid Id { get; init; } = Guid.NewGuid();
-    public DateTime OccurredAt { get; init; } = DateTime.UtcNow;
-    public string? CorrelationId { get; init; }
-    
-    protected IntegrationEvent(string correlationId)
+    public TData Data { get; init; }
+
+    protected IntegrationEvent(TData data)
     {
-        CorrelationId = correlationId ?? Activity.Current?.TraceId.ToString();
+        Data = data;
     }
+}
+
+public abstract record IntegrationEventBase
+{
+    public Guid EventId { get; init; } = Guid.NewGuid();
+    public DateTime OccurredAt { get; init; } = DateTime.UtcNow;
+    public string EventType => GetType().Name;
+    public string Source => GetType().Namespace ?? string.Empty;
 }

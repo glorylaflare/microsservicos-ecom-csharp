@@ -3,8 +3,8 @@
 public interface IEventBus
 {
     Task StartAsync(CancellationToken cancellationToken);
-    Task PublishAsync<T>(T @event) where T : IntegrationEvent;
+    Task PublishAsync<T>(T @event) where T : IntegrationEventBase;
     Task SubscribeAsync<T, TH>()
-        where T : IntegrationEvent
+        where T : IntegrationEventBase
         where TH : IIntegrationEventHandler<T>;
 }
