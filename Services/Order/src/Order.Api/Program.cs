@@ -1,19 +1,18 @@
+using BuildingBlocks.Infra.Extensions;
 using BuildingBlocks.Messaging.Config;
 using BuildingBlocks.Messaging.Extensions;
 using BuildingBlocks.Observability.Extensions;
 using BuildingBlocks.Observability.Middlewares;
 using BuildingBlocks.SharedKernel.Config;
-using BuildingBlocks.Infra.Extensions;
 using CorrelationId;
 using CorrelationId.DependencyInjection;
 using Order.Api.Extensions;
 using Order.Application.Commands;
-using Order.Application.Consumers;
+using Order.Application.Interfaces;
 using Order.Domain.Interfaces;
 using Order.Infra.Data.Context;
 using Order.Infra.Data.Repositories;
 using Order.Infra.Data.Services;
-using Order.Application.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,8 +39,6 @@ builder.Services.AddDbContext<ReadDbContext>();
 builder.Services.Configure<RabbitMQSettings>(
     builder.Configuration.GetSection("RabbitMqSettings"));
 builder.Services.AddEventBus();
-builder.Services.AddTransient<StockRejectedConsumer>();
-builder.Services.AddTransient<StockReservedConsumer>();
 
 builder.Services.AddHealthChecks();
 
