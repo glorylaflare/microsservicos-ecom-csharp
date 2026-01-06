@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using MediatR;
+using MercadoPago.Resource.Preference;
 
 namespace Payment.Application.Commands;
 
@@ -8,4 +9,4 @@ public record class CreatePaymentCommand(
     string Description, 
     int Quantity, 
     decimal UnitPrice
-) : IRequest<Result<int>>;
+) : IRequest<Result<Preference>>;
