@@ -15,6 +15,8 @@ builder.Services.AddValidators();
 
 var app = builder.Build();
 
+await app.ConfigureEventBus();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
