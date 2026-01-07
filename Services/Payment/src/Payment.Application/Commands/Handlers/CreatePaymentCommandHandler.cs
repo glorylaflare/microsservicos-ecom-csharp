@@ -3,28 +3,44 @@ using MediatR;
 using MercadoPago.Client.Preference;
 using MercadoPago.Config;
 using MercadoPago.Resource.Preference;
+using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace Payment.Application.Commands.Handlers;
 
 public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand, Result<Preference>>
 {
+    private readonly IConfiguration _configuration;
+    private readonly ILogger _logger;
+
+    public CreatePaymentCommandHandler(IConfiguration configuration)
+    {
+        _configuration = configuration;
+        _logger = Log.ForContext<CreatePaymentCommandHandler>();
+    }
+
     public async Task<Result<Preference>> Handle(CreatePaymentCommand request, CancellationToken cancellationToken)
     {
-        MercadoPagoConfig.AccessToken = "APP_USR-6405780802792810-121921-f7aa25cf72f34e7634cf16edfc702f15-3081056684";
+        MercadoPagoConfig.AccessToken = _configuration["MercadoPago:AccessToken"];
 
-        var paymentRequest = new PreferenceRequest
+        _logger.Information("Creating payment preference for {EventId}", request.EventId);
+
+        var paymentItems = new List<PreferenceItemRequest>();
+
+        foreach (var item in request.Items)
         {
-            Items = new List<PreferenceItemRequest>
-                {
-                    new PreferenceItemRequest
-                    {
-                        Title = request.Title,
-                        Description = request.Description,
-                        Quantity = request.Quantity,
-                        UnitPrice = request.UnitPrice
-                    }
-                }
-        };
+            paymentItems.Add(new PreferenceItemRequest
+            {
+                Title = item.Name,
+                Description = item.Description,
+                Quantity = item.Quantity,
+                UnitPrice = item.UnitPrice
+            });
+        }
+
+        var paymentRequest = new PreferenceRequest{ Items = paymentItems };
+
+        _logger.Information("Preference request created with {ItemCount} items", paymentItems.Count);
 
         var client = new PreferenceClient();
         var preference = await client.CreateAsync(paymentRequest);
