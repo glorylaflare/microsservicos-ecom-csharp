@@ -1,4 +1,5 @@
-﻿using BuildingBlocks.Contracts.Events;
+﻿using BuildingBlocks.Contracts;
+using BuildingBlocks.Contracts.Events;
 using BuildingBlocks.Messaging;
 using MediatR;
 using Serilog;
@@ -27,6 +28,7 @@ public class OrderRequestCommandHandler : IRequestHandler<OrderRequestCommand, U
         try
         {
             var totalAmount = 0m;
+            var reservedItems = new List<ProductItemDto>();
 
             await _dbTransactionManager.ExecuteResilientTransactionAsync(async () =>
             {
@@ -44,6 +46,13 @@ public class OrderRequestCommandHandler : IRequestHandler<OrderRequestCommand, U
 
                     product.DecreaseStock(item.Quantity);
                     totalAmount += item.Quantity * product.Price;
+                    reservedItems.Add(new ProductItemDto(
+                        ProductId: item.ProductId,
+                        Name: product.Name,
+                        Description: product.Description,
+                        Quantity: item.Quantity,
+                        UnitPrice: product.Price
+                    ));
                     _productRepository.Update(product);
                 }
                 await _productRepository.SaveChangesAsync();
@@ -52,7 +61,7 @@ public class OrderRequestCommandHandler : IRequestHandler<OrderRequestCommand, U
             await _eventBus.PublishAsync(new StockReservationResultEvent(
                 orderId: request.OrderId,
                 isReserved: true,
-                items: request.Items, 
+                items: reservedItems,
                 totalAmount: totalAmount
             ));
 
