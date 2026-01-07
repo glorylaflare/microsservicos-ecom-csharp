@@ -14,10 +14,10 @@ public class PaymentProcessorHostedService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        await _serviceProvider.ConfigureEventBus(stoppingToken);
+
         while (!stoppingToken.IsCancellationRequested)
         {
-            await _serviceProvider.ConfigureEventBus(stoppingToken);
-
             await Task.Delay(1000, stoppingToken);
         }
     }
