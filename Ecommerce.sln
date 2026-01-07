@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36221.1
+# Visual Studio Version 18
+VisualStudioVersion = 18.1.11312.151 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{58AEA0D5-AD41-4408-AC99-C79A6131A6F1}"
 EndProject
@@ -92,6 +92,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Payment.Domain", "Services\Payment\src\Payment.Domain\Payment.Domain.csproj", "{DE4F984E-A1B7-4663-8E22-8A5889F4D452}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Payment.Infra", "Services\Payment\src\Payment.Infra\Payment.Infra.csproj", "{31A98F65-4FF1-40E5-8379-B78BEF05DE2C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Payment.Console", "Services\Payment\src\Payment.Console\Payment.Console.csproj", "{F47F383B-BCB0-4894-9626-DFDD05616C24}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -451,6 +453,18 @@ Global
 		{31A98F65-4FF1-40E5-8379-B78BEF05DE2C}.Release|x64.Build.0 = Release|Any CPU
 		{31A98F65-4FF1-40E5-8379-B78BEF05DE2C}.Release|x86.ActiveCfg = Release|Any CPU
 		{31A98F65-4FF1-40E5-8379-B78BEF05DE2C}.Release|x86.Build.0 = Release|Any CPU
+		{F47F383B-BCB0-4894-9626-DFDD05616C24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F47F383B-BCB0-4894-9626-DFDD05616C24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F47F383B-BCB0-4894-9626-DFDD05616C24}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F47F383B-BCB0-4894-9626-DFDD05616C24}.Debug|x64.Build.0 = Debug|Any CPU
+		{F47F383B-BCB0-4894-9626-DFDD05616C24}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F47F383B-BCB0-4894-9626-DFDD05616C24}.Debug|x86.Build.0 = Debug|Any CPU
+		{F47F383B-BCB0-4894-9626-DFDD05616C24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F47F383B-BCB0-4894-9626-DFDD05616C24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F47F383B-BCB0-4894-9626-DFDD05616C24}.Release|x64.ActiveCfg = Release|Any CPU
+		{F47F383B-BCB0-4894-9626-DFDD05616C24}.Release|x64.Build.0 = Release|Any CPU
+		{F47F383B-BCB0-4894-9626-DFDD05616C24}.Release|x86.ActiveCfg = Release|Any CPU
+		{F47F383B-BCB0-4894-9626-DFDD05616C24}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -498,6 +512,7 @@ Global
 		{DD2D5AF2-BEE2-49C2-A681-ADE639694ED6} = {86A4E931-CAEC-4B33-B28A-EE598C5F653E}
 		{DE4F984E-A1B7-4663-8E22-8A5889F4D452} = {86A4E931-CAEC-4B33-B28A-EE598C5F653E}
 		{31A98F65-4FF1-40E5-8379-B78BEF05DE2C} = {86A4E931-CAEC-4B33-B28A-EE598C5F653E}
+		{F47F383B-BCB0-4894-9626-DFDD05616C24} = {86A4E931-CAEC-4B33-B28A-EE598C5F653E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {08CD02A5-6476-4E93-8209-0303EAC2156E}
