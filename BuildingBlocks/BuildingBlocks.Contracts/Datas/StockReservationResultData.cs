@@ -3,7 +3,7 @@
 public record StockReservationResultData(
     int OrderId,
     bool IsReserved,
-    List<OrderItemDto>? Items,
+    List<ProductItemDto>? Items,
     decimal TotalAmount,
     string? Reason   
 );

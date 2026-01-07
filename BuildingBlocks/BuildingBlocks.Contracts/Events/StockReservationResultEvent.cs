@@ -5,7 +5,7 @@ namespace BuildingBlocks.Contracts.Events;
 
 public record class StockReservationResultEvent : IntegrationEvent<StockReservationResultData>
 {
-    public StockReservationResultEvent(int orderId, bool isReserved, List<OrderItemDto> items, decimal totalAmount) 
+    public StockReservationResultEvent(int orderId, bool isReserved, List<ProductItemDto> items, decimal totalAmount) 
         : base(new StockReservationResultData(orderId, isReserved, items, totalAmount, null)) { }
 
     public StockReservationResultEvent(int orderId, bool isReserved, string reason) 
