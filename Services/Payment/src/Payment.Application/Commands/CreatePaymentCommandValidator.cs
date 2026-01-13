@@ -6,20 +6,12 @@ public class CreatePaymentCommandValidator : AbstractValidator<CreatePaymentComm
 {
     public CreatePaymentCommandValidator()
     {
-        RuleFor(x => x.Title)
-            .NotEmpty()
-            .WithMessage("Title is required.");
+        RuleFor(x => x.EventId)
+            .NotEmpty().WithMessage("EventId is required.");
 
-        RuleFor(x => x.Description)
-            .NotEmpty()
-            .WithMessage("Description is required.");
-
-        RuleFor(x => x.Quantity)
-            .GreaterThan(0)
-            .WithMessage("Quantity must be greater than zero.");
-
-        RuleFor(x => x.UnitPrice)
-            .GreaterThan(0)
-            .WithMessage("Unit price must be greater than zero.");
+        RuleFor(x => x.Items)
+            .NotNull().WithMessage("Items cannot be null.")
+            .Must(items => items != null && items.Count > 0)
+            .WithMessage("At least one item is required.");
     }
 }

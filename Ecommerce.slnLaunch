@@ -5,25 +5,29 @@
       {
         "Path": "ApiGateways\\ApiGateways.csproj",
         "Action": "Start",
-        "DebugTarget": "http"
+        "DebugTarget": "IIS Express"
       },
       {
         "Path": "Services\\Order\\src\\Order.Api\\Order.Api.csproj",
         "Action": "Start",
-        "DebugTarget": "http"
+        "DebugTarget": "IIS Express"
       },
       {
         "Path": "Services\\Stock\\src\\Stock.Api\\Stock.Api.csproj",
         "Action": "Start",
-        "DebugTarget": "http"
+        "DebugTarget": "IIS Express"
       },
       {
         "Path": "Services\\User\\src\\User.Api\\User.Api.csproj",
         "Action": "Start",
-        "DebugTarget": "http"
+        "DebugTarget": "IIS Express"
       },
       {
         "Path": "Services\\Auth\\src\\Auth.Api\\Auth.Api.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "Services\\Payment\\src\\Payment.Console\\Payment.Console.csproj",
         "Action": "Start"
       }
     ]

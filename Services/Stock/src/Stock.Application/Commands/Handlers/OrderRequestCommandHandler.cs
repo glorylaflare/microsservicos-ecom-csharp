@@ -15,7 +15,7 @@ public class OrderRequestCommandHandler : IRequestHandler<OrderRequestCommand, U
     private readonly IEventBus _eventBus;
     private readonly ILogger _logger;
 
-    public OrderRequestCommandHandler(IProductRepository productRepository, IDbTransactionManager dbTransactionManager, IEventBus eventBus, ILogger logger)
+    public OrderRequestCommandHandler(IProductRepository productRepository, IDbTransactionManager dbTransactionManager, IEventBus eventBus)
     {
         _productRepository = productRepository;
         _dbTransactionManager = dbTransactionManager;
