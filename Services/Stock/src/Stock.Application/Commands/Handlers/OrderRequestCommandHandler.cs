@@ -68,13 +68,13 @@ public class OrderRequestCommandHandler : IRequestHandler<OrderRequestCommand, U
 
             await _eventBus.PublishAsync(evt);
 
-            _logger.Information("{EventName} for Order ID: {OrderId} handled successfully", nameof(OrderRequestedEvent), request.OrderId);
+            _logger.Information("[INFO] {EventName} for Order ID: {OrderId} handled successfully", nameof(OrderRequestedEvent), request.OrderId);
 
             return Unit.Value;
         }
         catch (InvalidOperationException ex)
         {
-            _logger.Warning("Stock reservation failed for Order ID: {OrderId} due to: {Reason}", request.OrderId, ex.Message);
+            _logger.Warning("[WARN] Stock reservation failed for Order ID: {OrderId} due to: {Reason}", request.OrderId, ex.Message);
 
             var data = StockReservationResultData.Failure(
                 orderId: request.OrderId,
@@ -87,7 +87,7 @@ public class OrderRequestCommandHandler : IRequestHandler<OrderRequestCommand, U
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "Error while handling {EventName} for Order ID: {OrderId}", nameof(OrderRequestedEvent), request.OrderId);
+            _logger.Error(ex, "[ERROR] Error while handling {EventName} for Order ID: {OrderId}", nameof(OrderRequestedEvent), request.OrderId);
             throw;
         }
     }
