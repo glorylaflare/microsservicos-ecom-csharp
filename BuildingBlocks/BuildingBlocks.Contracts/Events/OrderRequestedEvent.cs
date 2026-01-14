@@ -1,10 +1,12 @@
 ﻿using BuildingBlocks.Contracts.Datas;
 using BuildingBlocks.Messaging;
+using System.Text.Json.Serialization;
 
 namespace BuildingBlocks.Contracts.Events;
 
 public record OrderRequestedEvent : IntegrationEvent<OrderRequestedData>
 {
-    public OrderRequestedEvent(int orderId, List<OrderItemDto> items) 
-        : base(new OrderRequestedData(orderId, items)) { }   
+    [JsonConstructor]
+    public OrderRequestedEvent(OrderRequestedData data) 
+        : base(data) { }   
 }

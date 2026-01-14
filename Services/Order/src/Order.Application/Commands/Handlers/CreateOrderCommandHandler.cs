@@ -1,4 +1,5 @@
 ﻿using BuildingBlocks.Contracts;
+using BuildingBlocks.Contracts.Datas;
 using BuildingBlocks.Contracts.Events;
 using BuildingBlocks.Messaging;
 using FluentResults;
@@ -48,7 +49,9 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
                 .Select(i => new OrderItemDto(i.ProductId, i.Quantity))
                 .ToList();
 
-            var evt = new OrderRequestedEvent(order.Id, orderDto);
+            var data = new OrderRequestedData(order.Id, orderDto);
+            var evt = new OrderRequestedEvent(data);
+
             await _eventBus.PublishAsync(evt);
 
             _logger.Information("Order {OrderId} created successfully with {ItemsCount} items", order.Id, request.Items.Count);

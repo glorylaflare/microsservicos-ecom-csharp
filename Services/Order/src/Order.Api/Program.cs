@@ -30,6 +30,7 @@ builder.Services.AddMediatR(cfg =>
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderReadService, OrderReadService>();
 builder.Services.AddValidators();
+builder.Services.AddConsumers();
 
 builder.Services.Configure<DatabaseSettings>(
     builder.Configuration.GetSection("DatabaseSettings"));

@@ -26,11 +26,6 @@
         "Path": "Services\\Auth\\src\\Auth.Api\\Auth.Api.csproj",
         "Action": "Start",
         "DebugTarget": "http"
-      },
-      {
-        "Path": "Services\\Payment\\src\\Payment.Console\\Payment.Console.csproj",
-        "Action": "Start",
-        "DebugTarget": "Payment.Console"
       }
     ]
   }

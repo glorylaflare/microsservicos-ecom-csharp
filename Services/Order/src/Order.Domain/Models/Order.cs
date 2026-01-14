@@ -13,7 +13,7 @@ public class Order : EntityBase
     public Order(List<OrderItem> items)
     {
         Items = items;
-        Status = Status.Pending;
+        Status = Status.Created;
     }
 
     public void SetTotalAmount(decimal amount)
@@ -23,7 +23,7 @@ public class Order : EntityBase
 
     public void Confirmed()
     {
-        Status = Status.Confirmed;
+        Status = Status.StockConfirmed;
     }
 
     public void Cancelled()
@@ -34,8 +34,10 @@ public class Order : EntityBase
 
 public enum Status
 {
-    Pending,
-    Processing,
-    Confirmed,
+    Created,            
+    StockConfirmed,     
+    AwaitingPayment,    
+    PaymentConfirmed,   
+    Completed,          
     Cancelled
 }
