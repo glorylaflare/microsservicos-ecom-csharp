@@ -12,9 +12,9 @@ public class OrderReadModel
 
 public enum StatusReadModel
 {
-    Created,
-    StockConfirmed,
-    PaymentConfirmed,
+    Pending,
+    Reserved,
+    Confirmed,
     Completed,
     Cancelled
 }
