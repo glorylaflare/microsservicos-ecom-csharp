@@ -136,10 +136,14 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
                 }
 
                 var message = Encoding.UTF8.GetString(bytes);
-                var @event = JsonSerializer.Deserialize<T>(message, new JsonSerializerOptions
+                var @event = JsonSerializer.Deserialize<T>(message, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                if (@event is null)
                 {
-                    PropertyNameCaseInsensitive = true
-                });
+                    _logger.Warning("[WARN] Deserialized event is null for message: {Message}", message);
+                    await _consumerChannel.BasicNackAsync(ea.DeliveryTag, multiple: false, requeue: false);
+                    return;
+                }
 
                 using var scope = _scopeFactory.CreateScope();
                 var handler = scope.ServiceProvider.GetRequiredService<TH>();
