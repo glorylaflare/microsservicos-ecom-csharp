@@ -12,12 +12,12 @@ public class Payment
 
     public Payment() { }
 
-    public Payment(int orderId, decimal amount, PaymentStatus status, string? checkoutUrl)
+    public Payment(int orderId, decimal amount, string? checkoutUrl)
     {
         Id = Guid.NewGuid();
         OrderId = orderId;
         Amount = amount;
-        Status = status;
+        Status = PaymentStatus.Pending;
         CheckoutUrl = checkoutUrl;
         CreatedDate = DateTime.UtcNow;
     }

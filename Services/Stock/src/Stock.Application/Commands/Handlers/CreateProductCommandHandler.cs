@@ -22,7 +22,7 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
 
     public async Task<Result<int>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
-        _logger.Information("Handling {EventName} for product: {ProductName}", nameof(CreateProductCommand), request.Name);
+        _logger.Information("[INFO] Handling {EventName} for product: {ProductName}", nameof(CreateProductCommand), request.Name);
 
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
@@ -30,7 +30,7 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
             var errors = validationResult.Errors
                 .Select(e => new Error(e.ErrorMessage));
 
-            _logger.Warning("Validation failed for CreateProductCommand: {Errors}", errors);
+            _logger.Warning("[WARN] Validation failed for {EventName}: {Errors}", nameof(CreateProductCommand), errors);
             return Result.Fail(errors);
         }
 
@@ -45,12 +45,12 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
             await _productRepository.AddAsync(product);
             await _productRepository.SaveChangesAsync();
 
-            _logger.Information("Product created successfully with ID: {ProductId}", product.Id);
+            _logger.Information("[INFO] Product created successfully with ID: {ProductId}", product.Id);
             return Result.Ok(product.Id);
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "Error occurred while creating product {ProductName}", request.Name);
+            _logger.Error(ex, "[ERROR] Error occurred while creating product {ProductName}", request.Name);
             return Result.Fail(new Error("An error occurred while creating the product."));
         }
     }

@@ -32,6 +32,7 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IDbTransactionManager, DbTransactionManager>();
 builder.Services.AddScoped<IProductReadService, ProductReadService>();
 builder.Services.AddValidators();
+builder.Services.AddConsumers();
 
 builder.Services.Configure<DatabaseSettings>(
     builder.Configuration.GetSection("DatabaseSettings"));

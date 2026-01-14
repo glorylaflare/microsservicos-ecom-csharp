@@ -23,7 +23,7 @@ public class Order : EntityBase
 
     public void Confirmed()
     {
-        Status = Status.Confirmed;
+        Status = Status.Reserved;
     }
 
     public void Cancelled()
@@ -35,7 +35,8 @@ public class Order : EntityBase
 public enum Status
 {
     Pending,
-    Processing,
+    Reserved,
     Confirmed,
+    Completed,
     Cancelled
 }

@@ -19,7 +19,7 @@ public class StockReservationResultConsumer : IIntegrationEventHandler<StockRese
 
     public async Task HandleAsync(StockReservationResultEvent @event)
     {
-        _logger.Information("Handling {EventName} for OrderId: {OrderId}, IsReserved: {IsReserved}", nameof(StockReservationResultEvent), @event.Data.OrderId, @event.Data.IsReserved);
+        _logger.Information("[INFO] Handling {EventName} for OrderId: {OrderId}, IsReserved: {IsReserved}", nameof(StockReservationResultEvent), @event.Data.OrderId, @event.Data.IsReserved);
 
         try
         {
@@ -32,7 +32,7 @@ public class StockReservationResultConsumer : IIntegrationEventHandler<StockRese
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "An error occurred while handling {EventName} for OrderId: {OrderId}", nameof(StockReservationResultEvent), @event.Data.OrderId);
+            _logger.Error(ex, "[ERROR] An error occurred while handling {EventName} for OrderId: {OrderId}", nameof(StockReservationResultEvent), @event.Data.OrderId);
             throw;
         }
     }

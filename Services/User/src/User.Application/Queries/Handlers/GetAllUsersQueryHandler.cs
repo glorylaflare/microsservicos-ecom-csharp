@@ -21,12 +21,12 @@ public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, Result<
     {
         try
         {
-            _logger.Information("Handling {EventName}", nameof(GetAllUsersQuery));
+            _logger.Information("[INFO] Handling {EventName}", nameof(GetAllUsersQuery));
 
             var users = await _userService.GetAllAsync();
             if (users is null || !users.Any())
             {
-                _logger.Warning("No users found in the repository");
+                _logger.Warning("[WARN] No users found in the repository");
                 return Result.Fail<IEnumerable<GetUserResponse>>("No users found.");
             }
 
@@ -39,12 +39,12 @@ public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, Result<
                 user.UpdatedAt
             ));
 
-            _logger.Information("Successfully fetched and mapped {UserCount} users", response.Count());
+            _logger.Information("[INFO] Successfully fetched and mapped {UserCount} users", response.Count());
             return Result.Ok(response);
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "Error occurred while fetching all users");
+            _logger.Error(ex, "[ERROR] Error occurred while fetching all users");
             return Result.Fail<IEnumerable<GetUserResponse>>("An error occurred while processing your request.");
         }
     }

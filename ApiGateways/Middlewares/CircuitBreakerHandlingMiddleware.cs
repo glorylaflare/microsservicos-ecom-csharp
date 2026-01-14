@@ -22,7 +22,7 @@ public class CircuitBreakerHandlingMiddleware
         {
             context.Response.StatusCode = 503;
             await context.Response.WriteAsync("Service is temporarily unavailable. Please try again later.");
-            Log.Warning("A request was blocked due to an open circuit breaker.");
+            Log.Warning("[WARN] A request was blocked due to an open circuit breaker.");
         }
     }
 }

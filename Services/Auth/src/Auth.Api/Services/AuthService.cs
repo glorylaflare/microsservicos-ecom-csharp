@@ -25,7 +25,7 @@ namespace Auth.Api.Services
 
         public async Task<AccessTokenResponse> GetTokenAsync(string email, string password)
         {
-            _logger.Information("Authenticating user with email: {Email}", email);
+            _logger.Information("[INFO] Authenticating user with email: {Email}", email);
 
             return await _authClient.GetTokenAsync(new ResourceOwnerTokenRequest
             {

@@ -19,12 +19,12 @@ public class StockRejectedCommandHandler : IRequestHandler<StockRejectedCommand,
     {
         try
         {
-            _logger.Information("Handling {CommandName} for OrderId {OrderId}, Reason: {Reason}", nameof(StockRejectedCommand), request.OrderId, request.Reason);
+            _logger.Information("[INFO] Handling {CommandName} for OrderId {OrderId}, Reason: {Reason}", nameof(StockRejectedCommand), request.OrderId, request.Reason);
 
             var order = await _orderRepository.GetByIdAsync(request.OrderId);
             if (order is null)
             {
-                _logger.Warning("Order with ID {OrderId} not found", request.OrderId);
+                _logger.Warning("[WARN] Order with ID {OrderId} not found", request.OrderId);
                 return Unit.Value;
             }
 
@@ -33,13 +33,13 @@ public class StockRejectedCommandHandler : IRequestHandler<StockRejectedCommand,
             _orderRepository.Update(order);
             await _orderRepository.SaveChangesAsync();
 
-            _logger.Information("Order with ID {OrderId} has been cancelled due to stock rejection", order.Id);
+            _logger.Information("[INFO] Order with ID {OrderId} has been cancelled due to stock rejection", order.Id);
 
             return Unit.Value;
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "Error while handling {CommandName} for OrderId {OrderId}", nameof(StockRejectedCommand), request.OrderId);
+            _logger.Error(ex, "[ERROR] Error while handling {CommandName} for OrderId {OrderId}", nameof(StockRejectedCommand), request.OrderId);
             throw;
 
         }

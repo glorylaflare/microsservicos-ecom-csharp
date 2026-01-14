@@ -21,7 +21,7 @@ public class UpdateStockCommandHandler : IRequestHandler<UpdateStockCommand, Res
 
     public async Task<Result> Handle(UpdateStockCommand request, CancellationToken cancellationToken)
     {
-        _logger.Information("Handling {EventName} for product ID: {ProductId}", nameof(UpdateStockCommand), request.ProductId);
+        _logger.Information("[INFO] Handling {EventName} for product ID: {ProductId}", nameof(UpdateStockCommand), request.ProductId);
 
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
@@ -29,7 +29,7 @@ public class UpdateStockCommandHandler : IRequestHandler<UpdateStockCommand, Res
             var errors = validationResult.Errors
                 .Select(e => new Error(e.ErrorMessage));
 
-            _logger.Warning("Validation failed for UpdateStockCommand: {Errors}", errors);
+            _logger.Warning("[WARN] Validation failed for {EventName}: {Errors}", nameof(UpdateStockCommand), errors);
             return Result.Fail(errors);
         }
 
@@ -38,7 +38,7 @@ public class UpdateStockCommandHandler : IRequestHandler<UpdateStockCommand, Res
             var product = await _productRepository.GetByIdAsync(request.ProductId);
             if (product is null)
             {
-                _logger.Warning("Product with ID {ProductId} not found", request.ProductId);
+                _logger.Warning("[WARN] Product with ID {ProductId} not found", request.ProductId);
                 return Result.Fail($"Product with ID {request.ProductId} not found.");
             }
 
@@ -46,12 +46,12 @@ public class UpdateStockCommandHandler : IRequestHandler<UpdateStockCommand, Res
             _productRepository.Update(product);
             await _productRepository.SaveChangesAsync();
 
-            _logger.Information("Stock for product ID {ProductId} updated successfully", request.ProductId);
+            _logger.Information("[INFO] Stock for product ID {ProductId} updated successfully", request.ProductId);
             return Result.Ok();
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "Error occurred while updating stock for product ID {ProductId}", request.ProductId);
+            _logger.Error(ex, "[ERROR] Error occurred while updating stock for product ID {ProductId}", request.ProductId);
             return Result.Fail("An error occurred while updating the stock.");
         }
     }

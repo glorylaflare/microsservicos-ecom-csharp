@@ -13,7 +13,8 @@ public class OrderReadModel
 public enum StatusReadModel
 {
     Pending,
-    Processing,
+    Reserved,
+    Confirmed,
     Completed,
     Cancelled
 }

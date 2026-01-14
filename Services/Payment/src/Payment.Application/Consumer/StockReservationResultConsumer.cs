@@ -19,22 +19,19 @@ public class StockReservationResultConsumer : IIntegrationEventHandler<StockRese
 
     public async Task HandleAsync(StockReservationResultEvent @event)
     {
-        _logger.Information("Handling StockReservationResultEvent: {EventId}, OrderId: {OrderId}",
-            @event.EventId, @event.Data.OrderId);
+        _logger.Information("[INFO] Handling {EventName}: {EventId}, OrderId: {OrderId}", nameof(StockReservationResultEvent), @event.EventId, @event.Data.OrderId);
 
         try
         {
             if (@event.Data.IsReserved)
             {
-                await _mediator.Send(new CreatePaymentCommand(
-                    EventId: @event.EventId, 
-                    Items: @event.Data.Items!));
+                await _mediator.Send(new CreatePaymentCommand(@event.EventId, @event.Data.Items!));
             }
         }
         catch (Exception ex)
         {
-            _logger.Error("Error handling StockReservationResultEvent: {EventId}, OrderId: {OrderId}, Error: {Error}",
-                @event.EventId, @event.Data.OrderId, ex.Message);
+            _logger.Error("[ERROR] Error handling {EventName}: {EventId}, OrderId: {OrderId}, Error: {Error}",
+                nameof(StockReservationResultEvent), @event.EventId, @event.Data.OrderId, ex.Message);
             throw;
         }
     }
