@@ -21,8 +21,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Payment.Application\Payment.Application.csproj" />
-	  <ProjectReference Include="..\Payment.Infra\Payment.Infra.csproj" />
+		<None Update="appsettings*.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Payment.Application\Payment.Application.csproj" />
+		<ProjectReference Include="..\Payment.Infra\Payment.Infra.csproj" />
 	</ItemGroup>
 
 </Project>
