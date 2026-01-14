@@ -40,7 +40,7 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
         _publishChannel = await _connection.CreateChannelAsync();
         _consumerChannel = await _connection.CreateChannelAsync();
 
-        _logger.Information("RabbitMQ Event Bus started.");
+        _logger.Information("[INFO] RabbitMQ Event Bus started.");
     }
 
     private async Task<IChannel> EnsureConnectionAsync(IChannel? channel)
@@ -83,7 +83,7 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
             basicProperties: props,
             body: body);
 
-        _logger.Information("Event of type {EventType} published", typeof(T).Name);
+        _logger.Information("[INFO] Event of type {EventType} published", typeof(T).Name);
     }
 
     public async Task SubscribeAsync<T, TH>()
@@ -129,7 +129,7 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
 
                 if (bytes is null || bytes.Length == 0)
                 {
-                    _logger.Warning("Received empty message with DeliveryTag: {DeliveryTag}", ea.DeliveryTag);
+                    _logger.Warning("[WARN] Received empty message with DeliveryTag: {DeliveryTag}", ea.DeliveryTag);
                     await _consumerChannel.BasicNackAsync(
                         ea.DeliveryTag, multiple: false, requeue: false);
                     return;
@@ -145,12 +145,12 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
                 var handler = scope.ServiceProvider.GetRequiredService<TH>();
                 await handler.HandleAsync(@event);
 
-                _logger.Information("Event of type {EventType} processed by handler {HandlerType}", typeof(T).Name, typeof(TH).Name);
+                _logger.Information("[INFO] Event of type {EventType} processed by handler {HandlerType}", typeof(T).Name, typeof(TH).Name);
                 await _consumerChannel.BasicAckAsync(ea.DeliveryTag, multiple: false);
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Error processing event of type {EventType} with handler {HandlerType}", typeof(T).Name, typeof(TH).Name);
+                _logger.Error(ex, "[ERROR] Error processing event of type {EventType} with handler {HandlerType}", typeof(T).Name, typeof(TH).Name);
                 if (_consumerChannel is not null)
                 {
                     await _consumerChannel.BasicNackAsync(
@@ -164,7 +164,7 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
             autoAck: false, 
             consumer: consumer);
 
-        _logger.Information("Subscribed to event of type {EventType} with handler {HandlerType}", typeof(T).Name, typeof(TH).Name);
+        _logger.Information("[INFO] Subscribed to event of type {EventType} with handler {HandlerType}", typeof(T).Name, typeof(TH).Name);
     }
 
     public async ValueTask DisposeAsync()

@@ -21,12 +21,12 @@ public class GetAllProductQueryHandler : IRequestHandler<GetAllProductsQuery, Re
     {
         try
         {
-            _logger.Information("Handling {EventName}", nameof(GetAllProductsQuery));
+            _logger.Information("[INFO] Handling {EventName}", nameof(GetAllProductsQuery));
 
             var products = await _productService.GetAllAsync();
             if (products is null || !products.Any())
             {
-                _logger.Warning("No products found in the repository");
+                _logger.Warning("[WARN] No products found in the repository");
                 return Result.Fail<IEnumerable<GetProductResponse>>("No products found.");
             }
 
@@ -40,12 +40,12 @@ public class GetAllProductQueryHandler : IRequestHandler<GetAllProductsQuery, Re
                 product.UpdatedAt
             ));
 
-            _logger.Information("Successfully fetched and mapped {ProductCount} products", response.Count());
+            _logger.Information("[INFO] Successfully fetched and mapped {ProductCount} products", response.Count());
             return Result.Ok(response);
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "Error occurred while fetching all products");
+            _logger.Error(ex, "[ERROR] Error occurred while fetching all products");
             return Result.Fail<IEnumerable<GetProductResponse>>("An error occurred while processing your request.");
         }
     }

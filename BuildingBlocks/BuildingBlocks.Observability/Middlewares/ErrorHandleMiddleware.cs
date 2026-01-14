@@ -29,7 +29,7 @@ public class ErrorHandleMiddleware
 
     private Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
-        _logger.Error(exception, $"An unhandled exception has occurred while processing the request. CorrelationId={context.TraceIdentifier}");
+        _logger.Error(exception, $"[ERROR] An unhandled exception has occurred while processing the request. CorrelationId={context.TraceIdentifier}");
 
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = StatusCodes.Status500InternalServerError;

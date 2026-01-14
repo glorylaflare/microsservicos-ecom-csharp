@@ -19,7 +19,7 @@ public class OrderRequestConsumer : IIntegrationEventHandler<OrderRequestedEvent
 
     public async Task HandleAsync(OrderRequestedEvent @event)
     {
-        _logger.Information("Handling {EventName} for Order ID: {OrderId}", nameof(OrderRequestedEvent), @event.Data.OrderId);
+        _logger.Information("[INFO] Handling {EventName} for Order ID: {OrderId}", nameof(OrderRequestedEvent), @event.Data.OrderId);
 
         try
         {
@@ -27,7 +27,7 @@ public class OrderRequestConsumer : IIntegrationEventHandler<OrderRequestedEvent
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "Error while handling {EventName} for Order ID: {OrderId}", nameof(OrderRequestedEvent), @event.Data.OrderId);
+            _logger.Error(ex, "[ERROR] Error while handling {EventName} for Order ID: {OrderId}", nameof(OrderRequestedEvent), @event.Data.OrderId);
             throw;
         }   
     }

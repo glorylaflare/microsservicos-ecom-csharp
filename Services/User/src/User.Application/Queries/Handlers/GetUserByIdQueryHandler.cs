@@ -21,12 +21,12 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<
     {
         try
         {
-            _logger.Information("Handling {EventName} for UserId: {UserId}", nameof(GetUserByIdQuery), request.Id);
+            _logger.Information("[INFO] Handling {EventName} for UserId: {UserId}", nameof(GetUserByIdQuery), request.Id);
 
             var user = await _userService.GetByIdAsync(request.Id);
             if (user is null)
             {
-                _logger.Warning("User with ID {UserId} not found in the repository", request.Id);
+                _logger.Warning("[WARN] User with ID {UserId} not found in the repository", request.Id);
                 return Result.Fail<GetUserResponse>($"User with ID {request.Id} not found.");
             }
 
@@ -39,12 +39,12 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<
                 user.UpdatedAt
             );
 
-            _logger.Information("Successfully fetched and mapped user with ID {UserId}", request.Id);
+            _logger.Information("[INFO] Successfully fetched and mapped user with ID {UserId}", request.Id);
             return Result.Ok(response);
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "Error occurred while fetching user with ID {UserId}", request.Id);
+            _logger.Error(ex, "[ERROR] Error occurred while fetching user with ID {UserId}", request.Id);
             return Result.Fail<GetUserResponse>("An error occurred while processing your request.");
         }
     }

@@ -26,7 +26,7 @@ public static class MigrationDatabaseExtensions
                     {
                         Log.Warning(
                             exception,
-                            "Retry {RetryCount} of migrating database for context {DbContextName} after {TimeSpan} seconds due to error: {ErrorMessage}",
+                            "[WARN] Retry {RetryCount} of migrating database for context {DbContextName} after {TimeSpan} seconds due to error: {ErrorMessage}",
                             retryCount,
                             typeof(TContext).Name,
                             timeSpan.TotalSeconds,
@@ -38,11 +38,11 @@ public static class MigrationDatabaseExtensions
                 context.Database.MigrateAsync()
             );
 
-            Log.Information("Migrated database associated with context {DbContextName}", typeof(TContext).Name);
+            Log.Information("[INFO] Migrated database associated with context {DbContextName}", typeof(TContext).Name);
         }
         catch (Exception ex)
         {
-            Log.Fatal(ex, "An error occurred while migrating the database.");
+            Log.Fatal(ex, "[ERROR] An error occurred while migrating the database.");
             throw;
         }
 

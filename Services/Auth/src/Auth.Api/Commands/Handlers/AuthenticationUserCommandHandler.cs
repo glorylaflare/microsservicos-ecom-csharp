@@ -23,7 +23,7 @@ public class AuthenticationUserCommandHandler : IRequestHandler<AuthenticateUser
 
     public async Task<Result<TokenResponse>> Handle(AuthenticateUserCommand request, CancellationToken cancellationToken)
     {
-        _logger.Information("Handling {EventName} for email: {Email}", nameof(AuthenticateUserCommand), request.Email);
+        _logger.Information("[INFO] Handling {EventName} for email: {Email}", nameof(AuthenticateUserCommand), request.Email);
 
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
@@ -31,7 +31,7 @@ public class AuthenticationUserCommandHandler : IRequestHandler<AuthenticateUser
             var errors = validationResult.Errors
                 .Select(e => new Error(e.ErrorMessage));
 
-            _logger.Warning("Validation failed for AuthenticateUserCommand: {Errors}", errors);
+            _logger.Warning("[WARN] Validation failed for {EventName}: {Errors}", nameof(AuthenticateUserCommand), errors);
             return Result.Fail(errors);
         }
 
@@ -45,17 +45,17 @@ public class AuthenticationUserCommandHandler : IRequestHandler<AuthenticateUser
                 tokenResponse.ExpiresIn
             );
 
-            _logger.Information("User authenticated successfully with email: {Email}", request.Email);
+            _logger.Information("[INFO] User authenticated successfully with email: {Email}", request.Email);
             return Result.Ok(response);
         }
         catch (ApiException ex)
         {
-            _logger.Warning(ex, "Authentication failed for user with email: {Email} - {Message}", request.Email, ex.Message);
+            _logger.Warning(ex, "[WARN] Authentication failed for user with email: {Email} - {Message}", request.Email, ex.Message);
             return Result.Fail("Invalid email or password.");
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "Error occurred while authenticating user with email: {Email}", request.Email);
+            _logger.Error(ex, "[ERROR] Error occurred while authenticating user with email: {Email}", request.Email);
             return Result.Fail("An error occurred while authenticating the user.");
         }
     }

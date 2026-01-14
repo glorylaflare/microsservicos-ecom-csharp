@@ -21,12 +21,12 @@ public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, R
     {
         try
         {
-            _logger.Information("Handling {EventName} for Product ID {ProductId}", nameof(GetProductByIdQuery), request.Id);
+            _logger.Information("[INFO] Handling {EventName} for Product ID {ProductId}", nameof(GetProductByIdQuery), request.Id);
 
             var product = await _productService.GetByIdAsync(request.Id);
             if (product is null)
             {
-                _logger.Warning("Product with ID {ProductId} not found", request.Id);
+                _logger.Warning("[WARN] Product with ID {ProductId} not found", request.Id);
                 return Result.Fail<GetProductResponse>($"Product with ID {request.Id} not found.");
             }
 
@@ -40,12 +40,12 @@ public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, R
                 product.UpdatedAt
             );
 
-            _logger.Information("Product with ID {ProductId} retrieved successfully", request.Id);
+            _logger.Information("[INFO] Product with ID {ProductId} retrieved successfully", request.Id);
             return Result.Ok(response);
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "Error occurred while retrieving product with ID {ProductId}", request.Id);
+            _logger.Error(ex, "[ERROR] Error occurred while retrieving product with ID {ProductId}", request.Id);
             return Result.Fail<GetProductResponse>("An error occurred while processing the request.");
         }
     }

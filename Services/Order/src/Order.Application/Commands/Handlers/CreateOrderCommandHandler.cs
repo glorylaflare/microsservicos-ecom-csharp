@@ -27,7 +27,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
 
     public async Task<Result<int>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
-        _logger.Information("Handling {EventName} for {ItemsCount} items", nameof(CreateOrderCommand), request.Items.Count);
+        _logger.Information("[INFO] Handling {EventName} for {ItemsCount} items", nameof(CreateOrderCommand), request.Items.Count);
 
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
@@ -35,7 +35,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
             var errors = validationResult.Errors
                 .Select(e => new Error(e.ErrorMessage));
 
-            _logger.Warning("Validation failed for CreateOrderCommand: {Errors}", errors);
+            _logger.Warning("[WARN] Validation failed for {EventName}: {Errors}", nameof(CreateOrderCommand), errors);
             return Result.Fail(errors);
         }
 
@@ -54,12 +54,12 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
 
             await _eventBus.PublishAsync(evt);
 
-            _logger.Information("Order {OrderId} created successfully with {ItemsCount} items", order.Id, request.Items.Count);
+            _logger.Information("[INFO] Order {OrderId} created successfully with {ItemsCount} items", order.Id, request.Items.Count);
             return Result.Ok(order.Id);
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "An error occurred while creating the order for the items {Items}", request.Items);
+            _logger.Error(ex, "[ERROR] An error occurred while creating the order for the items {Items}", request.Items);
             return Result.Fail("An error occurred while creating the order");
         } 
     }

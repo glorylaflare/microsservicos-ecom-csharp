@@ -19,12 +19,12 @@ public class StockReservedCommandHandler : IRequestHandler<StockReservedCommand,
     {
         try 
         {
-            _logger.Information("Handling StockReservedCommand for OrderId: {OrderId}", request.OrderId);
+            _logger.Information("[INFO] Handling {EventName} for OrderId: {OrderId}", nameof(StockReservedCommand), request.OrderId);
 
             var order = await _orderRepository.GetByIdAsync(request.OrderId);
             if (order is null)
             {
-                _logger.Warning("Order with ID {OrderId} not found", request.OrderId);
+                _logger.Warning("[WARN] Order with ID {OrderId} not found", request.OrderId);
                 return Unit.Value;
             }
 
@@ -34,13 +34,13 @@ public class StockReservedCommandHandler : IRequestHandler<StockReservedCommand,
             _orderRepository.Update(order);
             await _orderRepository.SaveChangesAsync();
 
-            _logger.Information("Order with ID {OrderId} has been confirmed with total amount {TotalAmount}", order.Id, request.TotalAmount);
+            _logger.Information("[INFO] Order with ID {OrderId} has been confirmed with total amount {TotalAmount}", order.Id, request.TotalAmount);
 
             return Unit.Value;
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "Error handling StockReservedCommand");
+            _logger.Error(ex, "[ERROR] Error handling {EventName}", nameof(StockReservedCommand));
             throw;
         }
     }

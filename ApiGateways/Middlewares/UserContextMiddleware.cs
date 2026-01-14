@@ -19,7 +19,7 @@ public class UserContextMiddleware
             if (!string.IsNullOrEmpty(sub))
             {
                 context.Request.Headers["x-user-id"] = sub;
-                Log.Information("Added x-user-id header with value {UserId}", sub);
+                Log.Information("[INFO] Added x-user-id header with value {UserId}", sub);
             }
         }
         await _next(context);

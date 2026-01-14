@@ -25,7 +25,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
 
     public async Task<Result<int>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
-        _logger.Information("Handling {EventName} for user: {UserName}", nameof(CreateUserCommand), request.Username);
+        _logger.Information("[INFO] Handling {EventName} for user: {UserName}", nameof(CreateUserCommand), request.Username);
 
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
@@ -33,7 +33,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
             var errors = validationResult.Errors
                 .Select(e => new Error(e.ErrorMessage));
 
-            _logger.Warning("Validation failed for CreateUserCommand: {Errors}", errors);
+            _logger.Warning("[WARN] Validation failed for {EventName}: {Errors}", nameof(CreateUserCommand), errors);
             return Result.Fail(errors);
         }
 
@@ -50,17 +50,17 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
             await _userRepository.AddAsync(user);
             await _userRepository.SaveChangesAsync();
 
-            _logger.Information("User {UserName} created successfully with ID {UserId}", request.Username, user.Id);
+            _logger.Information("[INFO] User {UserName} created successfully with ID {UserId}", request.Username, user.Id);
             return Result.Ok(user.Id);
         }
         catch (ApiException ex)
         {
-            _logger.Error(ex, "Auth0 API error occurred while creating user {UserName}: {Message}", request.Username, ex.Message);
+            _logger.Error(ex, "[ERROR] Auth0 API error occurred while creating user {UserName}: {Message}", request.Username, ex.Message);
             return Result.Fail("An error occurred while creating the user in the authentication service.");
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "Error occurred while creating user {UserName}", request.Username);
+            _logger.Error(ex, "[ERROR] Error occurred while creating user {UserName}", request.Username);
             return Result.Fail("An error occurred while creating the user.");
         }
     }

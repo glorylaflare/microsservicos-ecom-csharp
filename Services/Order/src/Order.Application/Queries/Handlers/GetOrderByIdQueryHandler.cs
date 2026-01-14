@@ -21,12 +21,12 @@ public class GetOrderByIdQueryHandler : IRequestHandler<GetOrderByIdQuery, Resul
     {
         try
         {
-            _logger.Information("Handling {EventName} for Order ID: {OrderId}", nameof(GetOrderByIdQuery), request.Id);
+            _logger.Information("[INFO] Handling {EventName} for Order ID: {OrderId}", nameof(GetOrderByIdQuery), request.Id);
 
             var order = await _orderService.GetByIdAsync(request.Id);
             if (order is null)
             {
-                _logger.Warning("Order with ID: {OrderId} not found", request.Id);
+                _logger.Warning("[WARN] Order with ID: {OrderId} not found", request.Id);
                 return Result.Fail(new Error("Order not found."));
             }
 
@@ -39,12 +39,12 @@ public class GetOrderByIdQueryHandler : IRequestHandler<GetOrderByIdQuery, Resul
                 order.UpdatedAt
             );
 
-            _logger.Information("{EventName} for Order ID: {OrderId} handled successfully", nameof(GetOrderByIdQuery), request.Id);
+            _logger.Information("[INFO] {EventName} for Order ID: {OrderId} handled successfully", nameof(GetOrderByIdQuery), request.Id);
             return Result.Ok(response);
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "Error while handling {EventName} for Order ID: {OrderId}", nameof(GetOrderByIdQuery), request.Id);
+            _logger.Error(ex, "[ERROR] Error while handling {EventName} for Order ID: {OrderId}", nameof(GetOrderByIdQuery), request.Id);
             return Result.Fail("An error occurred while retrieving the order.");
         }
     }
