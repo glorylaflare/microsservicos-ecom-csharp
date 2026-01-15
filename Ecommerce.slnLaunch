@@ -28,9 +28,9 @@
         "DebugTarget": "http"
       },
       {
-        "Path": "Services\\Payment\\src\\Payment.Console\\Payment.Console.csproj",
+        "Path": "Services\\Payment\\src\\Payment.Api\\Payment.Api.csproj",
         "Action": "Start",
-        "DebugTarget": "Payment.Console"
+        "DebugTarget": "http"
       }
     ]
   }
