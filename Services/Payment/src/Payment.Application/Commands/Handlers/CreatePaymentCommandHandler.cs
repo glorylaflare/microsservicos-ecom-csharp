@@ -47,7 +47,12 @@ public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand,
                 });
             }
 
-            var paymentRequest = new PreferenceRequest{ Items = paymentItems };
+            var paymentRequest = new PreferenceRequest
+            { 
+                Items = paymentItems,
+                NotificationUrl = _configuration["MercadoPago:NotificationUrl"],
+                ExternalReference = request.EventId.ToString()
+            };
 
             _logger.Information("[INFO] Preference request created with {ItemCount} items", paymentItems.Count);
 

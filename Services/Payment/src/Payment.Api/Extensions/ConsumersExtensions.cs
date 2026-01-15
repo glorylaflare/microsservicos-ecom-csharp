@@ -1,7 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Payment.Application.Consumer;
+﻿using Payment.Application.Consumer;
 
-namespace Payment.Console.Extensions;
+namespace Payment.Api.Extensions;
 
 public static class ConsumersExtensions
 {

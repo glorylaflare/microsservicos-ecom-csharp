@@ -1,8 +1,7 @@
 ﻿using FluentValidation;
-using Microsoft.Extensions.DependencyInjection;
 using Payment.Application.Commands;
 
-namespace Payment.Console.Extensions;
+namespace Payment.Api.Extensions;
 
 public static class ValidatorExtensions
 {
