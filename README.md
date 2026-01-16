@@ -12,6 +12,7 @@
 - Uso de uma CPM (Central Package Management)
 - Uso do conceito de Read/Write context do CQRS pattern
 - Endpoint de /health no Gateway para monitoramento e saúde dos serviços
+- Payment usando Webhook para simular notificação de pagamento
 
 
 -----------------------
@@ -24,4 +25,3 @@
 4. Melhorar o conceito de CQRS aplicado no projeto, evitando que consumers tenham regras de negócios || Colocar as regras de negócio para os handlers via MediatR
 5. Adicionar endpoint no Gateway (API Composition)
 6. Aprimorar o uso do Saga Pattern Choreography
-7. Payment funciona como um Worker
