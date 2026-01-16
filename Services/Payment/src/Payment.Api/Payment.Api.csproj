@@ -22,7 +22,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\..\BuildingBlocks\BuildingBlocks.Observability\BuildingBlocks.Observability.csproj" />
-		<ProjectReference Include="..\Payment.Application\Payment.Application.csproj" />
 		<ProjectReference Include="..\Payment.Infra\Payment.Infra.csproj" />
 	</ItemGroup>
 
