@@ -13,8 +13,9 @@ public class GetOrderByIdTests
     private const int id = 1;
     private readonly GetOrderByIdQuery _request = new GetOrderByIdQuery(id);
     private readonly Mock<IOrderReadService> _mockService = new();
-    private readonly OrderReadModel _orderReadModel = new OrderReadModel { 
-        Id = 1, 
+    private readonly OrderReadModel _orderReadModel = new OrderReadModel
+    {
+        Id = 1,
         Items = It.IsAny<List<OrderItemReadModel>>(),
         TotalAmount = 150m,
         Status = StatusReadModel.Pending,
@@ -26,7 +27,7 @@ public class GetOrderByIdTests
     public async Task GetOrderByIdQuery_WhenOrderExists_ShouldReturnSuccess()
     {
         //Arrange
-        var cancellationToken = It.IsAny<CancellationToken>();  
+        var cancellationToken = It.IsAny<CancellationToken>();
         _mockService
             .Setup(s => s.GetByIdAsync(id))
             .ReturnsAsync(_orderReadModel);

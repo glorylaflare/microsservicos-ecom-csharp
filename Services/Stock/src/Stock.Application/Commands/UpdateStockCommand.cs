@@ -4,6 +4,6 @@ using MediatR;
 namespace Stock.Application.Commands;
 
 public record UpdateStockCommand(
-    int ProductId, 
+    int ProductId,
     int Quantity
 ) : IRequest<Result>;

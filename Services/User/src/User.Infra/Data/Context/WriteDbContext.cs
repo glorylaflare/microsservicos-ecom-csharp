@@ -9,8 +9,8 @@ public class WriteDbContext : DbContext
     private readonly DatabaseSettings _databaseSettings;
 
     public WriteDbContext(
-        DbContextOptions<WriteDbContext> options, 
-        IOptions<DatabaseSettings> databaseSettings) : base(options) 
+        DbContextOptions<WriteDbContext> options,
+        IOptions<DatabaseSettings> databaseSettings) : base(options)
     {
         _databaseSettings = databaseSettings.Value;
     }
@@ -19,7 +19,7 @@ public class WriteDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        if (!optionsBuilder.IsConfigured && 
+        if (!optionsBuilder.IsConfigured &&
             optionsBuilder.Options.Extensions.All(e => e.GetType().Name != "InMemoryOptionsExtension"))
         {
             optionsBuilder.UseSqlServer(
@@ -36,6 +36,6 @@ public class WriteDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder) =>
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(WriteDbContext).Assembly, MappingFilter);
 
-    private static bool MappingFilter(Type type) => 
+    private static bool MappingFilter(Type type) =>
         type.Namespace != null && type.Namespace.EndsWith("Mappings.Write", StringComparison.Ordinal);
 }

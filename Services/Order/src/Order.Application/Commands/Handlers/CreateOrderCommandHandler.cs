@@ -61,6 +61,6 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
         {
             _logger.Error(ex, "[ERROR] An error occurred while creating the order for the items {Items}", request.Items);
             return Result.Fail("An error occurred while creating the order");
-        } 
+        }
     }
 }

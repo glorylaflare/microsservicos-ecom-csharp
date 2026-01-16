@@ -5,7 +5,7 @@ namespace Stock.Application.Commands;
 
 public record CreateProductCommand(
     string Name,
-    string Description, 
-    decimal Price, 
+    string Description,
+    decimal Price,
     int StockQuantity
 ) : IRequest<Result<int>>;

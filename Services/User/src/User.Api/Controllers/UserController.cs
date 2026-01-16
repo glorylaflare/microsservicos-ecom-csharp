@@ -31,7 +31,7 @@ public class UserController : ControllerBase
     [HttpGet("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> GetUserById([Range(1, int.MaxValue)]int id)
+    public async Task<ActionResult> GetUserById([Range(1, int.MaxValue)] int id)
     {
         var result = await _mediator.Send(new GetUserByIdQuery(id));
         return result.IsFailed

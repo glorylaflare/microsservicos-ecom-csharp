@@ -20,7 +20,7 @@ public class UserReadService : IUserReadService
             .Select(u => new UserReadModel
             {
                 Id = u.Id,
-                Username = u.Username,  
+                Username = u.Username,
                 Email = u.Email,
                 Status = u.Status,
                 CreatedAt = u.CreatedAt,
@@ -49,14 +49,14 @@ public class UserReadService : IUserReadService
     public async Task<IEnumerable<UserReadModel>> GetAllAsync()
     {
         return await _users.Select(u => new UserReadModel
-            {
-                Id = u.Id,
-                Username = u.Username,
-                Email = u.Email,
-                Status = u.Status,
-                CreatedAt = u.CreatedAt,
-                UpdatedAt = u.UpdatedAt
-            })
+        {
+            Id = u.Id,
+            Username = u.Username,
+            Email = u.Email,
+            Status = u.Status,
+            CreatedAt = u.CreatedAt,
+            UpdatedAt = u.UpdatedAt
+        })
             .AsNoTracking()
             .ToListAsync();
     }

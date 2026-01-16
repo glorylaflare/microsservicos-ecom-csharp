@@ -22,8 +22,8 @@ public class GetAllUserTests
             CreatedAt = It.IsAny<DateTime>(),
             UpdatedAt = It.IsAny<DateTime?>()
         },
-        new UserReadModel 
-        { 
+        new UserReadModel
+        {
             Id = 2,
             Username = "user2",
             Email = "user2@example.com",

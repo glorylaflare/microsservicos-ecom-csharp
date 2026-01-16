@@ -29,6 +29,6 @@ public class OrderRequestConsumer : IIntegrationEventHandler<OrderRequestedEvent
         {
             _logger.Error(ex, "[ERROR] Error while handling {EventName} for Order ID: {OrderId}", nameof(OrderRequestedEvent), @event.Data.OrderId);
             throw;
-        }   
+        }
     }
 }
