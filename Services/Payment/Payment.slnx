@@ -5,5 +5,4 @@
     <Project Path="src/Payment.Domain/Payment.Domain.csproj" />
     <Project Path="src/Payment.Infra/Payment.Infra.csproj" />
   </Folder>
-  <Folder Name="/tests/" />
 </Solution>
