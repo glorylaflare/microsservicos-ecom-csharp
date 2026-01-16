@@ -7,6 +7,6 @@ namespace BuildingBlocks.Contracts.Events;
 public record OrderRequestedEvent : IntegrationEvent<OrderRequestedData>
 {
     [JsonConstructor]
-    public OrderRequestedEvent(OrderRequestedData data) 
-        : base(data) { }   
+    public OrderRequestedEvent(OrderRequestedData data)
+        : base(data) { }
 }

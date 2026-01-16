@@ -38,7 +38,7 @@ public class AuthenticationUserCommandHandler : IRequestHandler<AuthenticateUser
         try
         {
             var tokenResponse = await _authService.GetTokenAsync(request.Email, request.Password);
-            
+
             var response = new TokenResponse(
                 tokenResponse.AccessToken,
                 tokenResponse.IdToken,

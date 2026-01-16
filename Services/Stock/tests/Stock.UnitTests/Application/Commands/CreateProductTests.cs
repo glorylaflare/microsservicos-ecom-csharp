@@ -24,9 +24,9 @@ public class CreateProductTests
     {
         //Arrange
         var product = new Product(
-            _request.Name, 
-            _request.Description, 
-            _request.Price, 
+            _request.Name,
+            _request.Description,
+            _request.Price,
             _request.StockQuantity
         );
         var _cancellationToken = It.IsAny<CancellationToken>();

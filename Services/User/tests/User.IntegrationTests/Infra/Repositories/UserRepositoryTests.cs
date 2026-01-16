@@ -8,7 +8,7 @@ namespace User.IntegrationTests.Infra.Repositories;
 public class UserRepositoryTests
 {
     private readonly DatabaseFixture _fixture;
-    private Domain.Models.User _user = new (
+    private Domain.Models.User _user = new(
         "Auth0|1234567890",
         "testuser",
         "test@email.com"

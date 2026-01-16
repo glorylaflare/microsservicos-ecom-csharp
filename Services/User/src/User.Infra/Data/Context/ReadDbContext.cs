@@ -10,8 +10,8 @@ public class ReadDbContext : DbContext
     private readonly DatabaseSettings _databaseSettings;
 
     public ReadDbContext(
-        DbContextOptions<ReadDbContext> options, 
-        IOptions<DatabaseSettings> databaseSettings) : base(options) 
+        DbContextOptions<ReadDbContext> options,
+        IOptions<DatabaseSettings> databaseSettings) : base(options)
     {
         _databaseSettings = databaseSettings.Value;
     }
@@ -32,6 +32,6 @@ public class ReadDbContext : DbContext
 
     public IQueryable<UserReadModel> GetUsers() => Users.AsNoTracking();
 
-    private static bool MappingFilter(Type type) => 
+    private static bool MappingFilter(Type type) =>
         type.Namespace != null && type.Namespace.EndsWith("Mappings.Read", StringComparison.Ordinal);
 }

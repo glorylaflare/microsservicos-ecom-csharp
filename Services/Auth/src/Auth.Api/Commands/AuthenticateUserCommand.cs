@@ -5,6 +5,6 @@ using MediatR;
 namespace Auth.Api.Commands;
 
 public record AuthenticateUserCommand(
-    string Email, 
+    string Email,
     string Password
 ) : IRequest<Result<TokenResponse>>;

@@ -8,4 +8,4 @@ public record UpdateProductCommand(
     string Name,
     string Description,
     decimal Price
-) : IRequest<Result>;  
+) : IRequest<Result>;

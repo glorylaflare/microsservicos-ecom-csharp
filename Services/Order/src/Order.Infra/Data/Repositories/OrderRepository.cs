@@ -15,7 +15,7 @@ public class OrderRepository : IOrderRepository
         _context = context;
     }
 
-    public async Task<Domain.Models.Order?> GetByIdAsync(int orderId) => 
+    public async Task<Domain.Models.Order?> GetByIdAsync(int orderId) =>
         await _orders.FirstOrDefaultAsync(o => o.Id == orderId);
 
     public async Task AddAsync(Domain.Models.Order order) => await _orders.AddAsync(order);

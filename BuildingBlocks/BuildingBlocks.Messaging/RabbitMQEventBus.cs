@@ -77,7 +77,7 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
         };
 
         await _publishChannel.BasicPublishAsync(
-            exchange: exchangeName, 
+            exchange: exchangeName,
             routingKey: string.Empty,
             mandatory: false,
             basicProperties: props,
@@ -95,8 +95,8 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
         var exchangeName = typeof(T).Name;
         var queueName = $"{exchangeName}_{typeof(TH).Name}";
         await _consumerChannel.ExchangeDeclareAsync(
-            exchange: exchangeName, 
-            type: ExchangeType.Fanout, 
+            exchange: exchangeName,
+            type: ExchangeType.Fanout,
             durable: true);
 
         var args = new Dictionary<string, object>
@@ -106,15 +106,15 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
         };
 
         var queue = await _consumerChannel.QueueDeclareAsync(
-            queue: queueName, 
-            durable: true, 
-            exclusive: false, 
+            queue: queueName,
+            durable: true,
+            exclusive: false,
             autoDelete: false,
             arguments: args);
 
         await _consumerChannel.QueueBindAsync(
-            queue: queue.QueueName, 
-            exchange: exchangeName, 
+            queue: queue.QueueName,
+            exchange: exchangeName,
             routingKey: string.Empty);
 
         var consumer = new AsyncEventingBasicConsumer(_consumerChannel);
@@ -164,8 +164,8 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
         };
 
         await _consumerChannel.BasicConsumeAsync(
-            queue: queue.QueueName, 
-            autoAck: false, 
+            queue: queue.QueueName,
+            autoAck: false,
             consumer: consumer);
 
         _logger.Information("[INFO] Subscribed to event of type {EventType} with handler {HandlerType}", typeof(T).Name, typeof(TH).Name);

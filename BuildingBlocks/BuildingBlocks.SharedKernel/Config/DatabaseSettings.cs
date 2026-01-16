@@ -4,7 +4,7 @@ public class DatabaseSettings
 {
     public required string Host { get; set; }
     public int Port { get; } = 1433;
-    public required string Database { get; set; } 
+    public required string Database { get; set; }
     public bool TrustServerCertificate { get; } = true;
     public bool EnableConnectionPooling { get; } = true;
 
@@ -13,10 +13,10 @@ public class DatabaseSettings
 
     public string ToConnectionString()
     {
-        var pooling = EnableConnectionPooling ? 
-            $"Min Pool Size={MinPoolSize};Max Pool Size={MaxPoolSize};" 
+        var pooling = EnableConnectionPooling ?
+            $"Min Pool Size={MinPoolSize};Max Pool Size={MaxPoolSize};"
             : string.Empty;
-        
+
         return
             $"Server={Host},{Port};" +
             $"Database={Database};" +
@@ -25,7 +25,7 @@ public class DatabaseSettings
             "MultipleActiveResultSets=true;" +
             "Integrated Security=True;";
     }
-    
+
     public string ToConnectionStringWithoutPooling()
     {
         return

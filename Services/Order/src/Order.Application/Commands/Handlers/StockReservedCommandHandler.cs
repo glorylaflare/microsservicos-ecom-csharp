@@ -17,7 +17,7 @@ public class StockReservedCommandHandler : IRequestHandler<StockReservedCommand,
 
     public async Task<Unit> Handle(StockReservedCommand request, CancellationToken cancellationToken)
     {
-        try 
+        try
         {
             _logger.Information("[INFO] Handling {EventName} for OrderId: {OrderId}", nameof(StockReservedCommand), request.OrderId);
 

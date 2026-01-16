@@ -32,7 +32,7 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
             _logger.Warning("[WARN] Validation failed for {EventName}: {Errors}", nameof(UpdateProductCommand), errors);
             return Result.Fail(errors);
         }
-        
+
         try
         {
             var product = await _productRepository.GetByIdAsync(request.ProductId);

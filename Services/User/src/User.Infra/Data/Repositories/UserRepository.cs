@@ -17,7 +17,7 @@ public class UserRepository : IUserRepository
 
     public async Task AddAsync(Domain.Models.User user) => await _users.AddAsync(user);
 
-    public async Task<Domain.Models.User?> GetByIdAsync(int userId) => 
+    public async Task<Domain.Models.User?> GetByIdAsync(int userId) =>
         await _users.FirstOrDefaultAsync(u => u.Id == userId);
 
     public async Task<Domain.Models.User?> GetByEmailAsync(string email) =>

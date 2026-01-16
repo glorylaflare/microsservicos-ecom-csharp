@@ -17,15 +17,15 @@ public class ProductReadService : IProductReadService
     public async Task<IEnumerable<ProductReadModel>> GetAllAsync()
     {
         return await _products.Select(p => new ProductReadModel
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Description = p.Description,
-                Price = p.Price,
-                StockQuantity = p.StockQuantity,
-                CreatedAt = p.CreatedAt,
-                UpdatedAt = p.UpdatedAt
-            })
+        {
+            Id = p.Id,
+            Name = p.Name,
+            Description = p.Description,
+            Price = p.Price,
+            StockQuantity = p.StockQuantity,
+            CreatedAt = p.CreatedAt,
+            UpdatedAt = p.UpdatedAt
+        })
             .AsNoTracking()
             .ToListAsync();
     }
