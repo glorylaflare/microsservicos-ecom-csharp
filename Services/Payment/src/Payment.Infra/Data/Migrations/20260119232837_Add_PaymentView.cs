@@ -16,7 +16,10 @@ namespace Payment.Infra.Data.Migrations
                 Id, 
                 OrderId, 
                 Amount, 
-                Status
+                Status,
+                CheckoutUrl,
+                CreatedAt,
+                UpdatedAt
             FROM Payments
             ");
         }
