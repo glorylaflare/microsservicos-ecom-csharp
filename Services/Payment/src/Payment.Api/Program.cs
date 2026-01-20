@@ -1,9 +1,17 @@
+using BuildingBlocks.Infra.Extensions;
 using BuildingBlocks.Messaging.Config;
 using BuildingBlocks.Messaging.Extensions;
 using BuildingBlocks.Observability.Middlewares;
+using BuildingBlocks.SharedKernel.Config;
 using CorrelationId;
 using Payment.Api.Extensions;
 using Payment.Application.Commands;
+using Payment.Application.Interfaces;
+using Payment.Domain.Interface;
+using Payment.Infra.Data.Context.Read;
+using Payment.Infra.Data.Context.Write;
+using Payment.Infra.Data.Repositories;
+using Payment.Infra.Data.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,8 +23,15 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(CreatePaymentCommand).Assembly));
 
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<IPaymentReadService, PaymentReadService>();
 builder.Services.AddValidators();
 builder.Services.AddConsumers();
+
+builder.Services.Configure<DatabaseSettings>(
+    builder.Configuration.GetSection("DatabaseSettings"));
+builder.Services.AddDbContext<WriteDbContext>();
+builder.Services.AddDbContext<ReadDbContext>();
 
 builder.Services.Configure<RabbitMQSettings>(
     builder.Configuration.GetSection("RabbitMqSettings"));
@@ -25,6 +40,8 @@ builder.Services.AddEventBus();
 builder.Services.AddHealthChecks();
 
 var app = builder.Build();
+
+await app.AddMigrateDatabase<WriteDbContext>();
 
 app.UseMiddleware<ErrorHandleMiddleware>();
 //app.UseCorrelationId();
