@@ -19,7 +19,7 @@
 		<PackageReference Include="Polly" />
 		<PackageReference Include="Yarp.ReverseProxy" />
 		
-		<PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
+		<PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" />
 	</ItemGroup>
 
 	<ItemGroup>

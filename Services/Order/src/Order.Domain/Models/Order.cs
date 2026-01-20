@@ -36,7 +36,6 @@ public enum Status
 {
     Pending,
     Reserved,
-    Confirmed,
     Completed,
     Cancelled
 }

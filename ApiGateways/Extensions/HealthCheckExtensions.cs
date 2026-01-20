@@ -10,7 +10,8 @@ namespace ApiGateways.Extensions
                 .AddUrlGroup(new Uri("http://localhost:5001/health"), name: "Order Service")
                 .AddUrlGroup(new Uri("http://localhost:5002/health"), name: "Stock Service")
                 .AddUrlGroup(new Uri("http://localhost:5003/health"), name: "User Service")
-                .AddUrlGroup(new Uri("http://localhost:5004/health"), name: "Auth Service");
+                .AddUrlGroup(new Uri("http://localhost:5004/health"), name: "Auth Service")
+                .AddUrlGroup(new Uri("http://localhost:5005/health"), name: "Payment Service");
 
             return services;
         }
