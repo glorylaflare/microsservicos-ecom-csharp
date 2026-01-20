@@ -1,5 +1,4 @@
-﻿using Azure;
-using FluentResults;
+﻿using FluentResults;
 using MediatR;
 using Payment.Application.Interfaces;
 using Payment.Application.Responses;

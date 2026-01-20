@@ -40,6 +40,7 @@ public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand,
                 .Select(e => new Error(e.ErrorMessage));
 
             _logger.Warning("[WARN] Validation failed for {EventName}: {Errors}", nameof(CreatePaymentCommand), errors);
+            return await Task.FromResult(Unit.Value);
         }
 
         MercadoPagoConfig.AccessToken = _configuration["MercadoPago:AccessToken"];
@@ -47,6 +48,7 @@ public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand,
         if (string.IsNullOrEmpty(MercadoPagoConfig.AccessToken))
         {
             _logger.Error("[ERROR] MercadoPago Access Token is not configured.");
+            return await Task.FromResult(Unit.Value);
         }
 
         _logger.Information("[INFO] Creating payment preference for {EventId}", request.EventId);

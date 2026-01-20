@@ -7,7 +7,7 @@ namespace Payment.Infra.Data.Services;
 
 public class PaymentReadService : IPaymentReadService
 {
-    public readonly DbSet<PaymentReadModel> _payments;
+    private readonly DbSet<PaymentReadModel> _payments;
 
     public PaymentReadService(ReadDbContext context)
     {

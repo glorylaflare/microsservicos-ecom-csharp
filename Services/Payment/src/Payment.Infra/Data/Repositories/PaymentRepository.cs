@@ -6,8 +6,8 @@ namespace Payment.Infra.Data.Repositories;
 
 public class PaymentRepository : IPaymentRepository
 {
-    public readonly DbSet<Domain.Models.Payment> _payments;
-    public readonly WriteDbContext _context;
+    private readonly DbSet<Domain.Models.Payment> _payments;
+    private readonly WriteDbContext _context;
 
     public PaymentRepository(WriteDbContext context)
     {
