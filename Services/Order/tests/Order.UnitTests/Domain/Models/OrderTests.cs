@@ -40,7 +40,7 @@ namespace Order.UnitTests.Domain.Models
             // Act
             order.Confirmed();
             // Assert
-            order.Status.Should().Be(Status.Confirmed);
+            order.Status.Should().Be(Status.Reserved);
         }
 
         [Fact]

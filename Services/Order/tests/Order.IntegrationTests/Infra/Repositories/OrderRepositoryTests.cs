@@ -56,6 +56,6 @@ public class OrderRepositoryTests
         await _repository.SaveChangesAsync();
         var result = await _repository.GetByIdAsync(_order.Id);
         //Assert
-        result!.Status.Should().Be(Status.Confirmed);
+        result!.Status.Should().Be(Status.Reserved);
     }
 }

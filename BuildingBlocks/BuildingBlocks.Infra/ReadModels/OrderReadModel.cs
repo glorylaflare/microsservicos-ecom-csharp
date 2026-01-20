@@ -14,7 +14,6 @@ public enum StatusReadModel
 {
     Pending,
     Reserved,
-    Confirmed,
     Completed,
     Cancelled
 }
