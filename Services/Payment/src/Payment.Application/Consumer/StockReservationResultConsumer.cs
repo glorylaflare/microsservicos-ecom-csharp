@@ -25,7 +25,7 @@ public class StockReservationResultConsumer : IIntegrationEventHandler<StockRese
         {
             if (@event.Data.IsReserved)
             {
-                await _mediator.Send(new CreatePaymentCommand(@event.EventId, @event.Data.Items!));
+                await _mediator.Send(new CreatePaymentCommand(@event.EventId, @event.Data.OrderId, @event.Data.TotalAmount, @event.Data.Items!));
             }
         }
         catch (Exception ex)
