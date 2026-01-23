@@ -5,6 +5,7 @@ using BuildingBlocks.Messaging;
 using MediatR;
 using Serilog;
 using Stock.Application.Interfaces;
+using Stock.Domain.Exceptions;
 using Stock.Domain.Interfaces;
 
 namespace Stock.Application.Commands.Handlers;
@@ -26,23 +27,24 @@ public class OrderRequestCommandHandler : IRequestHandler<OrderRequestCommand, U
 
     public async Task<Unit> Handle(OrderRequestCommand request, CancellationToken cancellationToken)
     {
+        var totalAmount = 0m;
+        var reservedItems = new List<ProductItemDto>();
+
         try
         {
-            var totalAmount = 0m;
-            var reservedItems = new List<ProductItemDto>();
-
             await _dbTransactionManager.ExecuteResilientTransactionAsync(async () =>
             {
                 foreach (var item in request.Items)
                 {
                     var product = await _productRepository.GetByIdAsync(item.ProductId);
+
                     if (product is null)
                     {
-                        throw new InvalidOperationException("Product not found.");
+                        throw new ProductNotFoundException(item.ProductId);
                     }
                     if (product.StockQuantity < item.Quantity)
                     {
-                        throw new InvalidOperationException("Insufficient stock.");
+                        throw new InsufficientStockException(item.ProductId, item.Quantity, product.StockQuantity);
                     }
 
                     product.DecreaseStock(item.Quantity);
@@ -69,10 +71,8 @@ public class OrderRequestCommandHandler : IRequestHandler<OrderRequestCommand, U
             await _eventBus.PublishAsync(evt);
 
             _logger.Information("[INFO] {EventName} for Order ID: {OrderId} handled successfully", nameof(OrderRequestedEvent), request.OrderId);
-
-            return Unit.Value;
         }
-        catch (InvalidOperationException ex)
+        catch (DomainException ex)
         {
             _logger.Warning("[WARN] Stock reservation failed for Order ID: {OrderId} due to: {Reason}", request.OrderId, ex.Message);
 
@@ -83,12 +83,9 @@ public class OrderRequestCommandHandler : IRequestHandler<OrderRequestCommand, U
             var evt = new StockReservationResultEvent(data);
 
             await _eventBus.PublishAsync(evt);
-            throw;
         }
-        catch (Exception ex)
-        {
-            _logger.Error(ex, "[ERROR] Error while handling {EventName} for Order ID: {OrderId}", nameof(OrderRequestedEvent), request.OrderId);
-            throw;
-        }
+
+        _logger.Information("[INFO] {EventName} for Order ID: {OrderId} processing completed", nameof(OrderRequestedEvent), request.OrderId);
+        return Unit.Value;
     }
 }

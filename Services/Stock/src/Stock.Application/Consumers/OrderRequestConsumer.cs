@@ -21,14 +21,6 @@ public class OrderRequestConsumer : IIntegrationEventHandler<OrderRequestedEvent
     {
         _logger.Information("[INFO] Handling {EventName} for Order ID: {OrderId}", nameof(OrderRequestedEvent), @event.Data.OrderId);
 
-        try
-        {
-            await _mediator.Send(new OrderRequestCommand(@event.Data.OrderId, @event.Data.Items));
-        }
-        catch (Exception ex)
-        {
-            _logger.Error(ex, "[ERROR] Error while handling {EventName} for Order ID: {OrderId}", nameof(OrderRequestedEvent), @event.Data.OrderId);
-            throw;
-        }
+        await _mediator.Send(new OrderRequestCommand(@event.Data.OrderId, @event.Data.Items));
     }
 }

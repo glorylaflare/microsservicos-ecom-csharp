@@ -10,8 +10,6 @@ public static class EventBusExtensions
     {
         var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
 
-        await eventBus.StartAsync(CancellationToken.None);
-
         await eventBus.SubscribeAsync<OrderRequestedEvent, OrderRequestConsumer>();
     }
 }
