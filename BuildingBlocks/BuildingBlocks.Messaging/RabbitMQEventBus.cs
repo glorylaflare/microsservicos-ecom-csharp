@@ -81,7 +81,7 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
             basicProperties: props,
             body: body);
 
-        _logger.Information("[INFO] Event of type {EventType} published to exchange {Exchange} with MessageId {MessageId}", 
+        _logger.Information("[INFO] Event of type {EventType} published to exchange {Exchange} with MessageId {MessageId}",
             typeof(T).Name, exchangeName, props.MessageId);
     }
 
@@ -93,7 +93,7 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
         {
             _connection = await _factory.CreateConnectionAsync();
         }
-        
+
         var consumerChannel = await _connection.CreateChannelAsync();
         _consumerChannels.Add(consumerChannel);
 
@@ -160,8 +160,8 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
                 var handler = scope.ServiceProvider.GetRequiredService<TH>();
                 await handler.HandleAsync(@event);
 
-                await consumerChannel.BasicAckAsync(ea.DeliveryTag, multiple: false);
                 _logger.Information("[INFO] Event of type {EventType} processed by handler {HandlerType}", typeof(T).Name, typeof(TH).Name);
+                await consumerChannel.BasicAckAsync(ea.DeliveryTag, multiple: false);
             }
             catch (Exception ex)
             {
@@ -179,7 +179,7 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
             autoAck: false,
             consumer: consumer);
 
-        _logger.Information("[INFO] Subscribed to event of type {EventType} with handler {HandlerType} on queue {Queue} with consumerTag {ConsumerTag}", 
+        _logger.Information("[INFO] Subscribed to event of type {EventType} with handler {HandlerType} on queue {Queue} with consumerTag {ConsumerTag}",
             typeof(T).Name, typeof(TH).Name, queue.QueueName, consumerTag);
     }
 
