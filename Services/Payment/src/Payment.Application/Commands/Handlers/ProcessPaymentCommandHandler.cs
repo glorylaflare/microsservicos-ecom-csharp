@@ -32,7 +32,7 @@ public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentComman
             id: long.Parse(request.Data.Id), 
             cancellationToken: cancellationToken);
 
-        var orderId = int.Parse(paymentData.Metadata["orderId"].ToString()!); 
+        var orderId = int.Parse(paymentData.Metadata.Values.FirstOrDefault()!.ToString()!);
 
         var payment = await _paymentRepository.GetByIdAsync(orderId);
         if (payment == null)
