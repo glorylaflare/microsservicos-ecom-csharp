@@ -89,7 +89,6 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
         where T : IntegrationEventBase
         where TH : IIntegrationEventHandler<T>
     {
-        // Create a dedicated channel for this subscription
         if (_connection is null || !_connection.IsOpen)
         {
             _connection = await _factory.CreateConnectionAsync();
