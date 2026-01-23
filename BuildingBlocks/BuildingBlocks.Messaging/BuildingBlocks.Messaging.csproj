@@ -9,6 +9,7 @@
 	<ItemGroup>
 		<PackageReference Include="Serilog" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
 		<PackageReference Include="Microsoft.Extensions.Options" />
 		<PackageReference Include="RabbitMQ.Client" />
 	</ItemGroup>

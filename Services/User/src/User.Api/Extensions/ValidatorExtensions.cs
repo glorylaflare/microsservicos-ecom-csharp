@@ -1,6 +1,5 @@
-﻿using FluentValidation;
+using FluentValidation;
 using User.Application.Commands;
-
 namespace User.Api.Extensions;
 
 public static class ValidatorExtensions
@@ -9,7 +8,6 @@ public static class ValidatorExtensions
     {
         services.AddScoped<IValidator<CreateUserCommand>, CreateUserCommandValidator>();
         services.AddScoped<IValidator<DeactivateUserCommand>, DeactivateUserCommandValidator>();
-
         return services;
     }
 }

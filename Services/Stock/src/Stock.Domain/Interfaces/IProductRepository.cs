@@ -1,5 +1,4 @@
-﻿using Stock.Domain.Models;
-
+using Stock.Domain.Models;
 namespace Stock.Domain.Interfaces;
 
 public interface IProductRepository

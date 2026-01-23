@@ -1,4 +1,4 @@
-﻿namespace BuildingBlocks.Messaging;
+namespace BuildingBlocks.Messaging;
 
 public interface IEventBus
 {

@@ -1,6 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
 namespace User.Infra.Data.Mappings.Write;
 
 internal class UserMap : IEntityTypeConfiguration<Domain.Models.User>
@@ -9,7 +8,6 @@ internal class UserMap : IEntityTypeConfiguration<Domain.Models.User>
     {
         builder.ToTable("Users");
         builder.HasKey(u => u.Id);
-
         builder.Property(u => u.Username).IsRequired().HasMaxLength(20);
         builder.Property(u => u.Auth0UserId).IsRequired().HasMaxLength(255);
         builder.HasIndex(u => u.Auth0UserId).IsUnique();

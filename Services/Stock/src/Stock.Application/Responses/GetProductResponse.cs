@@ -1,4 +1,4 @@
-﻿namespace Stock.Application.Responses;
+namespace Stock.Application.Responses;
 
 public record GetProductResponse(
     int Id,

@@ -1,4 +1,4 @@
-﻿namespace BuildingBlocks.SharedKernel.Config;
+namespace BuildingBlocks.SharedKernel.Config;
 
 public class DatabaseSettings
 {
@@ -7,16 +7,13 @@ public class DatabaseSettings
     public required string Database { get; set; }
     public bool TrustServerCertificate { get; } = true;
     public bool EnableConnectionPooling { get; } = true;
-
     public int MinPoolSize { get; } = 0;
     public int MaxPoolSize { get; } = 50;
-
     public string ToConnectionString()
     {
         var pooling = EnableConnectionPooling ?
             $"Min Pool Size={MinPoolSize};Max Pool Size={MaxPoolSize};"
             : string.Empty;
-
         return
             $"Server={Host},{Port};" +
             $"Database={Database};" +
@@ -25,7 +22,6 @@ public class DatabaseSettings
             "MultipleActiveResultSets=true;" +
             "Integrated Security=True;";
     }
-
     public string ToConnectionStringWithoutPooling()
     {
         return

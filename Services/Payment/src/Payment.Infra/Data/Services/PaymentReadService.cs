@@ -1,19 +1,16 @@
-﻿using BuildingBlocks.Infra.ReadModels;
+using BuildingBlocks.Infra.ReadModels;
 using Microsoft.EntityFrameworkCore;
 using Payment.Application.Interfaces;
 using Payment.Infra.Data.Context.Read;
-
 namespace Payment.Infra.Data.Services;
 
 public class PaymentReadService : IPaymentReadService
 {
     private readonly DbSet<PaymentReadModel> _payments;
-
     public PaymentReadService(ReadDbContext context)
     {
         _payments = context.Payments;
     }
-
     public async Task<IEnumerable<PaymentReadModel>> GetAllAsync()
     {
         return await _payments.Select(p => new PaymentReadModel
@@ -29,7 +26,6 @@ public class PaymentReadService : IPaymentReadService
             .AsNoTracking()
             .ToListAsync();
     }
-
     public async Task<PaymentReadModel?> GetByIdAsync(int paymentId)
     {
         return await _payments.Where(p => p.Id == paymentId)

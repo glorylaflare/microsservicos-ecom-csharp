@@ -1,10 +1,9 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Moq;
 using Stock.Application.Commands;
 using Stock.Application.Commands.Handlers;
 using Stock.Domain.Interfaces;
 using Stock.Domain.Models;
-
 namespace Stock.UnitTests.Application.Commands;
 
 public class UpdateProductTests
@@ -15,10 +14,8 @@ public class UpdateProductTests
         "This is an updated test product",
         149.99m
     );
-
     private readonly Mock<IProductRepository> _mockRepo = new();
     private readonly Mock<FluentValidation.IValidator<UpdateProductCommand>> _mockValidator = new();
-
     [Fact]
     public async Task UpdateProduct_WithValidData_ShouldReturnSuccess()
     {
@@ -47,7 +44,6 @@ public class UpdateProductTests
         //Assert
         product.Price.Should().Be(149.99m);
     }
-
     [Fact]
     public async Task UpdateProduct_WithInvalidData_ShouldReturnValidationErrors()
     {

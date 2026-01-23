@@ -1,6 +1,5 @@
-﻿using FluentValidation;
+using FluentValidation;
 using FluentValidation.Results;
-
 namespace User.Application.Commands;
 
 public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
@@ -11,11 +10,9 @@ public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
             .NotEmpty().WithMessage("Username is required.")
             .MinimumLength(3).WithMessage("Username must be at least 3 characters long.")
             .MaximumLength(20).WithMessage("Username must not exceed 20 characters.");
-
         RuleFor(u => u.Email)
             .NotEmpty().WithMessage("Email is required.")
             .EmailAddress().WithMessage("A valid email is required.");
-
         RuleFor(u => u.Password)
             .NotEmpty().WithMessage("Password is required.")
             .MinimumLength(6).WithMessage("Password must be at least 6 characters long.")

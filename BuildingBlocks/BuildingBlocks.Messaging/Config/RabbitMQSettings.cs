@@ -1,4 +1,4 @@
-﻿namespace BuildingBlocks.Messaging.Config;
+namespace BuildingBlocks.Messaging.Config;
 
 public class RabbitMQSettings
 {

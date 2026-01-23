@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-
+using FluentValidation;
 namespace User.Application.Commands;
 
 public class DeactivateUserCommandValidator : AbstractValidator<DeactivateUserCommand>

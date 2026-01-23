@@ -1,6 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
 namespace Order.Infra.Data.Mappings.Write;
 
 public class OrderMap : IEntityTypeConfiguration<Domain.Models.Order>
@@ -9,7 +8,6 @@ public class OrderMap : IEntityTypeConfiguration<Domain.Models.Order>
     {
         builder.ToTable("Orders");
         builder.HasKey(o => o.Id);
-
         builder.OwnsMany(o => o.Items, oi =>
         {
             oi.WithOwner().HasForeignKey("OrderId");

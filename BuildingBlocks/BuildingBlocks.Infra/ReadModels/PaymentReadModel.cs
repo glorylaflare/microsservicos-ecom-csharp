@@ -1,4 +1,4 @@
-﻿namespace BuildingBlocks.Infra.ReadModels;
+namespace BuildingBlocks.Infra.ReadModels;
 
 public class PaymentReadModel
 {
@@ -10,7 +10,6 @@ public class PaymentReadModel
     public DateTime? CreatedDate { get; init; }
     public DateTime? UpdatedAt { get; init; }
 }
-
 public enum PaymentStatusReadModel
 {
     Pending,

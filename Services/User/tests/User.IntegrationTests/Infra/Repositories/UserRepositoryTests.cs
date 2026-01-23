@@ -1,7 +1,6 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using User.Infra.Data.Repositories;
 using User.IntegrationTests.Fixture;
-
 namespace User.IntegrationTests.Infra.Repositories;
 
 [Collection("Database Collection")]
@@ -14,13 +13,11 @@ public class UserRepositoryTests
         "test@email.com"
     );
     private readonly UserRepository _repository;
-
     public UserRepositoryTests(DatabaseFixture fixture)
     {
         _fixture = fixture;
         _repository = new UserRepository(_fixture._context);
     }
-
     [Fact]
     public async Task AddAsync_WhenValid_ShouldCreateUser()
     {

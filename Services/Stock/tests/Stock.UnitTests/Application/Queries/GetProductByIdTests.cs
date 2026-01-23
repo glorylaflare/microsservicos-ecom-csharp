@@ -1,11 +1,10 @@
-﻿using BuildingBlocks.Infra.ReadModels;
+using BuildingBlocks.Infra.ReadModels;
 using FluentAssertions;
 using Moq;
 using Stock.Application.Interfaces;
 using Stock.Application.Queries;
 using Stock.Application.Queries.Handlers;
 using Stock.Application.Responses;
-
 namespace Stock.UnitTests.Application.Queries;
 
 public class GetProductByIdTests
@@ -23,7 +22,6 @@ public class GetProductByIdTests
         CreatedAt = It.IsAny<DateTime>(),
         UpdatedAt = It.IsAny<DateTime?>()
     };
-
     [Fact]
     public async Task GetProductByIdQuery_WhenProductExists_ShouldReturnSuccess()
     {
@@ -32,7 +30,6 @@ public class GetProductByIdTests
         _mockService
             .Setup(s => s.GetByIdAsync(id))
             .ReturnsAsync(_productReadModel);
-
         var response = new GetProductResponse(
             _productReadModel.Id,
             _productReadModel.Name,
@@ -42,7 +39,6 @@ public class GetProductByIdTests
             _productReadModel.CreatedAt,
             _productReadModel.UpdatedAt
         );
-
         var handler = new GetProductByIdQueryHandler(_mockService.Object);
         //Act
         var result = await handler.Handle(_request, cancellationToken);
@@ -50,7 +46,6 @@ public class GetProductByIdTests
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().BeEquivalentTo(response);
     }
-
     [Fact]
     public async Task GetProductByIdQuery_WhenProductDoesNotExist_ShouldReturnFailure()
     {

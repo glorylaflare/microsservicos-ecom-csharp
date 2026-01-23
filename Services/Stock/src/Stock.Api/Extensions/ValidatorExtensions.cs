@@ -1,6 +1,5 @@
-﻿using FluentValidation;
+using FluentValidation;
 using Stock.Application.Commands;
-
 namespace Stock.Api.Extensions;
 
 public static class ValidatorExtensions
@@ -10,7 +9,6 @@ public static class ValidatorExtensions
         services.AddScoped<IValidator<CreateProductCommand>, CreateProductCommandValidator>();
         services.AddScoped<IValidator<UpdateStockCommand>, UpdateStockCommandValidator>();
         services.AddScoped<IValidator<UpdateProductCommand>, UpdateProductCommandValidator>();
-
         return services;
     }
 }

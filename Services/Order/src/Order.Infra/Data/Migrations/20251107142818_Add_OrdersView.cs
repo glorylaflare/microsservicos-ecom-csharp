@@ -1,7 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-
+using Microsoft.EntityFrameworkCore.Migrations;
 #nullable disable
-
 namespace Order.Infra.Data.Migrations
 {
     /// <inheritdoc />
@@ -12,7 +10,7 @@ namespace Order.Infra.Data.Migrations
         {
             migrationBuilder.Sql(@"
             CREATE VIEW vw_Orders AS
-            SELECT 
+            SELECT
                 Id,
                 Status,
                 TotalAmount,
@@ -20,17 +18,15 @@ namespace Order.Infra.Data.Migrations
                 UpdatedAt
             FROM Orders
             ");
-
             migrationBuilder.Sql(@"
             CREATE VIEW vw_OrderItems AS
             SELECT
-                OrderId,  
+                OrderId,
                 ProductId,
                 Quantity
             FROM OrderItem
             ");
         }
-
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {

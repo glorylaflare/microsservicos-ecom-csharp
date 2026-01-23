@@ -1,10 +1,9 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Moq;
 using Order.Application.Commands;
 using Order.Application.Commands.Handlers;
 using Order.Domain.Interfaces;
 using Order.Domain.Models;
-
 namespace Order.UnitTests.Application.Commands;
 
 public class CreateOrderTests
@@ -17,7 +16,6 @@ public class CreateOrderTests
     private readonly Mock<IOrderRepository> _mockRepo = new();
     private readonly Mock<FluentValidation.IValidator<CreateOrderCommand>> _mockValidator = new();
     private readonly Mock<BuildingBlocks.Messaging.IEventBus> _mockEventBus = new();
-
     [Fact]
     public async Task CreateOrder_WithValidItems_ShouldReturnOrderId()
     {
@@ -39,7 +37,6 @@ public class CreateOrderTests
         //Assert
         result.IsSuccess.Should().BeTrue();
     }
-
     [Fact]
     public async Task CreateOrder_WithInvalidItems_ShouldReturnValidationErrors()
     {

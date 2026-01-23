@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using Serilog;
-
 namespace BuildingBlocks.Infra.Extensions;
 
 public static class MigrationDatabaseExtensions
@@ -14,7 +13,6 @@ public static class MigrationDatabaseExtensions
         using var scope = app.ApplicationServices.CreateScope();
         var services = scope.ServiceProvider;
         var context = services.GetRequiredService<TContext>();
-
         try
         {
             var retry = Policy
@@ -33,11 +31,9 @@ public static class MigrationDatabaseExtensions
                             exception.Message);
                     }
                 );
-
             await retry.ExecuteAsync(() =>
                 context.Database.MigrateAsync()
             );
-
             Log.Information("[INFO] Migrated database associated with context {DbContextName}", typeof(TContext).Name);
         }
         catch (Exception ex)
@@ -45,7 +41,6 @@ public static class MigrationDatabaseExtensions
             Log.Fatal(ex, "[ERROR] An error occurred while migrating the database.");
             throw;
         }
-
         return app;
     }
 }

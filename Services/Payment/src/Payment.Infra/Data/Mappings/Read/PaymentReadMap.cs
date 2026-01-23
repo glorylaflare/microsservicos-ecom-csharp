@@ -1,7 +1,6 @@
-﻿using BuildingBlocks.Infra.ReadModels;
+using BuildingBlocks.Infra.ReadModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
 namespace Payment.Infra.Data.Mappings.Read;
 
 public class PaymentReadMap : IEntityTypeConfiguration<PaymentReadModel>
@@ -10,7 +9,6 @@ public class PaymentReadMap : IEntityTypeConfiguration<PaymentReadModel>
     {
         builder.ToView("vw_Payments");
         builder.HasNoKey();
-
         builder.Property(x => x.Id);
         builder.Property(x => x.OrderId);
         builder.Property(x => x.Amount);

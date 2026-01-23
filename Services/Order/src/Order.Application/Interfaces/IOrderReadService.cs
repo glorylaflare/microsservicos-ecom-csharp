@@ -1,5 +1,4 @@
-﻿using BuildingBlocks.Infra.ReadModels;
-
+using BuildingBlocks.Infra.ReadModels;
 namespace Order.Application.Interfaces;
 
 public interface IOrderReadService

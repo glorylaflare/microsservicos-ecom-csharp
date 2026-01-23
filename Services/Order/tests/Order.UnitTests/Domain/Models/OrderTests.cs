@@ -1,6 +1,5 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Order.Domain.Models;
-
 namespace Order.UnitTests.Domain.Models
 {
     public class OrderTests
@@ -10,7 +9,6 @@ namespace Order.UnitTests.Domain.Models
             new OrderItem(2, 30),
             new OrderItem(1, 44)
         };
-
         [Fact]
         public void CreateOrder_WithValidParameters_ShouldHavePendingStatus()
         {
@@ -19,7 +17,6 @@ namespace Order.UnitTests.Domain.Models
             // Assert
             order.Status.Should().Be(Status.Pending);
         }
-
         [Fact]
         public void SetTotalAmount_WithValidAmount_ShouldUpdateTotalAmount()
         {
@@ -31,7 +28,6 @@ namespace Order.UnitTests.Domain.Models
             // Assert
             order.TotalAmount.Should().Be(expectedAmount);
         }
-
         [Fact]
         public void Confirmed_WhenCalled_ShouldUpdateStatusToConfirmed()
         {
@@ -42,7 +38,6 @@ namespace Order.UnitTests.Domain.Models
             // Assert
             order.Status.Should().Be(Status.Reserved);
         }
-
         [Fact]
         public void Cancelled_WhenCalled_ShouldUpdateStatusToCancelled()
         {

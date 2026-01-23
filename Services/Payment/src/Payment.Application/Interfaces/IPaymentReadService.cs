@@ -1,5 +1,4 @@
-﻿using BuildingBlocks.Infra.ReadModels;
-
+using BuildingBlocks.Infra.ReadModels;
 namespace Payment.Application.Interfaces;
 
 public interface IPaymentReadService

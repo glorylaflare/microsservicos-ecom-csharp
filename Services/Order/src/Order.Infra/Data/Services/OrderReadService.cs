@@ -1,21 +1,18 @@
-﻿using BuildingBlocks.Infra.ReadModels;
+using BuildingBlocks.Infra.ReadModels;
 using Microsoft.EntityFrameworkCore;
 using Order.Application.Interfaces;
 using Order.Infra.Data.Context;
-
 namespace Order.Infra.Data.Services;
 
 public class OrderReadService : IOrderReadService
 {
     private readonly DbSet<OrderReadModel> _orders;
     private readonly DbSet<OrderItemReadModel> _orderItems;
-
     public OrderReadService(ReadDbContext context)
     {
         _orders = context.Orders;
         _orderItems = context.OrderItems;
     }
-
     public async Task<OrderReadModel?> GetByIdAsync(int orderId)
     {
         var result = await _orders.Where(o => o.Id == orderId)
@@ -29,9 +26,7 @@ public class OrderReadService : IOrderReadService
             })
             .AsNoTracking()
             .FirstOrDefaultAsync();
-
         if (result is null) return null;
-
         result.Items = await _orderItems.Where(oi => oi.OrderId == orderId)
             .Select(oi => new OrderItemReadModel
             {
@@ -41,10 +36,8 @@ public class OrderReadService : IOrderReadService
             })
             .AsNoTracking()
             .ToListAsync();
-
         return result;
     }
-
     public async Task<IEnumerable<OrderReadModel>> GetAllAsync()
     {
         var orders = await _orders.Select(o => new OrderReadModel
@@ -57,7 +50,6 @@ public class OrderReadService : IOrderReadService
         })
             .AsNoTracking()
             .ToListAsync();
-
         var items = await _orderItems.Select(oi => new OrderItemReadModel
         {
             OrderId = oi.OrderId,
@@ -66,13 +58,11 @@ public class OrderReadService : IOrderReadService
         })
             .AsNoTracking()
             .ToListAsync();
-
         foreach (var order in orders)
         {
             order.Items = items.Where(i => i.OrderId == order.Id)
                 .ToList();
         }
-
         return orders;
     }
 }

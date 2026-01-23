@@ -1,10 +1,9 @@
-﻿using FluentResults;
+using FluentResults;
 using FluentValidation;
 using MediatR;
 using Serilog;
 using Stock.Domain.Interfaces;
 using Stock.Domain.Models;
-
 namespace Stock.Application.Commands.Handlers;
 
 public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Result<int>>
@@ -12,28 +11,23 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
     private readonly IProductRepository _productRepository;
     private readonly IValidator<CreateProductCommand> _validator;
     private readonly ILogger _logger;
-
     public CreateProductCommandHandler(IProductRepository productRepository, IValidator<CreateProductCommand> validator)
     {
         _productRepository = productRepository;
         _validator = validator;
         _logger = Log.ForContext<CreateProductCommandHandler>();
     }
-
     public async Task<Result<int>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
         _logger.Information("[INFO] Handling {EventName} for product: {ProductName}", nameof(CreateProductCommand), request.Name);
-
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
             var errors = validationResult.Errors
                 .Select(e => new Error(e.ErrorMessage));
-
             _logger.Warning("[WARN] Validation failed for {EventName}: {Errors}", nameof(CreateProductCommand), errors);
             return Result.Fail(errors);
         }
-
         try
         {
             var product = new Product(
@@ -44,7 +38,6 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
             );
             await _productRepository.AddAsync(product);
             await _productRepository.SaveChangesAsync();
-
             _logger.Information("[INFO] Product created successfully with ID: {ProductId}", product.Id);
             return Result.Ok(product.Id);
         }

@@ -1,5 +1,4 @@
-﻿using BuildingBlocks.Infra.ReadModels;
-
+using BuildingBlocks.Infra.ReadModels;
 namespace Order.Application.Responses;
 
 public record GetOrderResponse(

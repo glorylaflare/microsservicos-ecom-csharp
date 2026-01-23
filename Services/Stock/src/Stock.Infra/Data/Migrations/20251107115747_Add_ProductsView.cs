@@ -1,7 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-
+using Microsoft.EntityFrameworkCore.Migrations;
 #nullable disable
-
 namespace Stock.Infra.Data.Migrations
 {
     /// <inheritdoc />
@@ -12,7 +10,7 @@ namespace Stock.Infra.Data.Migrations
         {
             migrationBuilder.Sql(@"
                 CREATE VIEW vw_Products AS
-                SELECT 
+                SELECT
                     Id,
                     Name,
                     Description,
@@ -20,11 +18,10 @@ namespace Stock.Infra.Data.Migrations
                     StockQuantity,
                     CreatedAt,
                     UpdatedAt
-                FROM 
+                FROM
                     Products
             ");
         }
-
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
