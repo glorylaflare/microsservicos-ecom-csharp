@@ -21,19 +21,12 @@ public class StockReservationResultConsumer : IIntegrationEventHandler<StockRese
     {
         _logger.Information("[INFO] Handling {EventName} for OrderId: {OrderId}, IsReserved: {IsReserved}", nameof(StockReservationResultEvent), @event.Data.OrderId, @event.Data.IsReserved);
 
-        try
+        if (!@event.Data.IsReserved)
         {
-            if (!@event.Data.IsReserved)
-            {
-                await _mediator.Send(new StockRejectedCommand(@event.Data.OrderId, @event.Data.Reason));
-            }
+            await _mediator.Send(new StockRejectedCommand(@event.Data.OrderId, @event.Data.Reason));
+            return;
+        }
 
-            await _mediator.Send(new StockReservedCommand(@event.Data.OrderId, @event.Data.TotalAmount));
-        }
-        catch (Exception ex)
-        {
-            _logger.Error(ex, "[ERROR] An error occurred while handling {EventName} for OrderId: {OrderId}", nameof(StockReservationResultEvent), @event.Data.OrderId);
-            throw;
-        }
+        await _mediator.Send(new StockReservedCommand(@event.Data.OrderId, @event.Data.TotalAmount));
     }
 }

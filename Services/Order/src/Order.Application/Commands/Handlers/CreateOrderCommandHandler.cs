@@ -6,6 +6,7 @@ using FluentResults;
 using FluentValidation;
 using MediatR;
 using Order.Domain.Interfaces;
+using Order.Domain.Models;
 using Serilog;
 
 namespace Order.Application.Commands.Handlers;
@@ -53,7 +54,6 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
             var evt = new OrderRequestedEvent(data);
 
             await _eventBus.PublishAsync(evt);
-
             _logger.Information("[INFO] Order {OrderId} created successfully with {ItemsCount} items", order.Id, request.Items.Count);
             return Result.Ok(order.Id);
         }
