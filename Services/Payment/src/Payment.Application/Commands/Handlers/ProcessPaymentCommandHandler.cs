@@ -29,10 +29,30 @@ public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentComman
 
         var paymentClient = new PaymentClient();
         var paymentData = await paymentClient.GetAsync(
-            id: long.Parse(request.Data.Id), 
+            id: long.Parse(request.Data.Id),
             cancellationToken: cancellationToken);
 
-        var orderId = int.Parse(paymentData.Metadata.Values.FirstOrDefault()!.ToString()!);
+        var metadataValues = paymentData?.Metadata?.Values;
+
+        if (metadataValues == null || !metadataValues.Any())
+        {
+            _logger.Error("[ERROR] Metadata not found in payment data");
+            return Result.Fail("Metadata not found in payment data");
+        }
+
+        var firstMetadata = metadataValues.First();
+
+        if (firstMetadata == null || string.IsNullOrEmpty(firstMetadata.ToString()))
+        {
+            _logger.Error("[ERROR] order_id not found in metadata");
+            return Result.Fail("order_id not found in metadata");
+        }
+
+        if (!int.TryParse(firstMetadata.ToString(), out int orderId))
+        {
+            _logger.Error("[ERROR] Invalid order_id format: {OrderId}", firstMetadata);
+            return Result.Fail("Invalid order_id format in metadata");
+        }
 
         var payment = await _paymentRepository.GetByIdAsync(orderId);
         if (payment == null)
@@ -47,6 +67,6 @@ public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentComman
         _paymentRepository.Update(payment);
         await _paymentRepository.SaveChangesAsync();
 
-        return Result.Ok(Unit.Value);      
+        return Result.Ok(Unit.Value);
     }
 }
