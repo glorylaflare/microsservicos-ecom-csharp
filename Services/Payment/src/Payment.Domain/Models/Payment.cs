@@ -22,6 +22,7 @@ public class Payment : EntityBase
     public void MarkAsPaid()
     {
         Status = PaymentStatus.Paid;
+        UpdatedAt = DateTime.UtcNow;
     }
 }
 
