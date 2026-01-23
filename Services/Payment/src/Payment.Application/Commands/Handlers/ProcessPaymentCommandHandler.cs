@@ -1,5 +1,8 @@
 ﻿using FluentResults;
 using MediatR;
+using MercadoPago.Client.Payment;
+using MercadoPago.Config;
+using Microsoft.Extensions.Configuration;
 using Payment.Domain.Interface;
 using Serilog;
 
@@ -8,11 +11,13 @@ namespace Payment.Application.Commands.Handlers;
 public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentCommand, Result<Unit>>
 {
     private readonly IPaymentRepository _paymentRepository;
+    private readonly IConfiguration _configuration;
     private readonly ILogger _logger;
 
-    public ProcessPaymentCommandHandler(IPaymentRepository paymentRepository)
+    public ProcessPaymentCommandHandler(IPaymentRepository paymentRepository, IConfiguration configuration)
     {
         _paymentRepository = paymentRepository;
+        _configuration = configuration;
         _logger = Log.ForContext<ProcessPaymentCommandHandler>();
     }
 
@@ -20,7 +25,14 @@ public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentComman
     {
         _logger.Information("[INFO] Handling {CommandName}", nameof(ProcessPaymentCommand));
 
-        var orderId = request.Data.Metadata!["orderId"]; // TODO: Verificar o motivo de não estar recebendo o metadata
+        MercadoPagoConfig.AccessToken = _configuration["MercadoPago:AccessToken"];
+
+        var paymentClient = new PaymentClient();
+        var paymentData = await paymentClient.GetAsync(
+            id: long.Parse(request.Data.Id), 
+            cancellationToken: cancellationToken);
+
+        var orderId = int.Parse(paymentData.Metadata["orderId"].ToString()!); 
 
         var payment = await _paymentRepository.GetByIdAsync(orderId);
         if (payment == null)

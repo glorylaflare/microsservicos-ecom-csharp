@@ -9,8 +9,10 @@ using MercadoPago.Config;
 using MercadoPago.Error;
 using MercadoPago.Resource.Preference;
 using Microsoft.Extensions.Configuration;
+using Payment.Application.Responses;
 using Payment.Domain.Interface;
 using Serilog;
+using System.Linq;
 
 namespace Payment.Application.Commands.Handlers;
 
@@ -40,7 +42,7 @@ public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand,
                 .Select(e => new Error(e.ErrorMessage));
 
             _logger.Warning("[WARN] Validation failed for {EventName}: {Errors}", nameof(CreatePaymentCommand), errors);
-            return await Task.FromResult(Unit.Value);
+            return Unit.Value;
         }
 
         MercadoPagoConfig.AccessToken = _configuration["MercadoPago:AccessToken"];
@@ -48,7 +50,7 @@ public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand,
         if (string.IsNullOrEmpty(MercadoPagoConfig.AccessToken))
         {
             _logger.Error("[ERROR] MercadoPago Access Token is not configured.");
-            return await Task.FromResult(Unit.Value);
+            return Unit.Value;
         }
 
         _logger.Information("[INFO] Creating payment preference for {EventId}", request.EventId);
@@ -60,7 +62,7 @@ public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand,
             if (preference.IsFailed)
             {
                 _logger.Error("[ERROR] Failed to create payment preference for {EventId}", request.EventId);
-                return await Task.FromResult(Unit.Value);
+                return Unit.Value;
             }
 
             var payment = new Domain.Models.Payment(
@@ -80,39 +82,35 @@ public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand,
             await _eventBus.PublishAsync(evt);
 
             _logger.Information("[INFO] PaymentCreatedEvent published for PaymentId: {PaymentId}", payment.Id);
-            return await Task.FromResult(Unit.Value);
         }
         catch (Exception ex)
         {
             _logger.Error(ex, "[ERROR] An unexpected error occurred while creating payment preference for {EventId}.", request.EventId);
-            return await Task.FromResult(Unit.Value);
         }
+
+        _logger.Information("[INFO] Finished processing CreatePaymentCommand for {EventId}", request.EventId);
+        return Unit.Value;
     }
 
     private async Task<Result<Preference>> CreateMercadoPagoPaymentPreference(CreatePaymentCommand request, CancellationToken cancellationToken)
     {
         try
         {
-            var paymentItems = new List<PreferenceItemRequest>();
-
-            foreach (var item in request.Items)
+            var paymentItems = request.Items.Select(item => new PreferenceItemRequest
             {
-                paymentItems.Add(new PreferenceItemRequest
-                {
-                    Title = item.Name,
-                    Description = item.Description,
-                    Quantity = item.Quantity,
-                    UnitPrice = item.UnitPrice
-                });
-            }
+                Title = item.Name,
+                Description = item.Description,
+                Quantity = item.Quantity,
+                UnitPrice = item.UnitPrice
+            }).ToList();
 
             var paymentRequest = new PreferenceRequest
             {
-                Items = paymentItems.ToList(),
+                Items = paymentItems,
                 NotificationUrl = _configuration["MercadoPago:NotificationUrl"],
                 ExternalReference = request.EventId.ToString(),
                 Expires = true,
-                Metadata = new Dictionary<string, object>       // TODO: Verificar o motivo de não estar enviando o metadata
+                Metadata = new Dictionary<string, object>   
                 {
                     { "orderId", request.OrderId }
                 }
