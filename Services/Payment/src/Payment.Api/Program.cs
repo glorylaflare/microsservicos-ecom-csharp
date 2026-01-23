@@ -1,9 +1,11 @@
 using BuildingBlocks.Infra.Extensions;
 using BuildingBlocks.Messaging.Config;
 using BuildingBlocks.Messaging.Extensions;
+using BuildingBlocks.Observability.Extensions;
 using BuildingBlocks.Observability.Middlewares;
 using BuildingBlocks.SharedKernel.Config;
 using CorrelationId;
+using CorrelationId.DependencyInjection;
 using Payment.Api.Extensions;
 using Payment.Application.Commands;
 using Payment.Application.Interfaces;
@@ -19,6 +21,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddDefaultCorrelationId();
+builder.Services.AddCustomLogging();
 
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(CreatePaymentCommand).Assembly));
@@ -44,7 +49,7 @@ var app = builder.Build();
 await app.AddMigrateDatabase<WriteDbContext>();
 
 app.UseMiddleware<ErrorHandleMiddleware>();
-//app.UseCorrelationId();
+app.UseCorrelationId();
 
 await app.ConfigureEventBus();
 
