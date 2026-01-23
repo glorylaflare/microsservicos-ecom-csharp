@@ -2,6 +2,7 @@ using Microsoft.Extensions.Http;
 using Polly;
 using Polly.Registry;
 namespace ApiGateways.Helpers;
+
 public class PolicyHttpMessageHandlerFilter : IHttpMessageHandlerBuilderFilter
 {
     private readonly IReadOnlyPolicyRegistry<string> _policyRegistry;

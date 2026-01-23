@@ -4,6 +4,7 @@ using MediatR;
 using Payment.Application.Commands;
 using Serilog;
 namespace Payment.Application.Consumer;
+
 public class StockReservationResultConsumer : IIntegrationEventHandler<StockReservationResultEvent>
 {
     private readonly ILogger _logger;

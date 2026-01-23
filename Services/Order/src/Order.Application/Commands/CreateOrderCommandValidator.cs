@@ -1,6 +1,7 @@
 using FluentValidation;
 using Serilog;
 namespace Order.Application.Commands;
+
 public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
 {
     public CreateOrderCommandValidator()

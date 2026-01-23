@@ -1,4 +1,5 @@
 namespace Order.Domain.Models;
+
 public class OrderItem
 {
     public int ProductId { get; private set; }

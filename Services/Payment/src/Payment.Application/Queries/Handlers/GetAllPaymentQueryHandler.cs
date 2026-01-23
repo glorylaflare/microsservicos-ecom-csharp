@@ -4,6 +4,7 @@ using Payment.Application.Interfaces;
 using Payment.Application.Responses;
 using Serilog;
 namespace Payment.Application.Queries.Handlers;
+
 public class GetAllPaymentQueryHandler : IRequestHandler<GetAllPaymentsQuery, Result<IEnumerable<GetPaymentResponse>>>
 {
     private readonly IPaymentReadService _paymentService;

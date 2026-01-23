@@ -1,6 +1,7 @@
 using FluentValidation;
 using FluentValidation.Results;
 namespace User.Application.Commands;
+
 public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
 {
     public CreateUserCommandValidator()

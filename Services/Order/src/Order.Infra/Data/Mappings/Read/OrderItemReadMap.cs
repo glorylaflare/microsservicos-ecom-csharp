@@ -1,6 +1,7 @@
 using BuildingBlocks.Infra.ReadModels;
 using Microsoft.EntityFrameworkCore;
 namespace Order.Infra.Data.Mappings.Read;
+
 public class OrderItemReadMap : IEntityTypeConfiguration<OrderItemReadModel>
 {
     public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<OrderItemReadModel> builder)

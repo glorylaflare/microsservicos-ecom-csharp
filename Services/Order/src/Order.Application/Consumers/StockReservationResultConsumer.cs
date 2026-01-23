@@ -4,6 +4,7 @@ using MediatR;
 using Order.Application.Commands;
 using Serilog;
 namespace Order.Application.Consumers;
+
 public class StockReservationResultConsumer : IIntegrationEventHandler<StockReservationResultEvent>
 {
     private readonly ILogger _logger;

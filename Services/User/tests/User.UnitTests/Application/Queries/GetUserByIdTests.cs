@@ -6,6 +6,7 @@ using User.Application.Queries;
 using User.Application.Queries.Handlers;
 using User.Application.Responses;
 namespace User.UnitTests.Application.Queries;
+
 public class GetUserByIdTests
 {
     private const int id = 1;

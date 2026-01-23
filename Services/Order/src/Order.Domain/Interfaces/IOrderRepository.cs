@@ -1,4 +1,5 @@
 namespace Order.Domain.Interfaces;
+
 public interface IOrderRepository
 {
     Task<Models.Order?> GetByIdAsync(int orderId);

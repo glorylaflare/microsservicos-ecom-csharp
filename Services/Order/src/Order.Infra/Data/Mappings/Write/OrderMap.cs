@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace Order.Infra.Data.Mappings.Write;
+
 public class OrderMap : IEntityTypeConfiguration<Domain.Models.Order>
 {
     public void Configure(EntityTypeBuilder<Domain.Models.Order> builder)

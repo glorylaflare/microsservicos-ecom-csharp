@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace Payment.Infra.Data.Mappings.Write;
+
 public class PaymentMap : IEntityTypeConfiguration<Domain.Models.Payment>
 {
     public void Configure(EntityTypeBuilder<Domain.Models.Payment> builder)

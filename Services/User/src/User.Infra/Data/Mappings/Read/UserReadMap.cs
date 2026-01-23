@@ -2,6 +2,7 @@ using BuildingBlocks.Infra.ReadModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace User.Infra.Data.Mappings.Read;
+
 internal class UserReadMap : IEntityTypeConfiguration<UserReadModel>
 {
     public void Configure(EntityTypeBuilder<UserReadModel> builder)

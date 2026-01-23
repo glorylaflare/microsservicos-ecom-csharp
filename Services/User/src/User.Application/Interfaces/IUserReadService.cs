@@ -1,5 +1,6 @@
 using BuildingBlocks.Infra.ReadModels;
 namespace User.Application.Interfaces;
+
 public interface IUserReadService
 {
     Task<UserReadModel?> GetByEmailAsync(string email);

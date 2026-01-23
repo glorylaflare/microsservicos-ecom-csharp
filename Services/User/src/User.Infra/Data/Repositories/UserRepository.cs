@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using User.Domain.Interfaces;
 using User.Infra.Data.Context;
 namespace User.Infra.Data.Repositories;
+
 public class UserRepository : IUserRepository
 {
     private readonly DbSet<Domain.Models.User> _users;

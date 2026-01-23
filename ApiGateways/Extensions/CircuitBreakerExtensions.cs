@@ -8,6 +8,7 @@ using Polly.Timeout;
 using Serilog;
 using System.Net;
 namespace ApiGateways.Extensions;
+
 public static class CircuitBreakerExtensions
 {
     private static AsyncRetryPolicy<HttpResponseMessage> CreateRetryPolicy()

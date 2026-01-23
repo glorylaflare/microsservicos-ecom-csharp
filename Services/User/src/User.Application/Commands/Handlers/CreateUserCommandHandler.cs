@@ -6,6 +6,7 @@ using Serilog;
 using User.Application.Interfaces;
 using User.Domain.Interfaces;
 namespace User.Application.Commands.Handlers;
+
 public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Result<int>>
 {
     private readonly IUserRepository _userRepository;

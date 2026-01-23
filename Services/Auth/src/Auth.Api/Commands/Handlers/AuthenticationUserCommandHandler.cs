@@ -6,6 +6,7 @@ using FluentValidation;
 using MediatR;
 using Serilog;
 namespace Auth.Api.Commands.Handlers;
+
 public class AuthenticationUserCommandHandler : IRequestHandler<AuthenticateUserCommand, Result<TokenResponse>>
 {
     private readonly IValidator<AuthenticateUserCommand> _validator;

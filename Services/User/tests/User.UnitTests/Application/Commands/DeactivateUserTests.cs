@@ -5,6 +5,7 @@ using User.Application.Commands;
 using User.Application.Commands.Handlers;
 using User.Domain.Interfaces;
 namespace User.UnitTests.Application.Commands;
+
 public class DeactivateUserTests
 {
     private readonly CreateUserCommand _user = new CreateUserCommand(

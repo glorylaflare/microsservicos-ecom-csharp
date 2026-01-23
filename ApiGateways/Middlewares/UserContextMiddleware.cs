@@ -1,5 +1,6 @@
 using Serilog;
 namespace ApiGateways.Middlewares;
+
 public class UserContextMiddleware
 {
     private readonly RequestDelegate _next;

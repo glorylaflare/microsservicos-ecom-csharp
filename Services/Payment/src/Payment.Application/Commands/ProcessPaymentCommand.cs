@@ -1,6 +1,7 @@
 using FluentResults;
 using MediatR;
 namespace Payment.Application.Commands;
+
 public class ProcessPaymentCommand : IRequest<Result<Unit>>
 {
     public required string Type { get; set; }

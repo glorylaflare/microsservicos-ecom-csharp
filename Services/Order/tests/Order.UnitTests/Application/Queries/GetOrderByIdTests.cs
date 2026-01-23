@@ -6,6 +6,7 @@ using Order.Application.Queries;
 using Order.Application.Queries.Handlers;
 using Order.Application.Responses;
 namespace Order.UnitTests.Application.Queries;
+
 public class GetOrderByIdTests
 {
     private const int id = 1;

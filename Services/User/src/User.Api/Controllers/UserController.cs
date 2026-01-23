@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using User.Application.Commands;
 using User.Application.Queries;
 namespace User.Api.Controllers;
+
 [Route("api/users")]
 [ApiController]
 public class UserController : ControllerBase

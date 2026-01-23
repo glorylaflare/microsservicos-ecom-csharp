@@ -3,6 +3,7 @@ using Order.Domain.Interfaces;
 using Order.Domain.Models;
 using Serilog;
 namespace Order.Application.Commands.Handlers;
+
 public class StockRejectedCommandHandler : IRequestHandler<StockRejectedCommand, Unit>
 {
     private readonly IOrderRepository _orderRepository;

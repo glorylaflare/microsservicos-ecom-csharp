@@ -4,6 +4,7 @@ using Serilog;
 using User.Application.Interfaces;
 using User.Application.Responses;
 namespace User.Application.Queries.Handlers;
+
 public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, Result<IEnumerable<GetUserResponse>>>
 {
     private readonly IUserReadService _userService;

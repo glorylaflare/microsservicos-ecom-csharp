@@ -1,6 +1,7 @@
 using Polly.CircuitBreaker;
 using Serilog;
 namespace ApiGateways.Middlewares;
+
 public class CircuitBreakerHandlingMiddleware
 {
     private readonly RequestDelegate _next;

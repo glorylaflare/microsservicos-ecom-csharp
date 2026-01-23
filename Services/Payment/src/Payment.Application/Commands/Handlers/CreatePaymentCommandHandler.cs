@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Payment.Domain.Interface;
 using Serilog;
 namespace Payment.Application.Commands.Handlers;
+
 public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand, Unit>
 {
     private readonly IConfiguration _configuration;

@@ -1,5 +1,6 @@
 using FluentAssertions;
 namespace User.UnitTests.Domain.Models;
+
 public class UserTests
 {
     private const string _auth0UserId = "auth0|123456789";

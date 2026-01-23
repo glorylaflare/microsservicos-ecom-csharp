@@ -2,6 +2,7 @@ using FluentAssertions;
 using User.Infra.Data.Repositories;
 using User.IntegrationTests.Fixture;
 namespace User.IntegrationTests.Infra.Repositories;
+
 [Collection("Database Collection")]
 public class UserRepositoryTests
 {

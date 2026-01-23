@@ -1,5 +1,6 @@
 using BuildingBlocks.SharedKernel.Common;
 namespace Order.Domain.Models;
+
 public class Order : EntityBase
 {
     public List<OrderItem> Items { get; private set; }

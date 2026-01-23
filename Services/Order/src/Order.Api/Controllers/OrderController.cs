@@ -4,6 +4,7 @@ using Order.Application.Commands;
 using Order.Application.Queries;
 using System.ComponentModel.DataAnnotations;
 namespace Order.Api.Controllers;
+
 [Route("api/orders")]
 [ApiController]
 public class OrderController : ControllerBase

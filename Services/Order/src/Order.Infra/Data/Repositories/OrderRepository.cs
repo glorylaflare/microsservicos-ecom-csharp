@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Order.Domain.Interfaces;
 using Order.Infra.Data.Context;
 namespace Order.Infra.Data.Repositories;
+
 public class OrderRepository : IOrderRepository
 {
     private readonly DbSet<Domain.Models.Order> _orders;

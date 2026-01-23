@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Serilog;
 using User.Application.Interfaces;
 namespace User.Application.Services;
+
 public class AuthService : IAuthService
 {
     private readonly AuthenticationApiClient _authClient;

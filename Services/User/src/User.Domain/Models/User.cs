@@ -1,5 +1,6 @@
 using BuildingBlocks.SharedKernel.Common;
 namespace User.Domain.Models;
+
 public class User : EntityBase
 {
     public string Auth0UserId { get; private set; }

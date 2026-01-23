@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using User.Application.Interfaces;
 using User.Infra.Data.Context;
 namespace User.Infra.Data.Services;
+
 public class UserReadService : IUserReadService
 {
     private readonly DbSet<UserReadModel> _users;

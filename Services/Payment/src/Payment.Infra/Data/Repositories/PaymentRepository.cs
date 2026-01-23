@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Payment.Domain.Interface;
 using Payment.Infra.Data.Context.Write;
 namespace Payment.Infra.Data.Repositories;
+
 public class PaymentRepository : IPaymentRepository
 {
     private readonly DbSet<Domain.Models.Payment> _payments;

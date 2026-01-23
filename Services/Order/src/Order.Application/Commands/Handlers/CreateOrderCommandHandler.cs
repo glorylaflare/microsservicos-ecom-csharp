@@ -9,6 +9,7 @@ using Order.Domain.Interfaces;
 using Order.Domain.Models;
 using Serilog;
 namespace Order.Application.Commands.Handlers;
+
 public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Result<int>>
 {
     private readonly IOrderRepository _orderRepository;

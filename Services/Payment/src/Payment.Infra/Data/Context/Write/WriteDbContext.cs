@@ -2,6 +2,7 @@ using BuildingBlocks.SharedKernel.Config;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 namespace Payment.Infra.Data.Context.Write;
+
 public class WriteDbContext : DbContext
 {
     private readonly DatabaseSettings _databaseSettings;

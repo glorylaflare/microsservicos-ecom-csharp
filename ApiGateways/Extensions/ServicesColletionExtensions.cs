@@ -2,6 +2,7 @@ using ApiGateways.Helpers;
 using Microsoft.Extensions.Http;
 using Microsoft.IdentityModel.Tokens;
 namespace ApiGateways.Extensions;
+
 public static class ServicesCollectionExtensions
 {
     public static IServiceCollection AddAuthenticationService(this IServiceCollection services, IConfiguration configuration)

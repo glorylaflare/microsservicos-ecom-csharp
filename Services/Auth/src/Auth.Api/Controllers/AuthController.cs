@@ -2,6 +2,7 @@ using Auth.Api.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 namespace Auth.Api.Controllers;
+
 [Route("api/auth")]
 [ApiController]
 public class AuthController : ControllerBase

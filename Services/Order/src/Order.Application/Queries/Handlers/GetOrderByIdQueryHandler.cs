@@ -4,6 +4,7 @@ using Order.Application.Interfaces;
 using Order.Application.Responses;
 using Serilog;
 namespace Order.Application.Queries.Handlers;
+
 public class GetOrderByIdQueryHandler : IRequestHandler<GetOrderByIdQuery, Result<GetOrderResponse>>
 {
     private readonly IOrderReadService _orderService;

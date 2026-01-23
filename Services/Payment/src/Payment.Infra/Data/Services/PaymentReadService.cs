@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Payment.Application.Interfaces;
 using Payment.Infra.Data.Context.Read;
 namespace Payment.Infra.Data.Services;
+
 public class PaymentReadService : IPaymentReadService
 {
     private readonly DbSet<PaymentReadModel> _payments;

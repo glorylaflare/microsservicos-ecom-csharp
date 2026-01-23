@@ -4,6 +4,7 @@ using MediatR;
 using Serilog;
 using User.Domain.Interfaces;
 namespace User.Application.Commands.Handlers;
+
 public class DeactivateUserCommandHandler : IRequestHandler<DeactivateUserCommand, Result>
 {
     private readonly IUserRepository _userRepository;

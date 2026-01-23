@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace User.Infra.Data.Mappings.Write;
+
 internal class UserMap : IEntityTypeConfiguration<Domain.Models.User>
 {
     public void Configure(EntityTypeBuilder<Domain.Models.User> builder)

@@ -6,6 +6,7 @@ using User.Application.Commands.Handlers;
 using User.Application.Interfaces;
 using User.Domain.Interfaces;
 namespace User.UnitTests.Application.Commands;
+
 public class CreateUserTests
 {
     private readonly CreateUserCommand _request = new CreateUserCommand(

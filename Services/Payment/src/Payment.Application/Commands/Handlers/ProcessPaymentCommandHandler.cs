@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Payment.Domain.Interface;
 using Serilog;
 namespace Payment.Application.Commands.Handlers;
+
 public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentCommand, Result<Unit>>
 {
     private readonly IPaymentRepository _paymentRepository;

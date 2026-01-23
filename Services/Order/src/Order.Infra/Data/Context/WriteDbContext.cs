@@ -2,6 +2,7 @@ using BuildingBlocks.SharedKernel.Config;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 namespace Order.Infra.Data.Context;
+
 public class WriteDbContext : DbContext
 {
     private readonly DatabaseSettings _databaseSettings;

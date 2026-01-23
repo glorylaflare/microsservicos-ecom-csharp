@@ -1,5 +1,6 @@
 using BuildingBlocks.SharedKernel.Common;
 namespace Payment.Domain.Models;
+
 public class Payment : EntityBase
 {
     public int OrderId { get; private set; }

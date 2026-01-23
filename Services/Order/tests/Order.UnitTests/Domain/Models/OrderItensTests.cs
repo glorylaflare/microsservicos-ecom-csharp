@@ -1,6 +1,7 @@
 using FluentAssertions;
 using Order.Domain.Models;
 namespace Order.UnitTests.Domain.Models;
+
 public class OrderItensTests
 {
     [Fact]

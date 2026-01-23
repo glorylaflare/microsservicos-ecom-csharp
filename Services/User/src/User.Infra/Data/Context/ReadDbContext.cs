@@ -3,6 +3,7 @@ using BuildingBlocks.SharedKernel.Config;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 namespace User.Infra.Data.Context;
+
 public class ReadDbContext : DbContext
 {
     private readonly DatabaseSettings _databaseSettings;

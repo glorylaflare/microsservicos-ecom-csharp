@@ -4,6 +4,7 @@ using Payment.Application.Commands;
 using Payment.Application.Queries;
 using System.ComponentModel.DataAnnotations;
 namespace Payment.Api.Controllers;
+
 [Route("api/payments")]
 [ApiController]
 public class PaymentController : ControllerBase

@@ -1,5 +1,6 @@
 using FluentValidation;
 namespace Payment.Application.Commands;
+
 public class ProcessPaymentCommandValidator : AbstractValidator<ProcessPaymentCommand>
 {
     public ProcessPaymentCommandValidator()

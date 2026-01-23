@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Order.Application.Interfaces;
 using Order.Infra.Data.Context;
 namespace Order.Infra.Data.Services;
+
 public class OrderReadService : IOrderReadService
 {
     private readonly DbSet<OrderReadModel> _orders;

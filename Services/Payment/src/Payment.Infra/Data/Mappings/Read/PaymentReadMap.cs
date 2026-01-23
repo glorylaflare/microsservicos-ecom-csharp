@@ -2,6 +2,7 @@ using BuildingBlocks.Infra.ReadModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace Payment.Infra.Data.Mappings.Read;
+
 public class PaymentReadMap : IEntityTypeConfiguration<PaymentReadModel>
 {
     public void Configure(EntityTypeBuilder<PaymentReadModel> builder)

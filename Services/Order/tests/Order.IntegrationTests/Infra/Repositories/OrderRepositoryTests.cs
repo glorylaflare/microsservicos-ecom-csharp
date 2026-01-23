@@ -3,6 +3,7 @@ using Order.Domain.Models;
 using Order.Infra.Data.Repositories;
 using Order.IntegrationTests.Fixture;
 namespace Order.IntegrationTests.Infra.Repositories;
+
 [Collection("Database Collection")]
 public class OrderRepositoryTests
 {

@@ -5,6 +5,7 @@ using Order.Application.Commands.Handlers;
 using Order.Domain.Interfaces;
 using Order.Domain.Models;
 namespace Order.UnitTests.Application.Commands;
+
 public class CreateOrderTests
 {
     private readonly CreateOrderCommand _request = new CreateOrderCommand(new List<OrderItem>

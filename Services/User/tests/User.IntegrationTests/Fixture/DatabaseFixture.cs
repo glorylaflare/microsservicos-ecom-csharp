@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using User.Infra.Data.Context;
 namespace User.IntegrationTests.Fixture;
+
 public class DatabaseFixture : IDisposable
 {
     public WriteDbContext _context { get; private set; }

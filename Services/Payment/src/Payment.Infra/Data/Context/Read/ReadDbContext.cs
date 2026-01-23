@@ -3,6 +3,7 @@ using BuildingBlocks.SharedKernel.Config;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 namespace Payment.Infra.Data.Context.Read;
+
 public class ReadDbContext : DbContext
 {
     private readonly DatabaseSettings _databaseSettings;
