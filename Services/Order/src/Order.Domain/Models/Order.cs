@@ -24,11 +24,13 @@ public class Order : EntityBase
     public void Confirmed()
     {
         Status = Status.Reserved;
+        UpdatedAt = DateTime.UtcNow;
     }
 
     public void Cancelled()
     {
         Status = Status.Cancelled;
+        UpdatedAt = DateTime.UtcNow;
     }
 }
 
