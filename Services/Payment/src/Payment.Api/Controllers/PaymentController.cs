@@ -32,7 +32,7 @@ public class PaymentController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById([Range(1, int.MaxValue)] int id)
-    { 
+    {
         var result = await _mediator.Send(new GetPaymentByIdQuery(id));
         return result.IsFailed
             ? NotFound(result.Errors)

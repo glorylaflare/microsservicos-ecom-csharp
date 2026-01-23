@@ -37,4 +37,3 @@ public class StockRejectedCommandHandler : IRequestHandler<StockRejectedCommand,
         return Unit.Value;
     }
 }
- 

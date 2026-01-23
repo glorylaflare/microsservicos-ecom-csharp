@@ -9,10 +9,8 @@ using MercadoPago.Config;
 using MercadoPago.Error;
 using MercadoPago.Resource.Preference;
 using Microsoft.Extensions.Configuration;
-using Payment.Application.Responses;
 using Payment.Domain.Interface;
 using Serilog;
-using System.Linq;
 
 namespace Payment.Application.Commands.Handlers;
 
@@ -66,8 +64,8 @@ public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand,
             }
 
             var payment = new Domain.Models.Payment(
-                orderId: request.OrderId, 
-                amount: request.TotalAmount, 
+                orderId: request.OrderId,
+                amount: request.TotalAmount,
                 checkoutUrl: preference.Value.InitPoint
             );
 
@@ -110,7 +108,7 @@ public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand,
                 NotificationUrl = _configuration["MercadoPago:NotificationUrl"],
                 ExternalReference = request.EventId.ToString(),
                 Expires = true,
-                Metadata = new Dictionary<string, object>   
+                Metadata = new Dictionary<string, object>
                 {
                     { "orderId", request.OrderId }
                 }
@@ -134,5 +132,5 @@ public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand,
             );
             return Result.Fail("MercadoPago API error while creating payment preference.");
         }
-    }   
+    }
 }
