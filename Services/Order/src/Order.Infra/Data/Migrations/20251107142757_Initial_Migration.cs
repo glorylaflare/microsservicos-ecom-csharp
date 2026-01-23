@@ -1,8 +1,6 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-
 #nullable disable
-
 namespace Order.Infra.Data.Migrations
 {
     /// <inheritdoc />
@@ -26,7 +24,6 @@ namespace Order.Infra.Data.Migrations
                 {
                     table.PrimaryKey("PK_Orders", x => x.Id);
                 });
-
             migrationBuilder.CreateTable(
                 name: "OrderItem",
                 columns: table => new
@@ -47,19 +44,16 @@ namespace Order.Infra.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
             migrationBuilder.CreateIndex(
                 name: "IX_OrderItem_OrderId",
                 table: "OrderItem",
                 column: "OrderId");
         }
-
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "OrderItem");
-
             migrationBuilder.DropTable(
                 name: "Orders");
         }

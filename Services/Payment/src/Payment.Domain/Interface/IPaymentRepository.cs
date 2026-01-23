@@ -1,5 +1,4 @@
-﻿namespace Payment.Domain.Interface;
-
+namespace Payment.Domain.Interface;
 public interface IPaymentRepository
 {
     Task<Models.Payment?> GetByIdAsync(int orderId);

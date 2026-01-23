@@ -1,8 +1,7 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Stock.Domain.Models;
 using Stock.Infra.Data.Repositories;
 using Stock.IntegrationTests.Fixture;
-
 namespace Stock.IntegrationTests.Infra.Repositories;
 
 [Collection("Database Collection")]
@@ -16,13 +15,11 @@ public class ProductRepositoryTests
         40
     );
     private readonly ProductRepository _repository;
-
     public ProductRepositoryTests(DatabaseFixture fixture)
     {
         _fixture = fixture;
         _repository = new ProductRepository(_fixture._context);
     }
-
     [Fact]
     public async Task AddAsync_WhenValid_ShouldCreateProduct()
     {
@@ -33,7 +30,6 @@ public class ProductRepositoryTests
         //Assert
         result.Should().NotBeNull();
     }
-
     [Fact]
     public async Task Update_WhenValid_ShouldUpdateProductStockQuantity()
     {

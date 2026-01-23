@@ -1,6 +1,5 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Stock.Domain.Models;
-
 namespace Stock.UnitTests.Domain.Models;
 
 public class ProductTests
@@ -9,7 +8,6 @@ public class ProductTests
     private const string _description = "This is a test product.";
     private const decimal _price = 99.99m;
     private const int _stockQuantity = 100;
-
     [Fact]
     public void CreateProduct_WhenValid_ShouldReturnValidParameters()
     {
@@ -18,7 +16,6 @@ public class ProductTests
         // Assert
         product.Name.Should().Be(_name);
     }
-
     [Fact]
     public void UpdateProduct_WhenValid_ShouldUpdateProperties()
     {
@@ -32,7 +29,6 @@ public class ProductTests
         // Assert
         product.Name.Should().Be(newName);
     }
-
     [Fact]
     public void DecreaseStock_WhenValid_ShouldDecreaseStockQuantity()
     {

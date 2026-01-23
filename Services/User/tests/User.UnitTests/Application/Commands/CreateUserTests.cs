@@ -1,13 +1,11 @@
-﻿using Auth0.AuthenticationApi.Models;
+using Auth0.AuthenticationApi.Models;
 using FluentAssertions;
 using Moq;
 using User.Application.Commands;
 using User.Application.Commands.Handlers;
 using User.Application.Interfaces;
 using User.Domain.Interfaces;
-
 namespace User.UnitTests.Application.Commands;
-
 public class CreateUserTests
 {
     private readonly CreateUserCommand _request = new CreateUserCommand(
@@ -15,16 +13,13 @@ public class CreateUserTests
         "testuser@example.com",
         "password123"
     );
-
     private readonly SignupUserResponse _response = new SignupUserResponse
     {
         Id = "auth0|1234567890"
     };
-
     private readonly Mock<IUserRepository> _mockRepo = new();
     private readonly Mock<FluentValidation.IValidator<CreateUserCommand>> _mockValidator = new();
     private readonly Mock<IAuthService> _mockAuth = new();
-
     [Fact]
     public async Task CreateUser_WithValidData_ShouldReturnUserId()
     {
@@ -34,7 +29,6 @@ public class CreateUserTests
             _request.Username,
             _request.Email
         );
-
         var _cancellationToken = It.IsAny<CancellationToken>();
         _mockValidator
             .Setup(v => v.ValidateAsync(_request, _cancellationToken))
@@ -48,7 +42,6 @@ public class CreateUserTests
         _mockRepo
             .Setup(r => r.SaveChangesAsync())
             .Returns(Task.CompletedTask);
-
         var handler = new CreateUserCommandHandler(_mockRepo.Object, _mockValidator.Object, _mockAuth.Object);
         //Act
         var result = await handler.Handle(_request, _cancellationToken);
@@ -56,7 +49,6 @@ public class CreateUserTests
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().Be(user.Id);
     }
-
     [Fact]
     public async Task CreateUser_WithInvalidData_ShouldReturnValidationErrors()
     {

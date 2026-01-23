@@ -1,4 +1,4 @@
-﻿namespace BuildingBlocks.Contracts;
+namespace BuildingBlocks.Contracts;
 
 public record ProductItemDto(
     int ProductId,

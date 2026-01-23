@@ -1,17 +1,14 @@
-﻿using Auth0.AuthenticationApi;
+using Auth0.AuthenticationApi;
 using Auth0.AuthenticationApi.Models;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 using User.Application.Interfaces;
-
 namespace User.Application.Services;
-
 public class AuthService : IAuthService
 {
     private readonly AuthenticationApiClient _authClient;
     private readonly ILogger _logger;
     private readonly string _clientId;
-
     public AuthService(IConfiguration config)
     {
         var domain = config["Auth0:Domain"]!;
@@ -19,11 +16,9 @@ public class AuthService : IAuthService
         _authClient = new AuthenticationApiClient(new Uri($"https://{domain}/"));
         _logger = Log.ForContext<AuthService>();
     }
-
     public async Task<SignupUserResponse> SignupUserAsync(string email, string password)
     {
         _logger.Information("Signing up user with email: {Email}", email);
-
         return await _authClient.SignupUserAsync(new SignupUserRequest
         {
             ClientId = _clientId,

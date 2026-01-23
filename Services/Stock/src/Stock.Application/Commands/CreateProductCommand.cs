@@ -1,6 +1,5 @@
-﻿using FluentResults;
+using FluentResults;
 using MediatR;
-
 namespace Stock.Application.Commands;
 
 public record CreateProductCommand(

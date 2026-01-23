@@ -1,5 +1,4 @@
-﻿using BuildingBlocks.SharedKernel.Common;
-
+using BuildingBlocks.SharedKernel.Common;
 namespace Stock.Domain.Models;
 
 public class Product : EntityBase
@@ -9,9 +8,7 @@ public class Product : EntityBase
     public decimal Price { get; private set; }
     public int StockQuantity { get; private set; }
     public byte[] Version { get; private set; } = BitConverter.GetBytes(DateTime.UtcNow.Ticks);
-
     protected Product() { }
-
     public Product(string name, string description, decimal price, int stockQuantity)
     {
         Name = name;
@@ -19,7 +16,6 @@ public class Product : EntityBase
         Price = price;
         StockQuantity = stockQuantity;
     }
-
     public void UpdateProduct(string name, string description, decimal price)
     {
         Name = name;
@@ -27,7 +23,6 @@ public class Product : EntityBase
         Price = price;
         UpdatedAt = DateTime.UtcNow;
     }
-
     public void DecreaseStock(int quantity)
     {
         StockQuantity -= quantity;

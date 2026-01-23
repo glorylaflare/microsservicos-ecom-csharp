@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 namespace ApiGateways.Extensions
 {
     public static class HealthCheckExtensions
@@ -12,10 +11,8 @@ namespace ApiGateways.Extensions
                 .AddUrlGroup(new Uri("http://localhost:5003/health"), name: "User Service")
                 .AddUrlGroup(new Uri("http://localhost:5004/health"), name: "Auth Service")
                 .AddUrlGroup(new Uri("http://localhost:5005/health"), name: "Payment Service");
-
             return services;
         }
-
         public static IApplicationBuilder UseHealthChecksService(this IApplicationBuilder app)
         {
             app.UseHealthChecks("/health", new HealthCheckOptions
@@ -23,7 +20,6 @@ namespace ApiGateways.Extensions
                 ResponseWriter = async (context, report) =>
                 {
                     context.Response.ContentType = "application/json";
-
                     var response = new
                     {
                         status = report.Status.ToString(),
@@ -38,7 +34,6 @@ namespace ApiGateways.Extensions
                     await context.Response.WriteAsJsonAsync(response);
                 }
             });
-
             return app;
         }
     }

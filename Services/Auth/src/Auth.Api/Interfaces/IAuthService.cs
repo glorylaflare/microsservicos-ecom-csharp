@@ -1,5 +1,4 @@
-﻿using Auth0.AuthenticationApi.Models;
-
+using Auth0.AuthenticationApi.Models;
 namespace Auth.Api.Interfaces
 {
     public interface IAuthService

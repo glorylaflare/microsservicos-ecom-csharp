@@ -1,5 +1,4 @@
-﻿using BuildingBlocks.Infra.ReadModels;
-
+using BuildingBlocks.Infra.ReadModels;
 namespace Stock.Application.Interfaces;
 
 public interface IProductReadService

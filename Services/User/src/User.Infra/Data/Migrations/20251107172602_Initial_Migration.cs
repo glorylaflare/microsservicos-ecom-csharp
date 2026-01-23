@@ -1,8 +1,6 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-
 #nullable disable
-
 namespace User.Infra.Data.Migrations
 {
     /// <inheritdoc />
@@ -27,20 +25,17 @@ namespace User.Infra.Data.Migrations
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
                 });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Auth0UserId",
                 table: "Users",
                 column: "Auth0UserId",
                 unique: true);
-
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Email",
                 table: "Users",
                 column: "Email",
                 unique: true);
         }
-
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {

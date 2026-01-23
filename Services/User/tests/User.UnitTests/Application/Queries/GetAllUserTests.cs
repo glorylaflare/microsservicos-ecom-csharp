@@ -1,13 +1,11 @@
-﻿using BuildingBlocks.Infra.ReadModels;
+using BuildingBlocks.Infra.ReadModels;
 using FluentAssertions;
 using Moq;
 using User.Application.Interfaces;
 using User.Application.Queries;
 using User.Application.Queries.Handlers;
 using User.Application.Responses;
-
 namespace User.UnitTests.Application.Queries;
-
 public class GetAllUserTests
 {
     private readonly GetAllUsersQuery _request = new GetAllUsersQuery();
@@ -31,7 +29,6 @@ public class GetAllUserTests
             UpdatedAt = It.IsAny<DateTime?>()
         }
     };
-
     [Fact]
     public async Task GetAllUsersQuery_WhenListExists_ShouldReturnSuccess()
     {
@@ -40,7 +37,6 @@ public class GetAllUserTests
         _mockService
             .Setup(s => s.GetAllAsync())
             .ReturnsAsync(_userReadModels);
-
         var response = _userReadModels.Select(u => new GetUserResponse(
             u.Id,
             u.Username,
@@ -49,7 +45,6 @@ public class GetAllUserTests
             u.CreatedAt,
             u.UpdatedAt
         ));
-
         var handler = new GetAllUsersQueryHandler(_mockService.Object);
         //Act
         var result = await handler.Handle(_request, cancellationToken);
@@ -57,7 +52,6 @@ public class GetAllUserTests
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().BeEquivalentTo(response);
     }
-
     [Fact]
     public async Task GetAllUsersQuery_WhenListDoesNotExist_ShouldReturnEmptyList()
     {

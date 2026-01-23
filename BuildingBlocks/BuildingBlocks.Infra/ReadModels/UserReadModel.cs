@@ -1,4 +1,4 @@
-﻿namespace BuildingBlocks.Infra.ReadModels;
+namespace BuildingBlocks.Infra.ReadModels;
 
 public class UserReadModel
 {

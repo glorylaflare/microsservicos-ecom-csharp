@@ -1,8 +1,7 @@
-﻿using Auth.Api.Interfaces;
+using Auth.Api.Interfaces;
 using Auth0.AuthenticationApi;
 using Auth0.AuthenticationApi.Models;
 using Serilog;
-
 namespace Auth.Api.Services
 {
     public class AuthService : IAuthService
@@ -12,7 +11,6 @@ namespace Auth.Api.Services
         private readonly string _clientId;
         private readonly string _clientSecret;
         private readonly string _audience;
-
         public AuthService(IConfiguration config)
         {
             var domain = config["Auth0:Domain"]!;
@@ -22,11 +20,9 @@ namespace Auth.Api.Services
             _authClient = new AuthenticationApiClient(new Uri($"https://{domain}/"));
             _logger = Log.ForContext<AuthService>();
         }
-
         public async Task<AccessTokenResponse> GetTokenAsync(string email, string password)
         {
             _logger.Information("[INFO] Authenticating user with email: {Email}", email);
-
             return await _authClient.GetTokenAsync(new ResourceOwnerTokenRequest
             {
                 ClientId = _clientId,

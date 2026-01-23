@@ -1,10 +1,9 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Moq;
 using Stock.Application.Commands;
 using Stock.Application.Commands.Handlers;
 using Stock.Domain.Interfaces;
 using Stock.Domain.Models;
-
 namespace Stock.UnitTests.Application.Commands;
 
 public class CreateProductTests
@@ -15,10 +14,8 @@ public class CreateProductTests
         99.99m,
         10
     );
-
     private readonly Mock<IProductRepository> _mockRepo = new();
     private readonly Mock<FluentValidation.IValidator<CreateProductCommand>> _mockValidator = new();
-
     [Fact]
     public async Task CreateProduct_WithValidData_ShouldReturnProductId()
     {
@@ -45,7 +42,6 @@ public class CreateProductTests
         //Assert
         result.IsSuccess.Should().BeTrue();
     }
-
     [Fact]
     public async Task CreateProduct_WithInvalidData_ShouldReturnValidationErrors()
     {

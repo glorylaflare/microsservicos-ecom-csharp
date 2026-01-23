@@ -1,7 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-
+using Microsoft.EntityFrameworkCore.Migrations;
 #nullable disable
-
 namespace User.Infra.Data.Migrations
 {
     /// <inheritdoc />
@@ -12,17 +10,16 @@ namespace User.Infra.Data.Migrations
         {
             migrationBuilder.Sql(@"
                 CREATE VIEW vw_Users AS
-                SELECT 
+                SELECT
                     Id,
                     Username,
                     Email,
                     CreatedAt,
                     UpdatedAt
-                FROM 
+                FROM
                     Users
             ");
         }
-
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {

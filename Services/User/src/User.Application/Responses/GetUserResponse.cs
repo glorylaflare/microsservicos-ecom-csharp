@@ -1,5 +1,4 @@
-﻿namespace User.Application.Responses;
-
+namespace User.Application.Responses;
 public record GetUserResponse(
     int Id,
     string Username,

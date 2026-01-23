@@ -1,5 +1,4 @@
-﻿namespace User.Domain.Models;
-
+namespace User.Domain.Models;
 public enum Status
 {
     Active,

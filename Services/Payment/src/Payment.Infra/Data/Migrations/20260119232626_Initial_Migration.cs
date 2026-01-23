@@ -1,8 +1,6 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-
 #nullable disable
-
 namespace Payment.Infra.Data.Migrations
 {
     /// <inheritdoc />
@@ -29,7 +27,6 @@ namespace Payment.Infra.Data.Migrations
                     table.PrimaryKey("PK_Payments", x => x.Id);
                 });
         }
-
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {

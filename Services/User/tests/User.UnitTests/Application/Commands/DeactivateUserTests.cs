@@ -1,12 +1,10 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using FluentValidation;
 using Moq;
 using User.Application.Commands;
 using User.Application.Commands.Handlers;
 using User.Domain.Interfaces;
-
 namespace User.UnitTests.Application.Commands;
-
 public class DeactivateUserTests
 {
     private readonly CreateUserCommand _user = new CreateUserCommand(
@@ -14,10 +12,8 @@ public class DeactivateUserTests
         "testuser@example.com",
         "password123"
     );
-
     private readonly Mock<IUserRepository> _mockRepo = new();
     private readonly Mock<IValidator<DeactivateUserCommand>> _mockValidator = new();
-
     [Fact]
     public async Task DeactivateUser_ShouldDeactivate_WhenValidRequest()
     {
@@ -27,9 +23,7 @@ public class DeactivateUserTests
                 _user.Username,
                 _user.Email
             );
-
         var _request = new DeactivateUserCommand(_user.Email);
-
         var _cancellationToken = It.IsAny<CancellationToken>();
         _mockValidator
             .Setup(v => v.ValidateAsync(_request, _cancellationToken))
@@ -42,22 +36,18 @@ public class DeactivateUserTests
             .Returns(Task.CompletedTask);
         //Act
         var handler = new DeactivateUserCommandHandler(_mockRepo.Object, _mockValidator.Object);
-
         user.Deactivate();
         var result = await handler.Handle(new DeactivateUserCommand(_user.Email), _cancellationToken);
         //Assert
         result.IsSuccess.Should().BeTrue();
         user.Status.Should().Be(User.Domain.Models.Status.Inactive);
     }
-
     [Fact]
     public async Task DeactivateUser_ShouldReturnFailure_WhenUserNotFound()
     {
         //Arrange
         var _cancellationToken = It.IsAny<CancellationToken>();
-
         var _request = new DeactivateUserCommand(_user.Email);
-
         _mockValidator
             .Setup(v => v.ValidateAsync(_request, _cancellationToken))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());

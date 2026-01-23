@@ -1,8 +1,6 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-
 #nullable disable
-
 namespace Stock.Infra.Data.Migrations
 {
     /// <inheritdoc />
@@ -30,7 +28,6 @@ namespace Stock.Infra.Data.Migrations
                     table.PrimaryKey("PK_Products", x => x.Id);
                 });
         }
-
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {

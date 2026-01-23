@@ -1,8 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
-
 namespace BuildingBlocks.Observability.Extensions;
 
 public static class CustomLoggingExtensions
@@ -18,7 +17,6 @@ public static class CustomLoggingExtensions
             [ConsoleThemeStyle.LevelError] = "\x1b[31m",
             [ConsoleThemeStyle.LevelFatal] = "\x1b[31m"
         });
-
         Log.Logger = new LoggerConfiguration()
             .Enrich.FromLogContext()
             .MinimumLevel.Information()
@@ -32,13 +30,11 @@ public static class CustomLoggingExtensions
                 rollingInterval: RollingInterval.Day,
                 outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj} {NewLine}{Exception}")
             .CreateLogger();
-
         services.AddLogging(loggingBuilder =>
         {
             loggingBuilder.ClearProviders();
             loggingBuilder.AddSerilog(Log.Logger, dispose: true);
         });
-
         return services;
     }
 }

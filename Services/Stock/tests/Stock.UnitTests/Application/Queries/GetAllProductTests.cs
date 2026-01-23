@@ -1,11 +1,10 @@
-﻿using BuildingBlocks.Infra.ReadModels;
+using BuildingBlocks.Infra.ReadModels;
 using FluentAssertions;
 using Moq;
 using Stock.Application.Interfaces;
 using Stock.Application.Queries;
 using Stock.Application.Queries.Handlers;
 using Stock.Application.Responses;
-
 namespace Stock.UnitTests.Application.Queries;
 
 public class GetAllProductTests
@@ -35,7 +34,6 @@ public class GetAllProductTests
             UpdatedAt = It.IsAny<DateTime?>()
         }
     };
-
     [Fact]
     public async Task GetAllProductsQuery_WhenListExists_ShouldReturnSuccess()
     {
@@ -44,7 +42,6 @@ public class GetAllProductTests
         _mockService
             .Setup(s => s.GetAllAsync())
             .ReturnsAsync(_productReadModels);
-
         var response = _productReadModels.Select(p => new GetProductResponse(
             p.Id,
             p.Name,
@@ -54,7 +51,6 @@ public class GetAllProductTests
             p.CreatedAt,
             p.UpdatedAt
         ));
-
         var handler = new GetAllProductQueryHandler(_mockService.Object);
         //Act
         var result = await handler.Handle(_request, cancellationToken);
@@ -62,7 +58,6 @@ public class GetAllProductTests
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().BeEquivalentTo(response);
     }
-
     [Fact]
     public async Task GetAllProductsQuery_WhenNoProductsExist_ShouldReturnFailure()
     {

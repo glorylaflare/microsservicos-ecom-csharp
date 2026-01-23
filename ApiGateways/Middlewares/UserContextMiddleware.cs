@@ -1,16 +1,12 @@
-﻿using Serilog;
-
+using Serilog;
 namespace ApiGateways.Middlewares;
-
 public class UserContextMiddleware
 {
     private readonly RequestDelegate _next;
-
     public UserContextMiddleware(RequestDelegate next)
     {
         _next = next;
     }
-
     public async Task InvokeAsync(HttpContext context)
     {
         if (context.User.Identity?.IsAuthenticated == true)
@@ -25,7 +21,6 @@ public class UserContextMiddleware
         await _next(context);
     }
 }
-
 public static class UserContextMiddlewareExtensions
 {
     public static IApplicationBuilder UseUserContextMiddleware(this IApplicationBuilder builder)

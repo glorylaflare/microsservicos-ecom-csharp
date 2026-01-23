@@ -1,4 +1,3 @@
-﻿namespace Order.IntegrationTests.Fixture;
-
+namespace Order.IntegrationTests.Fixture;
 [CollectionDefinition("Database Collection")]
 public class DatabaseCollection : ICollectionFixture<DatabaseFixture> { }

@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.Messaging.Config;
+using BuildingBlocks.Messaging.Config;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
@@ -6,7 +6,6 @@ using RabbitMQ.Client.Events;
 using Serilog;
 using System.Text;
 using System.Text.Json;
-
 namespace BuildingBlocks.Messaging;
 
 public class RabbitMQEventBus : IEventBus, IAsyncDisposable
@@ -17,7 +16,6 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
     private readonly ConnectionFactory _factory;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger _logger;
-
     public RabbitMQEventBus(IServiceScopeFactory scopeFactory, IOptions<RabbitMQSettings> settings)
     {
         _scopeFactory = scopeFactory;
@@ -32,15 +30,12 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
         };
         _logger = Log.ForContext<RabbitMQEventBus>();
     }
-
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         _connection = await _factory.CreateConnectionAsync();
         _publishChannel = await _connection.CreateChannelAsync();
-
         _logger.Information("[INFO] RabbitMQ Event Bus started.");
     }
-
     private async Task<IChannel> EnsureConnectionAsync(IChannel? channel)
     {
         if (channel is null || channel.IsClosed)
@@ -53,7 +48,6 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
         }
         return channel;
     }
-
     public async Task PublishAsync<T>(T @event) where T : IntegrationEventBase
     {
         _publishChannel = await EnsureConnectionAsync(_publishChannel);
@@ -62,7 +56,6 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
             exchange: exchangeName,
             type: ExchangeType.Fanout,
             durable: true);
-
         var body = JsonSerializer.SerializeToUtf8Bytes(@event);
         var props = new BasicProperties
         {
@@ -73,18 +66,15 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
             Type = typeof(T).FullName,
             Timestamp = new AmqpTimestamp(DateTimeOffset.UtcNow.ToUnixTimeSeconds())
         };
-
         await _publishChannel.BasicPublishAsync(
             exchange: exchangeName,
             routingKey: string.Empty,
             mandatory: false,
             basicProperties: props,
             body: body);
-
         _logger.Information("[INFO] Event of type {EventType} published to exchange {Exchange} with MessageId {MessageId}",
             typeof(T).Name, exchangeName, props.MessageId);
     }
-
     public async Task SubscribeAsync<T, TH>()
         where T : IntegrationEventBase
         where TH : IIntegrationEventHandler<T>
@@ -93,10 +83,8 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
         {
             _connection = await _factory.CreateConnectionAsync();
         }
-
         var consumerChannel = await _connection.CreateChannelAsync();
         _consumerChannels.Add(consumerChannel);
-
         var exchangeName = typeof(T).Name;
         var handlerIdentifier = typeof(TH).FullName ?? typeof(TH).Name;
         var sanitizedHandlerIdentifier = handlerIdentifier.Replace('.', '_');
@@ -105,27 +93,22 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
             exchange: exchangeName,
             type: ExchangeType.Fanout,
             durable: true);
-
         var args = new Dictionary<string, object>
         {
             ["x-dead-letter-exchange"] = $"{exchangeName}.dlx",
             ["x-dead-letter-routing-key"] = $"{queueName}.dlq"
         };
-
         var queue = await consumerChannel.QueueDeclareAsync(
             queue: queueName,
             durable: true,
             exclusive: false,
             autoDelete: false,
             arguments: args);
-
         await consumerChannel.QueueBindAsync(
             queue: queue.QueueName,
             exchange: exchangeName,
             routingKey: string.Empty);
-
         var consumer = new AsyncEventingBasicConsumer(consumerChannel);
-
         consumer.ReceivedAsync += async (sender, ea) =>
         {
             var messageId = ea.BasicProperties?.MessageId ?? "unknown";
@@ -137,7 +120,6 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
             {
                 var contentType = ea.BasicProperties.ContentType;
                 var bytes = ea.Body.ToArray();
-
                 if (bytes is null || bytes.Length == 0)
                 {
                     _logger.Warning("[WARN] Received empty message with DeliveryTag: {DeliveryTag}", ea.DeliveryTag);
@@ -145,21 +127,17 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
                         ea.DeliveryTag, multiple: false, requeue: false);
                     return;
                 }
-
                 var message = Encoding.UTF8.GetString(bytes);
                 var @event = JsonSerializer.Deserialize<T>(message, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
                 if (@event is null)
                 {
                     _logger.Warning("[WARN] Deserialized event is null for message: {Message}", message);
                     await consumerChannel.BasicNackAsync(ea.DeliveryTag, multiple: false, requeue: false);
                     return;
                 }
-
                 using var scope = _scopeFactory.CreateScope();
                 var handler = scope.ServiceProvider.GetRequiredService<TH>();
                 await handler.HandleAsync(@event);
-
                 _logger.Information("[INFO] Event of type {EventType} processed by handler {HandlerType}", typeof(T).Name, typeof(TH).Name);
                 await consumerChannel.BasicAckAsync(ea.DeliveryTag, multiple: false);
             }
@@ -173,16 +151,13 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
                 }
             }
         };
-
         var consumerTag = await consumerChannel.BasicConsumeAsync(
             queue: queue.QueueName,
             autoAck: false,
             consumer: consumer);
-
         _logger.Information("[INFO] Subscribed to event of type {EventType} with handler {HandlerType} on queue {Queue} with consumerTag {ConsumerTag}",
             typeof(T).Name, typeof(TH).Name, queue.QueueName, consumerTag);
     }
-
     public async ValueTask DisposeAsync()
     {
         foreach (var channel in _consumerChannels)
@@ -195,20 +170,16 @@ public class RabbitMQEventBus : IEventBus, IAsyncDisposable
         }
         _consumerChannels.Clear();
         _logger.Information("Consumer channels disposed.");
-
         if (_publishChannel?.IsOpen == true)
         {
             await _publishChannel.CloseAsync();
         }
-
         _publishChannel?.Dispose();
         _logger.Information("Publish channel disposed.");
-
         if (_connection?.IsOpen == true)
         {
             await _connection.CloseAsync();
         }
-
         _connection?.Dispose();
         _logger.Information("RabbitMQ Event Bus disposed.");
     }

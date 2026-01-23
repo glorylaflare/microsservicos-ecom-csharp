@@ -1,13 +1,11 @@
-﻿using BuildingBlocks.Infra.ReadModels;
+using BuildingBlocks.Infra.ReadModels;
 using FluentAssertions;
 using Moq;
 using Order.Application.Interfaces;
 using Order.Application.Queries;
 using Order.Application.Queries.Handlers;
 using Order.Application.Responses;
-
 namespace Order.UnitTests.Application.Queries;
-
 public class GetOrderByIdTests
 {
     private const int id = 1;
@@ -22,7 +20,6 @@ public class GetOrderByIdTests
         CreatedAt = It.IsAny<DateTime>(),
         UpdatedAt = It.IsAny<DateTime?>()
     };
-
     [Fact]
     public async Task GetOrderByIdQuery_WhenOrderExists_ShouldReturnSuccess()
     {
@@ -31,7 +28,6 @@ public class GetOrderByIdTests
         _mockService
             .Setup(s => s.GetByIdAsync(id))
             .ReturnsAsync(_orderReadModel);
-
         var response = new GetOrderResponse(
             _orderReadModel.Id,
             _orderReadModel.Items,
@@ -40,7 +36,6 @@ public class GetOrderByIdTests
             _orderReadModel.CreatedAt,
             _orderReadModel.UpdatedAt
         );
-
         var handler = new GetOrderByIdQueryHandler(_mockService.Object);
         //Act
         var result = await handler.Handle(_request, cancellationToken);
@@ -48,7 +43,6 @@ public class GetOrderByIdTests
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().BeEquivalentTo(response);
     }
-
     [Fact]
     public async Task GetOrderByIdQuery_WhenOrderDoesNotExist_ShouldReturnFailure()
     {

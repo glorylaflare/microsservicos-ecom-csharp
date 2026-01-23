@@ -1,7 +1,6 @@
-﻿using BuildingBlocks.Contracts.Datas;
+using BuildingBlocks.Contracts.Datas;
 using BuildingBlocks.Messaging;
 using System.Text.Json.Serialization;
-
 namespace BuildingBlocks.Contracts.Events;
 
 public record OrderRequestedEvent : IntegrationEvent<OrderRequestedData>

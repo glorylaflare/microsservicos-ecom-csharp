@@ -1,7 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-
+using Microsoft.EntityFrameworkCore.Migrations;
 #nullable disable
-
 namespace User.Infra.Data.Migrations
 {
     /// <inheritdoc />
@@ -17,7 +15,6 @@ namespace User.Infra.Data.Migrations
                 nullable: false,
                 defaultValue: 0);
         }
-
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {

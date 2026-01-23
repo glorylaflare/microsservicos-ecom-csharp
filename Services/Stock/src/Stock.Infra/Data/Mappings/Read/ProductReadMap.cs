@@ -1,6 +1,5 @@
-﻿using BuildingBlocks.Infra.ReadModels;
+using BuildingBlocks.Infra.ReadModels;
 using Microsoft.EntityFrameworkCore;
-
 namespace Stock.Infra.Data.Mappings.Read;
 
 public class ProductReadMap : IEntityTypeConfiguration<ProductReadModel>
@@ -9,7 +8,6 @@ public class ProductReadMap : IEntityTypeConfiguration<ProductReadModel>
     {
         builder.ToView("vw_Products");
         builder.HasNoKey();
-
         builder.Property(p => p.Id);
         builder.Property(p => p.Name);
         builder.Property(p => p.Description);

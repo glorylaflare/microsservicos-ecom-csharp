@@ -1,6 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
 namespace BuildingBlocks.Messaging.Extensions;
 
 public static class DependencyInjectionExtensions

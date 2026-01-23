@@ -1,4 +1,4 @@
-﻿namespace Stock.Domain.Exceptions;
+namespace Stock.Domain.Exceptions;
 
 public class DomainException : Exception
 {
