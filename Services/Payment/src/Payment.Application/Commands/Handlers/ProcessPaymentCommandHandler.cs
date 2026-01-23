@@ -26,23 +26,26 @@ public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentComman
         var paymentData = await paymentClient.GetAsync(
             id: long.Parse(request.Data.Id),
             cancellationToken: cancellationToken);
-        var metadataValues = paymentData?.Metadata?.Values;
-        if (metadataValues == null || !metadataValues.Any())
+
+        var metadata = paymentData?.Metadata;
+        if (metadata == null || !metadata.Any())
         {
             _logger.Error("[ERROR] Metadata not found in payment data");
             return Result.Fail("Metadata not found in payment data");
         }
-        var firstMetadata = metadataValues.First();
-        if (firstMetadata == null || string.IsNullOrEmpty(firstMetadata.ToString()))
+
+        if (!metadata.TryGetValue("order_id", out var orderIdValue))
         {
-            _logger.Error("[ERROR] order_id not found in metadata");
-            return Result.Fail("order_id not found in metadata");
+            _logger.Error("[ERROR] order_id not found in payment metadata");
+            return Result.Fail("order_id not found in payment metadata");
         }
-        if (!int.TryParse(firstMetadata.ToString(), out int orderId))
+
+        if (!int.TryParse(orderIdValue.ToString(), out int orderId))
         {
-            _logger.Error("[ERROR] Invalid order_id format: {OrderId}", firstMetadata);
-            return Result.Fail("Invalid order_id format in metadata");
+            _logger.Error("[ERROR] Invalid order_id format: {OrderId}", orderIdValue);
+            return Result.Fail("Invalid order_id format in payment metadata");
         }
+
         var payment = await _paymentRepository.GetByIdAsync(orderId);
         if (payment == null)
         {
