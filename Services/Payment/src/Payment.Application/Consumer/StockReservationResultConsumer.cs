@@ -21,18 +21,9 @@ public class StockReservationResultConsumer : IIntegrationEventHandler<StockRese
     {
         _logger.Information("[INFO] Handling {EventName}: {EventId}, OrderId: {OrderId}", nameof(StockReservationResultEvent), @event.EventId, @event.Data.OrderId);
 
-        try
+        if (@event.Data.IsReserved)
         {
-            if (@event.Data.IsReserved)
-            {
-                await _mediator.Send(new CreatePaymentCommand(@event.EventId, @event.Data.OrderId, @event.Data.TotalAmount, @event.Data.Items!));
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.Error("[ERROR] Error handling {EventName}: {EventId}, OrderId: {OrderId}, Error: {Error}",
-                nameof(StockReservationResultEvent), @event.EventId, @event.Data.OrderId, ex.Message);
-            throw;
+            await _mediator.Send(new CreatePaymentCommand(@event.EventId, @event.Data.OrderId, @event.Data.TotalAmount, @event.Data.Items!));
         }
     }
 }
