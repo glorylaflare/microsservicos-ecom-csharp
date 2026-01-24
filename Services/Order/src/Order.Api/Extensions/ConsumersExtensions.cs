@@ -6,11 +6,11 @@ public static class ConsumersExtensions
 {
     public static IServiceCollection AddConsumers(this IServiceCollection services)
     {
-        services.AddScoped<StockReservationResultConsumer>();
+        services.AddTransient<StockReservationResultConsumer>();
 
         #region MongoDb projections
-        services.AddScoped<OrderCreatedProjector>();
-        services.AddScoped<OrderUpdatedProjector>();
+        services.AddTransient<OrderCreatedProjector>();
+        services.AddTransient<OrderUpdatedProjector>();
         #endregion
 
         return services;
