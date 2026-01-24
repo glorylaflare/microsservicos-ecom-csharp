@@ -1,4 +1,5 @@
-using BuildingBlocks.Infra.ReadModels;
+using BuildingBlocks.Infra.MongoReadModels;
+
 namespace Order.Application.Responses;
 
 public record GetOrderResponse(

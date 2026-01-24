@@ -1,6 +1,8 @@
 using BuildingBlocks.Contracts.Events;
+using BuildingBlocks.Contracts.MongoEvents;
 using BuildingBlocks.Messaging;
 using Order.Application.Consumers;
+using Order.Infra.Projectors;
 namespace Order.Api.Extensions;
 
 public static class EventBusExtensions
@@ -9,5 +11,10 @@ public static class EventBusExtensions
     {
         var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
         await eventBus.SubscribeAsync<StockReservationResultEvent, StockReservationResultConsumer>();
+
+        #region Mongo Integration Events
+        await eventBus.SubscribeAsync<OrderCreatedEvent, OrderCreatedProjector>();
+        await eventBus.SubscribeAsync<OrderUpdatedEvent, OrderUpdatedProjector>();
+        #endregion
     }
 }

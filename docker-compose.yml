@@ -28,7 +28,20 @@ services:
       - SEQ_FIRSTRUN_ADMINPASSWORD=yourStrong(!)Password 
     networks:
       - micro_ecommerce
+    
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - micro_ecommerce
 
 networks:
   micro_ecommerce:
     driver: bridge
+
+volumes:
+  mongo_data:

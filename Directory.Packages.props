@@ -48,5 +48,8 @@
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.3" />
     <!-- Payment Gateway -->
     <PackageVersion Include="mercadopago-sdk" Version="2.11.0" />
+    <!-- MongoDB -->
+    <PackageVersion Include="MongoDB.Bson" Version="3.6.0" />
+    <PackageVersion Include="MongoDB.Driver" Version="3.6.0" />
   </ItemGroup>
 </Project>

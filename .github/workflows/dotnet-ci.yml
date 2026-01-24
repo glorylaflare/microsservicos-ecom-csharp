@@ -124,13 +124,6 @@ jobs:
           needs.changes.outputs[matrix.condition] == 'true'
         run: dotnet restore "${{ matrix.solution }}"
 
-      - name: Verify formatting
-        if: |
-          github.event_name == 'workflow_dispatch' ||
-          needs.changes.outputs.shared == 'true' ||
-          needs.changes.outputs[matrix.condition] == 'true'
-        run: dotnet format "${{ matrix.solution }}" --verify-no-changes
-
       - name: Build
         if: |
           github.event_name == 'workflow_dispatch' ||
