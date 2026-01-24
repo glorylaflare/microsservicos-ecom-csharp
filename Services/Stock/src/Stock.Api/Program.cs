@@ -1,14 +1,13 @@
+using BuildingBlocks.Infra.Extensions;
 using BuildingBlocks.Messaging.Config;
 using BuildingBlocks.Messaging.Extensions;
 using BuildingBlocks.Observability.Extensions;
 using BuildingBlocks.Observability.Middlewares;
 using BuildingBlocks.SharedKernel.Config;
-using BuildingBlocks.Infra.Extensions;
 using CorrelationId;
 using CorrelationId.DependencyInjection;
 using Stock.Api.Extensions;
 using Stock.Application.Commands;
-using Stock.Application.Consumers;
 using Stock.Application.Interfaces;
 using Stock.Domain.Interfaces;
 using Stock.Infra.Data.Context;
@@ -42,8 +41,6 @@ builder.Services.Configure<RabbitMQSettings>(
     builder.Configuration.GetSection("RabbitMqSettings"));
 builder.Services.AddEventBus();
 builder.Services.AddHealthChecks();
-
-builder.Services.AddTransient<OrderRequestConsumer>();
 
 var app = builder.Build();
 
