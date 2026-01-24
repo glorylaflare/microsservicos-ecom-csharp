@@ -1,31 +1,21 @@
-using BuildingBlocks.Infra.ReadModels;
-using BuildingBlocks.SharedKernel.Config;
-using Microsoft.EntityFrameworkCore;
+using BuildingBlocks.Infra.MongoReadModels;
 using Microsoft.Extensions.Options;
+using MongoDB.Driver;
+
 namespace Order.Infra.Data.Context;
 
-public class ReadDbContext : DbContext
+public class ReadDbContext
 {
-    private readonly DatabaseSettings _databaseSettings;
-    public ReadDbContext(
-        DbContextOptions<ReadDbContext> options,
-        IOptions<DatabaseSettings> databaseSettings) : base(options)
+    private readonly IMongoDatabase _database;
+
+    public ReadDbContext(IOptions<BuildingBlocks.SharedKernel.Config.MongoDatabaseSettings> settings)
     {
-        _databaseSettings = databaseSettings.Value;
+        var client = new MongoClient(settings.Value.ConnectionString);
+        _database = client.GetDatabase(settings.Value.DatabaseName);
     }
-    public DbSet<OrderReadModel> Orders => Set<OrderReadModel>();
-    public DbSet<OrderItemReadModel> OrderItems => Set<OrderItemReadModel>();
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        if (!optionsBuilder.IsConfigured)
-        {
-            optionsBuilder.UseSqlServer(_databaseSettings.ToConnectionStringWithoutPooling())
-                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-        }
-    }
-    protected override void OnModelCreating(ModelBuilder modelBuilder) =>
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ReadDbContext).Assembly, MappingFilter);
-    public IQueryable<OrderReadModel> GetOrders() => Orders.AsNoTracking();
-    private static bool MappingFilter(Type type) =>
-        type.Namespace != null && type.Namespace.EndsWith("Mappings.Read", StringComparison.Ordinal);
+
+    public IMongoDatabase Database => _database;
+
+    public IMongoCollection<OrderReadModel> Orders =>         
+        _database.GetCollection<OrderReadModel>("orders");
 }
