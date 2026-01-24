@@ -1,4 +1,4 @@
-using BuildingBlocks.Infra.ReadModels;
+using BuildingBlocks.Infra.MongoReadModels;
 using FluentAssertions;
 using Moq;
 using Order.Application.Interfaces;
@@ -17,7 +17,7 @@ public class GetOrderByIdTests
         Id = 1,
         Items = It.IsAny<List<OrderItemReadModel>>(),
         TotalAmount = 150m,
-        Status = StatusReadModel.Pending,
+        Status = "Pending",
         CreatedAt = It.IsAny<DateTime>(),
         UpdatedAt = It.IsAny<DateTime?>()
     };
