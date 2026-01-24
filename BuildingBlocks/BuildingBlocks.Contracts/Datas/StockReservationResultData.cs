@@ -8,6 +8,7 @@ public record StockReservationResultData
     public List<ProductItemDto>? Items { get; init; } = new();
     public decimal TotalAmount { get; init; }
     public string? Reason { get; init; }
+
     [JsonConstructor]
     public StockReservationResultData(int orderId, bool isReserved, List<ProductItemDto>? items, decimal totalAmount, string? reason)
     {

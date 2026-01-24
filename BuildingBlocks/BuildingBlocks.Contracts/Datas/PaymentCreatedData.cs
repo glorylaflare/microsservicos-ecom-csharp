@@ -5,6 +5,7 @@ public record PaymentCreatedData
 {
     public int PaymentId { get; init; }
     public string CheckoutUrl { get; init; }
+
     [JsonConstructor]
     public PaymentCreatedData(int paymentId, string checkoutUrl)
     {
