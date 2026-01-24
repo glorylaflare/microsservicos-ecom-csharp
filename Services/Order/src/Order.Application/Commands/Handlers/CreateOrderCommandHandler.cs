@@ -1,6 +1,7 @@
 using BuildingBlocks.Contracts;
 using BuildingBlocks.Contracts.Datas;
 using BuildingBlocks.Contracts.Events;
+using BuildingBlocks.Contracts.MongoEvents;
 using BuildingBlocks.Messaging;
 using FluentResults;
 using FluentValidation;
@@ -37,14 +38,33 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
         try
         {
             var order = new Domain.Models.Order(request.Items);
+            
             await _orderRepository.AddAsync(order);
             await _orderRepository.SaveChangesAsync();
+
             var orderDto = order.Items
                 .Select(i => new OrderItemDto(i.ProductId, i.Quantity))
                 .ToList();
+
+            #region MongoDb view event
+            _logger.Information("[INFO] Publishing events for Order {OrderId} for MongoDb", order.Id);
+
+            var viewModel = new OrderCreatedData(
+                order.Id,
+                orderDto, 
+                order.Status.ToString(), 
+                order.CreatedAt
+            );
+            var mongoEvt = new OrderCreatedEvent(viewModel);
+            await _eventBus.PublishAsync(mongoEvt);
+            #endregion
+
+            _logger.Information("[INFO] Published OrderCreatedEvent for Order {OrderId}", order.Id);
+
             var data = new OrderRequestedData(order.Id, orderDto);
             var evt = new OrderRequestedEvent(data);
             await _eventBus.PublishAsync(evt);
+
             _logger.Information("[INFO] Order {OrderId} created successfully with {ItemsCount} items", order.Id, request.Items.Count);
             return Result.Ok(order.Id);
         }
