@@ -1,8 +1,9 @@
-using BuildingBlocks.Infra.ReadModels;
+using BuildingBlocks.Infra.MongoReadModels;
+
 namespace Order.Application.Interfaces;
 
 public interface IOrderReadService
 {
     Task<OrderReadModel?> GetByIdAsync(int orderId);
-    Task<IEnumerable<OrderReadModel>> GetAllAsync();
+    Task<IReadOnlyList<OrderReadModel>> GetAllAsync();
 }
