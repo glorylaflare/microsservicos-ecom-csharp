@@ -12,10 +12,29 @@ public sealed class UserContext : IUserContext
         _context = context;
     }
 
-    public string UserId => _context.HttpContext?
-            .User?
-            .FindFirst(ClaimTypes.NameIdentifier)?
-            .Value ?? throw new UnauthorizedAccessException("Authenticated user without UserId claim");
+    public string UserId
+    {
+        get
+        {
+            var httpContext = _context.HttpContext;
+            var user = httpContext?.User;
+            
+            if (user?.Identity == null || !user.Identity.IsAuthenticated)
+            {
+                throw new UnauthorizedAccessException("User is not authenticated.");
+            }
+            
+            var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
+            var userId = userIdClaim?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new UnauthorizedAccessException("User ID claim not found in the current context.");
+            }
+
+            return userId;
+        }
+    }
 
     public bool IsAuthenticated => _context.HttpContext?
         .User?
