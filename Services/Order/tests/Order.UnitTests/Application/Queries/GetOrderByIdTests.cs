@@ -17,6 +17,7 @@ public class GetOrderByIdTests
     private readonly OrderReadModel _orderReadModel = new OrderReadModel
     {
         Id = 1,
+        UserId = It.IsAny<string>(),
         Items = It.IsAny<List<OrderItemReadModel>>(),
         TotalAmount = 150m,
         Status = "Pending",
