@@ -12,6 +12,7 @@ using User.Infra.Data.Repositories;
 using User.Application.Interfaces;
 using User.Infra.Data.Services;
 using User.Application.Services;
+using BuildingBlocks.Security.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDefaultCorrelationId();
 builder.Services.AddCustomLogging();
+
+builder.Services.AddAuthenticationService(builder.Configuration);
+builder.Services.AddUserContext();
 
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssemblies(typeof(CreateUserCommand).Assembly));
@@ -50,6 +54,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.MapHealthChecks("/health");
