@@ -48,7 +48,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
                 return Result.Fail("User is Unauthorized");
             }
 
-            var userId = _userContext.UserId?.Replace("auth0|", "")!;
+            var userId = _userContext.UserId!.Replace("auth0|", "");
 
             var order = new Domain.Models.Order(userId, request.Items);
 
