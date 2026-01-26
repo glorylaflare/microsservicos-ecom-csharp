@@ -1,5 +1,6 @@
 using BuildingBlocks.Contracts.Datas;
 using BuildingBlocks.Contracts.MongoEvents;
+using BuildingBlocks.Messaging;
 using MediatR;
 using Order.Domain.Interfaces;
 using Serilog;
@@ -9,10 +10,12 @@ public class StockRejectedCommandHandler : IRequestHandler<StockRejectedCommand,
 {
     private readonly IOrderRepository _orderRepository;
     private readonly ILogger _logger;
-    
-    public StockRejectedCommandHandler(IOrderRepository orderRepository)
+    private readonly IEventBus _eventBus;
+
+    public StockRejectedCommandHandler(IOrderRepository orderRepository, IEventBus eventBus)
     {
         _orderRepository = orderRepository;
+        _eventBus = eventBus;
         _logger = Log.ForContext<StockRejectedCommandHandler>();
     }
 
@@ -41,6 +44,7 @@ public class StockRejectedCommandHandler : IRequestHandler<StockRejectedCommand,
             order.UpdatedAt
         );
         var mongoEvt = new OrderUpdatedEvent(viewModel);
+        await _eventBus.PublishAsync(mongoEvt);
         #endregion
 
         _logger.Information("[INFO] Order with ID {OrderId} has been cancelled due to stock rejection", order.Id);

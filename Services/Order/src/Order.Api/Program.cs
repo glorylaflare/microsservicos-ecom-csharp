@@ -33,6 +33,7 @@ builder.Services.AddMediatR(cfg =>
 
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderReadService, OrderReadService>();
+builder.Services.AddScoped<IUserReadService, UserReadService>();
 builder.Services.AddValidators();
 builder.Services.AddConsumers();
 
