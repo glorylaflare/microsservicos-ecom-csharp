@@ -18,7 +18,7 @@ public class CreateOrderTests
     private readonly Mock<IOrderRepository> _mockRepo = new();
     private readonly Mock<FluentValidation.IValidator<CreateOrderCommand>> _mockValidator = new();
     private readonly Mock<BuildingBlocks.Messaging.IEventBus> _mockEventBus = new();
-    private readonly Mock<IUserContext> _mockHttpContextAccessor = new();
+    private readonly Mock<IUserContext> _mockUserContext = new();
 
     [Fact]
     public async Task CreateOrder_WithValidItems_ShouldReturnOrderId()
@@ -29,18 +29,25 @@ public class CreateOrderTests
         _mockValidator
             .Setup(v => v.ValidateAsync(_request, _cancellationToken))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+        _mockUserContext    
+            .Setup(u => u.IsAuthenticated)
+            .Returns(true);
+        _mockUserContext
+            .Setup(u => u.UserId)
+            .Returns("1");
         _mockRepo
             .Setup(r => r.AddAsync(order))
             .Returns(Task.CompletedTask);
         _mockRepo
             .Setup(r => r.SaveChangesAsync())
             .Returns(Task.CompletedTask);
-        var handler = new CreateOrderCommandHandler(_mockRepo.Object, _mockValidator.Object, _mockEventBus.Object, _mockHttpContextAccessor.Object);
+        var handler = new CreateOrderCommandHandler(_mockRepo.Object, _mockValidator.Object, _mockEventBus.Object, _mockUserContext.Object);
         //Act
         var result = await handler.Handle(_request, _cancellationToken);
         //Assert
         result.IsSuccess.Should().BeTrue();
     }
+
     [Fact]
     public async Task CreateOrder_WithInvalidItems_ShouldReturnValidationErrors()
     {
@@ -53,7 +60,10 @@ public class CreateOrderTests
         _mockValidator
             .Setup(v => v.ValidateAsync(_request, _cancellationToken))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult(validationErrors));
-        var handler = new CreateOrderCommandHandler(_mockRepo.Object, _mockValidator.Object, _mockEventBus.Object, _mockHttpContextAccessor.Object);
+        _mockUserContext
+            .Setup(u => u.IsAuthenticated)
+            .Returns(true);
+        var handler = new CreateOrderCommandHandler(_mockRepo.Object, _mockValidator.Object, _mockEventBus.Object, _mockUserContext.Object);
         //Act
         var result = await handler.Handle(_request, _cancellationToken);
         //Assert

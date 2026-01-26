@@ -25,6 +25,13 @@ public class GetOrderByIdTests
         UpdatedAt = It.IsAny<DateTime?>()
     };
 
+    private readonly UserReadModel _userReadModel = new UserReadModel
+    {
+        Id = It.IsAny<string>(),
+        Username = "John Doe",
+        Email = "john.doe@example.com"
+    };
+
     [Fact]
     public async Task GetOrderByIdQuery_WhenOrderExists_ShouldReturnSuccess()
     {
@@ -33,13 +40,22 @@ public class GetOrderByIdTests
         _mockOrderService
             .Setup(s => s.GetByIdAsync(ID))
             .ReturnsAsync(_orderReadModel);
-        var response = new GetOrderResponse(
-            _orderReadModel.Id,
-            _orderReadModel.Items,
-            _orderReadModel.TotalAmount,
-            _orderReadModel.Status.ToString(),
-            _orderReadModel.CreatedAt,
-            _orderReadModel.UpdatedAt
+        _mockUserService
+            .Setup(s => s.GetByIdAsync(_orderReadModel.UserId))
+            .ReturnsAsync(_userReadModel);
+        var response = new GetOrderComposeRespose(
+            new GetUserResponse(
+                _userReadModel.Username,
+                _userReadModel.Email
+            ),
+            new GetOrderResponse(
+                _orderReadModel.Id,
+                _orderReadModel.Items,
+                _orderReadModel.TotalAmount,
+                _orderReadModel.Status.ToString(),
+                _orderReadModel.CreatedAt,
+                _orderReadModel.UpdatedAt
+            )
         );
         var handler = new GetOrderByIdQueryHandler(_mockOrderService.Object, _mockUserService.Object);
         //Act
