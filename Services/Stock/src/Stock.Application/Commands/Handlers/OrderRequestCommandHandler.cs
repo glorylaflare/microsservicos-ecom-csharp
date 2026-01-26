@@ -54,25 +54,31 @@ public class OrderRequestCommandHandler : IRequestHandler<OrderRequestCommand, U
                 }
                 await _productRepository.SaveChangesAsync();
             });
+            
             var data = StockReservationResultData.Success(
                 orderId: request.OrderId,
                 items: reservedItems,
                 totalAmount: totalAmount
             );
+            
             var evt = new StockReservationResultEvent(data);
             await _eventBus.PublishAsync(evt);
+
             _logger.Information("[INFO] {EventName} for Order ID: {OrderId} handled successfully", nameof(OrderRequestedEvent), request.OrderId);
         }
         catch (DomainException ex)
         {
             _logger.Warning("[WARN] Stock reservation failed for Order ID: {OrderId} due to: {Reason}", request.OrderId, ex.Message);
+            
             var data = StockReservationResultData.Failure(
                 orderId: request.OrderId,
                 reason: ex.Message
             );
             var evt = new StockReservationResultEvent(data);
+            
             await _eventBus.PublishAsync(evt);
         }
+        
         _logger.Information("[INFO] {EventName} for Order ID: {OrderId} processing completed", nameof(OrderRequestedEvent), request.OrderId);
         return Unit.Value;
     }

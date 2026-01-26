@@ -1,6 +1,11 @@
-using BuildingBlocks.Infra.MongoReadModels;
+﻿using BuildingBlocks.Infra.MongoReadModels;
 
 namespace Order.Application.Responses;
+
+public record GetOrderComposeResponse(
+    GetUserResponse User, 
+    GetOrderResponse Order
+);
 
 public record GetOrderResponse(
     int Id,
@@ -9,4 +14,9 @@ public record GetOrderResponse(
     string Status,
     DateTime CreatedAt,
     DateTime? UpdatedAt
+);
+
+public record GetUserResponse(
+    string Username, 
+    string Email
 );

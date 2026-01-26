@@ -3,9 +3,11 @@ using BuildingBlocks.Contracts.Datas;
 using BuildingBlocks.Contracts.Events;
 using BuildingBlocks.Contracts.MongoEvents;
 using BuildingBlocks.Messaging;
+using BuildingBlocks.Security.Context;
 using FluentResults;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Order.Domain.Interfaces;
 using Order.Domain.Models;
 using Serilog;
@@ -17,11 +19,14 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
     private readonly IValidator<CreateOrderCommand> _validator;
     private readonly IEventBus _eventBus;
     private readonly ILogger _logger;
-    public CreateOrderCommandHandler(IOrderRepository orderRepository, IValidator<CreateOrderCommand> validator, IEventBus eventBus)
+    private readonly IUserContext _userContext;
+
+    public CreateOrderCommandHandler(IOrderRepository orderRepository, IValidator<CreateOrderCommand> validator, IEventBus eventBus, IUserContext userContext)
     {
         _orderRepository = orderRepository;
         _validator = validator;
         _eventBus = eventBus;
+        _userContext = userContext;
         _logger = Log.ForContext<CreateOrderCommandHandler>();
     }
     public async Task<Result<int>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
@@ -37,8 +42,16 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
         }
         try
         {
-            var order = new Domain.Models.Order(request.Items);
-            
+            if (!_userContext.IsAuthenticated)
+            {
+                _logger.Warning("[WARN] Unauthorized attempt to create order");
+                return Result.Fail("User is Unauthorized");
+            }
+
+            var userId = _userContext.UserId?.Replace("auth0|", "")!;
+
+            var order = new Domain.Models.Order(userId, request.Items);
+
             await _orderRepository.AddAsync(order);
             await _orderRepository.SaveChangesAsync();
 
@@ -50,6 +63,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
             _logger.Information("[INFO] Publishing events for Order {OrderId} for MongoDb", order.Id);
 
             var viewModel = new OrderCreatedData(
+                order.UserId,
                 order.Id,
                 orderDto, 
                 order.Status.ToString(), 

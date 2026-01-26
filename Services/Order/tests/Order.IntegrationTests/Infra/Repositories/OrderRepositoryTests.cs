@@ -8,7 +8,7 @@ namespace Order.IntegrationTests.Infra.Repositories;
 public class OrderRepositoryTests
 {
     private readonly DatabaseFixture _fixture;
-    private Domain.Models.Order _order = new Domain.Models.Order(
+    private Domain.Models.Order _order = new Domain.Models.Order("1",
     new List<OrderItem>
     {
         new OrderItem(productId: 1, quantity: 20)

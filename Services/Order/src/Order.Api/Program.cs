@@ -3,6 +3,7 @@ using BuildingBlocks.Messaging.Config;
 using BuildingBlocks.Messaging.Extensions;
 using BuildingBlocks.Observability.Extensions;
 using BuildingBlocks.Observability.Middlewares;
+using BuildingBlocks.Security.Extensions;
 using BuildingBlocks.SharedKernel.Config;
 using CorrelationId;
 using CorrelationId.DependencyInjection;
@@ -24,11 +25,15 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddDefaultCorrelationId();
 builder.Services.AddCustomLogging();
 
+builder.Services.AddAuthenticationService(builder.Configuration);
+builder.Services.AddUserContext();
+
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(CreateOrderCommand).Assembly));
 
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderReadService, OrderReadService>();
+builder.Services.AddScoped<IUserReadService, UserReadService>();
 builder.Services.AddValidators();
 builder.Services.AddConsumers();
 
@@ -65,6 +70,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.MapHealthChecks("/health");

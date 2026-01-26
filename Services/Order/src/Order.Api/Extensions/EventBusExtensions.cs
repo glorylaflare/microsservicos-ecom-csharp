@@ -12,9 +12,10 @@ public static class EventBusExtensions
         var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
         await eventBus.SubscribeAsync<StockReservationResultEvent, StockReservationResultConsumer>();
 
-        #region Mongo Integration Events
+        #region MongoDb Integration Events
         await eventBus.SubscribeAsync<OrderCreatedEvent, OrderCreatedProjector>();
         await eventBus.SubscribeAsync<OrderUpdatedEvent, OrderUpdatedProjector>();
+        await eventBus.SubscribeAsync<UserUpdatedEvent, UserUpdatedProjector>();
         #endregion
     }
 }

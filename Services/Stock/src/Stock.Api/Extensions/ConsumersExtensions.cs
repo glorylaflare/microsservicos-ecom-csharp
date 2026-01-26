@@ -5,7 +5,7 @@ public static class ConsumersExtensions
 {
     public static IServiceCollection AddConsumers(this IServiceCollection services)
     {
-        services.AddScoped<OrderRequestConsumer>();
+        services.AddTransient<OrderRequestConsumer>();
         return services;
     }
 }

@@ -23,6 +23,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\..\BuildingBlocks\BuildingBlocks.Infra\BuildingBlocks.Infra.csproj" />
 		<ProjectReference Include="..\..\..\..\BuildingBlocks\BuildingBlocks.Observability\BuildingBlocks.Observability.csproj" />
+		<ProjectReference Include="..\..\..\..\BuildingBlocks\BuildingBlocks.Security\BuildingBlocks.Security.csproj" />
 		<ProjectReference Include="..\Payment.Infra\Payment.Infra.csproj" />
 	</ItemGroup>
 

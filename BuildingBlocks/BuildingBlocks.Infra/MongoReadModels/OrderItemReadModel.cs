@@ -7,7 +7,7 @@ public class OrderItemReadModel
 {
     [BsonId]
     [BsonRepresentation(BsonType.String)]
-    public Guid Id { get; init; } = Guid.NewGuid();
+    public Guid MongoId { get; init; } = Guid.NewGuid();
     [BsonElement("productId")]
     public int ProductId { get; init; }
     [BsonElement("quantity")]

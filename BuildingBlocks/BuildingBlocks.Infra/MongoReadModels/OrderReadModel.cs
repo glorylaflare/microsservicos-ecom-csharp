@@ -7,13 +7,15 @@ public class OrderReadModel
 {
     [BsonId]
     [BsonRepresentation(BsonType.String)]
-    public Guid MongoId { get; init; } = Guid.NewGuid();
+    public Guid MongoId { get; init; }
+    [BsonElement("userId")]
+    public required string UserId { get; init; }
     [BsonElement("orderId")]
-    public int Id { get; init; }
+    public required int Id { get; init; }
     [BsonElement("items")]
-    public List<OrderItemReadModel> Items { get; set; } = new();
+    public required List<OrderItemReadModel> Items { get; set; } = new();
     [BsonElement("status")]
-    public string Status { get; init; } = string.Empty;
+    public string Status { get; init; } = default!;
     [BsonElement("totalAmount")]
     public decimal TotalAmount { get; init; }
     [BsonElement("createdAt")]

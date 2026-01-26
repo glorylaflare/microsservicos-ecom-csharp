@@ -21,13 +21,17 @@ public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentComman
     public async Task<Result<Unit>> Handle(ProcessPaymentCommand request, CancellationToken cancellationToken)
     {
         _logger.Information("[INFO] Handling {CommandName}", nameof(ProcessPaymentCommand));
+        
         MercadoPagoConfig.AccessToken = _configuration["MercadoPago:AccessToken"];
+        
         var paymentClient = new PaymentClient();
         var paymentData = await paymentClient.GetAsync(
             id: long.Parse(request.Data.Id),
-            cancellationToken: cancellationToken);
+            cancellationToken: cancellationToken
+        );
 
         var metadata = paymentData?.Metadata;
+        
         if (metadata == null || !metadata.Any())
         {
             _logger.Error("[ERROR] Metadata not found in payment data");
@@ -52,10 +56,13 @@ public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentComman
             _logger.Error("[ERROR] Payment with order ID {OrderId} not found", orderId);
             return Result.Fail($"Payment with order ID {orderId} not found");
         }
+        
         _logger.Information("[INFO] Processing payment of type: {PaymentType}", request.Type);
+        
         payment.MarkAsPaid();
         _paymentRepository.Update(payment);
         await _paymentRepository.SaveChangesAsync();
+
         return Result.Ok(Unit.Value);
     }
 }

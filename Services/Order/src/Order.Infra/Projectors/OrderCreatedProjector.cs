@@ -24,6 +24,7 @@ public class OrderCreatedProjector : IIntegrationEventHandler<OrderCreatedEvent>
 
         await _orders.InsertOneAsync(new OrderReadModel
         {
+            UserId = @event.Data.UserId,
             Id = @event.Data.Id,
             Items = @event.Data.Items.Select(i => new OrderItemReadModel
             {

@@ -19,6 +19,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\..\..\BuildingBlocks\BuildingBlocks.Security\BuildingBlocks.Security.csproj" />
 	  <ProjectReference Include="..\..\src\User.Application\User.Application.csproj" />
 	  <ProjectReference Include="..\..\src\User.Domain\User.Domain.csproj" />
 	</ItemGroup>

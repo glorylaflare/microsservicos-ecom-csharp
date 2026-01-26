@@ -2,6 +2,7 @@ using ApiGateways.Extensions;
 using ApiGateways.Middlewares;
 using BuildingBlocks.Observability.Extensions;
 using BuildingBlocks.Observability.Middlewares;
+using BuildingBlocks.Security.Extensions;
 using CorrelationId;
 using CorrelationId.DependencyInjection;
 
@@ -13,7 +14,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDefaultCorrelationId();
 builder.Services.AddCustomLogging();
 
-builder.Services.AddAuthenticationService(builder.Configuration).AddAuthorizationService();
+builder.Services.AddAuthenticationService(builder.Configuration);
+builder.Services.AddAuthorizationService();
 builder.Services.AddCircuitBreaker();
 builder.Services.AddReverseProxyServices(builder.Configuration);
 builder.Services.AddHealthChecksService();
@@ -31,11 +33,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapReverseProxy();
 app.MapControllers();
-app.UseUserContextMiddleware();
 app.UseCircuitBreakerHandlingMiddleware();
 app.UseHealthChecksService();
 app.Run();

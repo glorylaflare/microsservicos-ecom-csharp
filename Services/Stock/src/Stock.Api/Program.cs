@@ -1,14 +1,14 @@
+using BuildingBlocks.Infra.Extensions;
 using BuildingBlocks.Messaging.Config;
 using BuildingBlocks.Messaging.Extensions;
 using BuildingBlocks.Observability.Extensions;
 using BuildingBlocks.Observability.Middlewares;
+using BuildingBlocks.Security.Extensions;
 using BuildingBlocks.SharedKernel.Config;
-using BuildingBlocks.Infra.Extensions;
 using CorrelationId;
 using CorrelationId.DependencyInjection;
 using Stock.Api.Extensions;
 using Stock.Application.Commands;
-using Stock.Application.Consumers;
 using Stock.Application.Interfaces;
 using Stock.Domain.Interfaces;
 using Stock.Infra.Data.Context;
@@ -23,6 +23,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDefaultCorrelationId();
 builder.Services.AddCustomLogging();
+
+builder.Services.AddAuthenticationService(builder.Configuration);
+builder.Services.AddUserContext();
 
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssemblies(typeof(CreateProductCommand).Assembly));
@@ -43,8 +46,6 @@ builder.Services.Configure<RabbitMQSettings>(
 builder.Services.AddEventBus();
 builder.Services.AddHealthChecks();
 
-builder.Services.AddTransient<OrderRequestConsumer>();
-
 var app = builder.Build();
 
 await app.AddMigrateDatabase<WriteDbContext>();
@@ -60,6 +61,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.MapHealthChecks("/health");

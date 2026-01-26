@@ -1,5 +1,6 @@
 using BuildingBlocks.Contracts.Datas;
 using BuildingBlocks.Contracts.MongoEvents;
+using BuildingBlocks.Messaging;
 using MediatR;
 using Order.Domain.Interfaces;
 using Serilog;
@@ -10,10 +11,12 @@ public class StockReservedCommandHandler : IRequestHandler<StockReservedCommand,
 {
     private readonly IOrderRepository _orderRepository;
     private readonly ILogger _logger;
+    private readonly IEventBus _eventBus;
 
-    public StockReservedCommandHandler(IOrderRepository orderRepository)
+    public StockReservedCommandHandler(IOrderRepository orderRepository, IEventBus eventBus)
     {
         _orderRepository = orderRepository;
+        _eventBus = eventBus;
         _logger = Log.ForContext<StockReservedCommandHandler>();
     }
 
@@ -44,6 +47,7 @@ public class StockReservedCommandHandler : IRequestHandler<StockReservedCommand,
             order.UpdatedAt
         );
         var mongoEvt = new OrderUpdatedEvent(viewModel);
+        await _eventBus.PublishAsync(mongoEvt);
         #endregion
 
         _logger.Information("[INFO] Order with ID {OrderId} has been confirmed with total amount {TotalAmount}", order.Id, request.TotalAmount);

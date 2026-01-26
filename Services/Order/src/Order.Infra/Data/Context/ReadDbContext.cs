@@ -18,4 +18,7 @@ public class ReadDbContext
 
     public IMongoCollection<OrderReadModel> Orders =>         
         _database.GetCollection<OrderReadModel>("orders");
+
+    public IMongoCollection<UserReadModel> Users =>         
+        _database.GetCollection<UserReadModel>("users");
 }

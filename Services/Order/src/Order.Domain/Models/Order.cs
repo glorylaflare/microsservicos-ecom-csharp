@@ -3,24 +3,31 @@ namespace Order.Domain.Models;
 
 public class Order : EntityBase
 {
+    public string UserId { get; private set; }
     public List<OrderItem> Items { get; private set; }
     public Status Status { get; private set; }
     public decimal TotalAmount { get; private set; }
+
     protected Order() { }
-    public Order(List<OrderItem> items)
+
+    public Order(string userId, List<OrderItem> items)
     {
+        UserId = userId;
         Items = items;
         Status = Status.Pending;
     }
+
     public void SetTotalAmount(decimal amount)
     {
         TotalAmount = amount;
     }
+
     public void Confirmed()
     {
         Status = Status.Reserved;
         UpdatedAt = DateTime.UtcNow;
     }
+
     public void Cancelled()
     {
         Status = Status.Cancelled;
