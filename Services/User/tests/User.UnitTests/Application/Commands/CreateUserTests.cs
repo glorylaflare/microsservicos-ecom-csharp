@@ -1,4 +1,5 @@
 using Auth0.AuthenticationApi.Models;
+using BuildingBlocks.Messaging;
 using FluentAssertions;
 using Moq;
 using User.Application.Commands;
@@ -21,6 +22,8 @@ public class CreateUserTests
     private readonly Mock<IUserRepository> _mockRepo = new();
     private readonly Mock<FluentValidation.IValidator<CreateUserCommand>> _mockValidator = new();
     private readonly Mock<IAuthService> _mockAuth = new();
+    private readonly Mock<IEventBus> _mockEventBus = new();
+
     [Fact]
     public async Task CreateUser_WithValidData_ShouldReturnUserId()
     {
@@ -43,7 +46,7 @@ public class CreateUserTests
         _mockRepo
             .Setup(r => r.SaveChangesAsync())
             .Returns(Task.CompletedTask);
-        var handler = new CreateUserCommandHandler(_mockRepo.Object, _mockValidator.Object, _mockAuth.Object);
+        var handler = new CreateUserCommandHandler(_mockRepo.Object, _mockValidator.Object, _mockAuth.Object, _mockEventBus.Object);
         //Act
         var result = await handler.Handle(_request, _cancellationToken);
         //Assert
@@ -62,7 +65,7 @@ public class CreateUserTests
         _mockValidator
             .Setup(v => v.ValidateAsync(_request, _cancellationToken))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult(validationErrors));
-        var handler = new CreateUserCommandHandler(_mockRepo.Object, _mockValidator.Object, _mockAuth.Object);
+        var handler = new CreateUserCommandHandler(_mockRepo.Object, _mockValidator.Object, _mockAuth.Object, _mockEventBus.Object);
         //Act
         var result = await handler.Handle(_request, _cancellationToken);
         //Assert

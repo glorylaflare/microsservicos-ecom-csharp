@@ -13,6 +13,7 @@ using User.Application.Interfaces;
 using User.Infra.Data.Services;
 using User.Application.Services;
 using BuildingBlocks.Security.Extensions;
+using BuildingBlocks.Messaging.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +40,7 @@ builder.Services.Configure<DatabaseSettings>(
 builder.Services.AddDbContext<WriteDbContext>();
 builder.Services.AddDbContext<ReadDbContext>();
 
+builder.Services.AddEventBus();
 builder.Services.AddHealthChecks();
 
 var app = builder.Build();
@@ -47,6 +49,8 @@ await app.AddMigrateDatabase<WriteDbContext>();
 
 app.UseMiddleware<ErrorHandleMiddleware>();
 app.UseCorrelationId();
+
+await app.ConfigureEventBus();
 
 if (app.Environment.IsDevelopment())
 {
