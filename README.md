@@ -13,15 +13,9 @@
 - Uso do conceito de Read/Write context do CQRS pattern
 - Endpoint de /health no Gateway para monitoramento e saúde dos serviços
 - Payment usando Webhook para simular notificação de pagamento
-- Banco de dados não relacional MongoDB para leitura dos pedidos (Read Model) utilizando projections via eventos (Event Sourcing)
-
-
------------------------
-
-### Planos
-
-1. Pensar no Sistema de comunicação renovado do projeto e analisar possiveis dependências circulares
-2. Criar um UserReadModel para o serviço de Order que seja atualizado via evento || Verificar uso correto do Write/Read context
-3. Padronizar publicações
-4. Adicionar endpoint no Gateway (API Composition)
-5. Aprimorar o uso do Saga Pattern Choreography
+- Implementação do Saga Pattern (Choreography) para orquestração de pedidos
+- Testes unitários e de integração com xUnit e Moq
+- Implementação de CI/CD com GitHub Actions
+- Implementação de sistema de autenticação com o modelo zero-trust usando Auth0
+- Adição do padrão de API Composition no serviço de Order para agregar dados de múltiplos serviços { User e Payment }
+- Implementação de banco de dados NoSQL com MongoDB para o Read Model do serviço de Order utilizando projeções via eventos (Event Sourcing)
