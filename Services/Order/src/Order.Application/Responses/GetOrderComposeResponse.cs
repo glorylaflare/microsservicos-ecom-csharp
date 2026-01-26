@@ -2,7 +2,7 @@
 
 namespace Order.Application.Responses;
 
-public record GetOrderComposeRespose(
+public record GetOrderComposeResponse(
     GetUserResponse User, 
     GetOrderResponse Order
 );

@@ -5,7 +5,7 @@ using Order.Application.Responses;
 using Serilog;
 namespace Order.Application.Queries.Handlers;
 
-public class GetOrderByIdQueryHandler : IRequestHandler<GetOrderByIdQuery, Result<GetOrderComposeRespose>>
+public class GetOrderByIdQueryHandler : IRequestHandler<GetOrderByIdQuery, Result<GetOrderComposeResponse>>
 {
     private readonly IOrderReadService _orderService;
     private readonly IUserReadService _userService;
@@ -16,7 +16,7 @@ public class GetOrderByIdQueryHandler : IRequestHandler<GetOrderByIdQuery, Resul
         _userService = userService;
         _logger = Log.ForContext<GetOrderByIdQueryHandler>();
     }
-    public async Task<Result<GetOrderComposeRespose>> Handle(GetOrderByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Result<GetOrderComposeResponse>> Handle(GetOrderByIdQuery request, CancellationToken cancellationToken)
     {
         try
         {
@@ -32,7 +32,7 @@ public class GetOrderByIdQueryHandler : IRequestHandler<GetOrderByIdQuery, Resul
 
             var user = await _userService.GetByIdAsync(order.UserId);
 
-            var response = new GetOrderComposeRespose(
+            var response = new GetOrderComposeResponse(
                 new GetUserResponse(
                     user.Username,
                     user.Email

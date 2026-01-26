@@ -43,7 +43,7 @@ public class GetOrderByIdTests
         _mockUserService
             .Setup(s => s.GetByIdAsync(_orderReadModel.UserId))
             .ReturnsAsync(_userReadModel);
-        var response = new GetOrderComposeRespose(
+        var response = new GetOrderComposeResponse(
             new GetUserResponse(
                 _userReadModel.Username,
                 _userReadModel.Email
