@@ -50,8 +50,6 @@ await app.AddMigrateDatabase<WriteDbContext>();
 app.UseMiddleware<ErrorHandleMiddleware>();
 app.UseCorrelationId();
 
-await app.ConfigureEventBus();
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
