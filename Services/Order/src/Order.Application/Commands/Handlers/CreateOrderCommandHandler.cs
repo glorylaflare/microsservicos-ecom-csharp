@@ -7,9 +7,7 @@ using BuildingBlocks.Security.Context;
 using FluentResults;
 using FluentValidation;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Order.Domain.Interfaces;
-using Order.Domain.Models;
 using Serilog;
 namespace Order.Application.Commands.Handlers;
 
@@ -29,6 +27,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
         _userContext = userContext;
         _logger = Log.ForContext<CreateOrderCommandHandler>();
     }
+
     public async Task<Result<int>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
         _logger.Information("[INFO] Handling {EventName} for {ItemsCount} items", nameof(CreateOrderCommand), request.Items.Count);
@@ -48,7 +47,11 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
                 return Result.Fail("User is Unauthorized");
             }
 
-            var userId = _userContext.UserId?.Replace("auth0|", "")!;
+            #region Constants
+            const string PREFIX = "auth0 |";
+            #endregion
+
+            var userId = _userContext.UserId!.Replace(PREFIX, "");
 
             var order = new Domain.Models.Order(userId, request.Items);
 
