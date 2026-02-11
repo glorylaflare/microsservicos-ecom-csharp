@@ -3,9 +3,9 @@ using BuildingBlocks.Messaging;
 using System.Text.Json.Serialization;
 namespace BuildingBlocks.Contracts.Events;
 
-public record PaymentCreatedEvent : IntegrationEvent<PaymentCreatedData>
+public record PaymentUpdatedEvent : IntegrationEvent<PaymentUpdatedData>
 {
     [JsonConstructor]
-    public PaymentCreatedEvent(PaymentCreatedData data)
+    public PaymentUpdatedEvent(PaymentUpdatedData data)
         : base(data) { }
 }
