@@ -1,33 +1,33 @@
 using Auth.Api.Interfaces;
+using Auth.Api.Models;
 using Auth0.AuthenticationApi;
 using Auth0.AuthenticationApi.Models;
+using Microsoft.Extensions.Options;
 using Serilog;
+
 namespace Auth.Api.Services
 {
     public class AuthService : IAuthService
     {
         private readonly AuthenticationApiClient _authClient;
         private readonly Serilog.ILogger _logger;
-        private readonly string _clientId;
-        private readonly string _clientSecret;
-        private readonly string _audience;
-        public AuthService(IConfiguration config)
+        private readonly Auth0Settings _auth0Settings;
+
+        public AuthService(IOptions<Auth0Settings> auth0Settings)
         {
-            var domain = config["Auth0:Domain"]!;
-            _clientId = config["Auth0:ClientId"]!;
-            _clientSecret = config["Auth0:ClientSecret"]!;
-            _audience = config["Auth0:Audience"]!;
-            _authClient = new AuthenticationApiClient(new Uri($"https://{domain}/"));
+            _auth0Settings = auth0Settings.Value;
+            _authClient = new AuthenticationApiClient(new Uri($"https://{_auth0Settings.Domain}/"));
             _logger = Log.ForContext<AuthService>();
         }
+
         public async Task<AccessTokenResponse> GetTokenAsync(string email, string password)
         {
             _logger.Information("[INFO] Authenticating user with email: {Email}", email);
             return await _authClient.GetTokenAsync(new ResourceOwnerTokenRequest
             {
-                ClientId = _clientId,
-                ClientSecret = _clientSecret,
-                Audience = _audience,
+                ClientId = _auth0Settings.ClientId,
+                ClientSecret = _auth0Settings.ClientSecret,
+                Audience = _auth0Settings.Audience,
                 Scope = "openid profile email",
                 Username = email,
                 Password = password,
