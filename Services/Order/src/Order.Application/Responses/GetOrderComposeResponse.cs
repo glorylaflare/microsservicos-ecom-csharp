@@ -4,7 +4,8 @@ namespace Order.Application.Responses;
 
 public record GetOrderComposeResponse(
     GetUserResponse User, 
-    GetOrderResponse Order
+    GetOrderResponse Order,
+    GetPaymentResponse Payment
 );
 
 public record GetOrderResponse(
@@ -19,4 +20,9 @@ public record GetOrderResponse(
 public record GetUserResponse(
     string Username, 
     string Email
+);
+
+public record GetPaymentResponse(
+    int PaymentId,
+    string Status
 );

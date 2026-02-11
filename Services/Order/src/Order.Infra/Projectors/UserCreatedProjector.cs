@@ -7,20 +7,20 @@ using Serilog;
 
 namespace Order.Infra.Projectors;
 
-public class UserUpdatedProjector : IIntegrationEventHandler<UserUpdatedEvent>
+public class UserCreatedProjector : IIntegrationEventHandler<UserCreatedEvent>
 {
     private readonly IMongoCollection<UserReadModel> _users;
     private readonly ILogger _logger;
 
-    public UserUpdatedProjector(ReadDbContext context)
+    public UserCreatedProjector(ReadDbContext context)
     {
         _users = context.Users;
-        _logger = Log.ForContext<UserUpdatedProjector>();
+        _logger = Log.ForContext<UserCreatedProjector>();
     }
 
-    public async Task HandleAsync(UserUpdatedEvent @event)
+    public async Task HandleAsync(UserCreatedEvent @event)
     {
-        _logger.Information("Projecting {Event} to read model", nameof(UserUpdatedEvent));
+        _logger.Information("Projecting {Event} to read model", nameof(UserCreatedEvent));
 
         await _users.InsertOneAsync(new UserReadModel
         {
@@ -29,6 +29,6 @@ public class UserUpdatedProjector : IIntegrationEventHandler<UserUpdatedEvent>
             Email = @event.Data.Email
         });
 
-        _logger.Information("Projected {Event} to read model", nameof(UserUpdatedEvent));
+        _logger.Information("Projected {Event} to read model", nameof(UserCreatedEvent));
     }
 }

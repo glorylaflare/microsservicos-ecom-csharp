@@ -13,6 +13,7 @@ public class GetOrderByIdTests
     private readonly GetOrderByIdQuery _request = new GetOrderByIdQuery(ID);
     private readonly Mock<IOrderReadService> _mockOrderService = new();
     private readonly Mock<IUserReadService> _mockUserService = new();
+    private readonly Mock<IPaymentReadService> _mockPaymentService = new();
 
     private readonly OrderReadModel _orderReadModel = new OrderReadModel
     {
@@ -32,6 +33,13 @@ public class GetOrderByIdTests
         Email = "john.doe@example.com"
     };
 
+    private readonly PaymentReadModel _paymentReadModel = new PaymentReadModel
+    {
+        Id = 1,
+        OrderId = ID,
+        Status = "Completed"
+    };
+
     [Fact]
     public async Task GetOrderByIdQuery_WhenOrderExists_ShouldReturnSuccess()
     {
@@ -43,6 +51,9 @@ public class GetOrderByIdTests
         _mockUserService
             .Setup(s => s.GetByIdAsync(_orderReadModel.UserId))
             .ReturnsAsync(_userReadModel);
+        _mockPaymentService
+            .Setup(s => s.GetByIdAsync(ID))
+            .ReturnsAsync(_paymentReadModel);
         var response = new GetOrderComposeResponse(
             new GetUserResponse(
                 _userReadModel.Username,
@@ -55,9 +66,13 @@ public class GetOrderByIdTests
                 _orderReadModel.Status.ToString(),
                 _orderReadModel.CreatedAt,
                 _orderReadModel.UpdatedAt
+            ),
+            new GetPaymentResponse(
+                _paymentReadModel.Id,
+                _paymentReadModel.Status.ToString()
             )
         );
-        var handler = new GetOrderByIdQueryHandler(_mockOrderService.Object, _mockUserService.Object);
+        var handler = new GetOrderByIdQueryHandler(_mockOrderService.Object, _mockUserService.Object, _mockPaymentService.Object);
         //Act
         var result = await handler.Handle(_request, cancellationToken);
         //Assert
@@ -73,7 +88,7 @@ public class GetOrderByIdTests
         _mockOrderService
             .Setup(s => s.GetByIdAsync(ID))
             .ReturnsAsync((OrderReadModel?)null);
-        var handler = new GetOrderByIdQueryHandler(_mockOrderService.Object, _mockUserService.Object);
+        var handler = new GetOrderByIdQueryHandler(_mockOrderService.Object, _mockUserService.Object, _mockPaymentService.Object);
         //Act
         var result = await handler.Handle(_request, cancellationToken);
         //Assert
