@@ -15,7 +15,8 @@ public static class EventBusExtensions
         #region MongoDb Integration Events
         await eventBus.SubscribeAsync<OrderCreatedEvent, OrderCreatedProjector>();
         await eventBus.SubscribeAsync<OrderUpdatedEvent, OrderUpdatedProjector>();
-        await eventBus.SubscribeAsync<UserUpdatedEvent, UserUpdatedProjector>();
+        await eventBus.SubscribeAsync<UserCreatedEvent, UserCreatedProjector>();
+        await eventBus.SubscribeAsync<PaymentUpdatedEvent, PaymentUpdatedProjector>();
         #endregion
     }
 }

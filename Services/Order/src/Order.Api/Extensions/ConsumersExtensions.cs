@@ -11,7 +11,8 @@ public static class ConsumersExtensions
         #region MongoDb projections
         services.AddTransient<OrderCreatedProjector>();
         services.AddTransient<OrderUpdatedProjector>();
-        services.AddTransient<UserUpdatedProjector>();
+        services.AddTransient<UserCreatedProjector>();
+        services.AddTransient<PaymentUpdatedProjector>();
         #endregion
 
         return services;
