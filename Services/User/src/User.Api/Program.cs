@@ -1,19 +1,20 @@
+using BuildingBlocks.Infra.Extensions;
+using BuildingBlocks.Messaging.Extensions;
 using BuildingBlocks.Observability.Extensions;
 using BuildingBlocks.Observability.Middlewares;
+using BuildingBlocks.Security.Extensions;
 using BuildingBlocks.SharedKernel.Config;
-using BuildingBlocks.Infra.Extensions;
 using CorrelationId;
 using CorrelationId.DependencyInjection;
 using User.Api.Extensions;
 using User.Application.Commands;
+using User.Application.Interfaces;
+using User.Application.Services;
 using User.Domain.Interfaces;
+using User.Domain.Models;
 using User.Infra.Data.Context;
 using User.Infra.Data.Repositories;
-using User.Application.Interfaces;
 using User.Infra.Data.Services;
-using User.Application.Services;
-using BuildingBlocks.Security.Extensions;
-using BuildingBlocks.Messaging.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +40,10 @@ builder.Services.Configure<DatabaseSettings>(
     builder.Configuration.GetSection("DatabaseSettings"));
 builder.Services.AddDbContext<WriteDbContext>();
 builder.Services.AddDbContext<ReadDbContext>();
+
+builder.Services.Configure<Auth0Settings>(
+    builder.Configuration.GetSection("Auth0")
+);
 
 builder.Services.AddEventBus();
 builder.Services.AddHealthChecks();
