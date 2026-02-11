@@ -21,4 +21,7 @@ public class ReadDbContext
 
     public IMongoCollection<UserReadModel> Users =>         
         _database.GetCollection<UserReadModel>("users");
+
+    public IMongoCollection<PaymentReadModel> Payments =>
+        _database.GetCollection<PaymentReadModel>("payments");
 }

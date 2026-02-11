@@ -71,9 +71,9 @@ public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand,
             await _paymentRepository.SaveChangesAsync();
 
             _logger.Information("[INFO] Payment created with ID: {PaymentId} for EventId: {EventId}", payment.Id, request.EventId);
-            
-            var data = new PaymentCreatedData(payment.Id, payment.CheckoutUrl!);
-            var evt = new PaymentCreatedEvent(data);
+
+            var data = new PaymentUpdatedData(payment.Id, payment.OrderId, payment.CheckoutUrl!, payment.Status.ToString());
+            var evt = new PaymentUpdatedEvent(data);
             
             await _eventBus.PublishAsync(evt);
             _logger.Information("[INFO] PaymentCreatedEvent published for PaymentId: {PaymentId}", payment.Id);

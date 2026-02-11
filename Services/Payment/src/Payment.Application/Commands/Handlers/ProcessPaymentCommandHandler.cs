@@ -1,3 +1,6 @@
+using BuildingBlocks.Contracts.Datas;
+using BuildingBlocks.Contracts.Events;
+using BuildingBlocks.Messaging;
 using FluentResults;
 using MediatR;
 using MercadoPago.Client.Payment;
@@ -12,12 +15,16 @@ public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentComman
     private readonly IPaymentRepository _paymentRepository;
     private readonly IConfiguration _configuration;
     private readonly ILogger _logger;
-    public ProcessPaymentCommandHandler(IPaymentRepository paymentRepository, IConfiguration configuration)
+    private readonly IEventBus _eventBus;
+
+    public ProcessPaymentCommandHandler(IPaymentRepository paymentRepository, IConfiguration configuration, IEventBus eventBus)
     {
         _paymentRepository = paymentRepository;
         _configuration = configuration;
+        _eventBus = eventBus;
         _logger = Log.ForContext<ProcessPaymentCommandHandler>();
     }
+
     public async Task<Result<Unit>> Handle(ProcessPaymentCommand request, CancellationToken cancellationToken)
     {
         _logger.Information("[INFO] Handling {CommandName}", nameof(ProcessPaymentCommand));
@@ -62,6 +69,13 @@ public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentComman
         payment.MarkAsPaid();
         _paymentRepository.Update(payment);
         await _paymentRepository.SaveChangesAsync();
+
+        var data = new PaymentUpdatedData(payment.Id, payment.OrderId, payment.CheckoutUrl!, payment.Status.ToString());
+        var evt = new PaymentUpdatedEvent(data);
+
+        await _eventBus.PublishAsync(evt);
+
+        _logger.Information("[INFO] Payment with order ID {OrderId} processed successfully", orderId);
 
         return Result.Ok(Unit.Value);
     }

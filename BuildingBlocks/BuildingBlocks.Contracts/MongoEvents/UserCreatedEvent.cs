@@ -4,9 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace BuildingBlocks.Contracts.MongoEvents;
 
-public record UserUpdatedEvent : IntegrationEvent<UserUpdatedData>
+public record UserCreatedEvent : IntegrationEvent<UserCreatedData>
 {
     [JsonConstructor]
-    public UserUpdatedEvent(UserUpdatedData data)
+    public UserCreatedEvent(UserCreatedData data)
         : base(data) { }
 }

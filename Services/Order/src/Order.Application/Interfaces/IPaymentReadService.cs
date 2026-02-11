@@ -2,7 +2,7 @@
 
 namespace Order.Application.Interfaces;
 
-public interface IUserReadService
+public interface IPaymentReadService
 {
-    Task<UserReadModel?> GetByIdAsync(string userId);
+    Task<PaymentReadModel?> GetByIdAsync(int orderId);
 }

@@ -7,11 +7,13 @@ public class UserRepository : IUserRepository
 {
     private readonly DbSet<Domain.Models.User> _users;
     private readonly WriteDbContext _context;
+    
     public UserRepository(WriteDbContext context)
     {
         _context = context;
         _users = context.Users;
     }
+
     public async Task AddAsync(Domain.Models.User user) => await _users.AddAsync(user);
     public async Task<Domain.Models.User?> GetByIdAsync(int userId) =>
         await _users.FirstOrDefaultAsync(u => u.Id == userId);

@@ -23,10 +23,4 @@ public class User : EntityBase
         Status = Status.Inactive;
         UpdatedAt = DateTime.UtcNow;
     }
-
-    public void ChangeEmail(string newEmail)
-    {
-        Email = newEmail;
-        UpdatedAt = DateTime.UtcNow;
-    }
 }
