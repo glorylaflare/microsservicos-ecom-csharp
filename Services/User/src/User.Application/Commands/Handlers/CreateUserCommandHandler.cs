@@ -56,12 +56,12 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
 
             #region MongoDB Event Sourcing
             _logger.Information("[INFO] Publishing UserCreatedEvent for user ID {UserId}", user.Id);
-            var data = new UserUpdatedData(
+            var data = new UserCreatedData(
                 user.Auth0UserId, 
                 user.Username, 
                 user.Email
             );
-            var mongoEvnt = new UserUpdatedEvent(data);
+            var mongoEvnt = new UserCreatedEvent(data);
             await _eventBus.PublishAsync(mongoEvnt);
             #endregion
 

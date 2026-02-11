@@ -34,6 +34,7 @@ public class Order : EntityBase
         UpdatedAt = DateTime.UtcNow;
     }
 }
+
 public enum Status
 {
     Pending,

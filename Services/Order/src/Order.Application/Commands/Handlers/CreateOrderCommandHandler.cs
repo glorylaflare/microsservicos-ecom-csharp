@@ -48,7 +48,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
             }
 
             #region Constants
-            const string PREFIX = "auth0 |";
+            const string PREFIX = "auth0|";
             #endregion
 
             var userId = _userContext.UserId!.Replace(PREFIX, "");
