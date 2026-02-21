@@ -11,6 +11,7 @@ public static class EventBusExtensions
     {
         var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
         await eventBus.SubscribeAsync<StockReservationResultEvent, StockReservationResultConsumer>();
+        await eventBus.SubscribeAsync<PaymentUpdatedEvent, PaymentUpdatedConsumer>();
 
         #region MongoDb Integration Events
         await eventBus.SubscribeAsync<OrderCreatedEvent, OrderCreatedProjector>();

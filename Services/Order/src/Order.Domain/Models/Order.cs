@@ -33,6 +33,12 @@ public class Order : EntityBase
         Status = Status.Cancelled;
         UpdatedAt = DateTime.UtcNow;
     }
+
+    public void Completed()
+    {
+        Status = Status.Completed;
+        UpdatedAt = DateTime.UtcNow;
+    }
 }
 
 public enum Status

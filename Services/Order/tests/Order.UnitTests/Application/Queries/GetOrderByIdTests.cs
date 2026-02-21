@@ -63,13 +63,13 @@ public class GetOrderByIdTests
                 _orderReadModel.Id,
                 _orderReadModel.Items,
                 _orderReadModel.TotalAmount,
-                _orderReadModel.Status.ToString(),
+                _orderReadModel.Status,
                 _orderReadModel.CreatedAt,
                 _orderReadModel.UpdatedAt
             ),
             new GetPaymentResponse(
                 _paymentReadModel.Id,
-                _paymentReadModel.Status.ToString()
+                _paymentReadModel.Status
             )
         );
         var handler = new GetOrderByIdQueryHandler(_mockOrderService.Object, _mockUserService.Object, _mockPaymentService.Object);

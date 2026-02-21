@@ -32,6 +32,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
     {
         _logger.Information("[INFO] Handling {EventName} for {ItemsCount} items", nameof(CreateOrderCommand), request.Items.Count);
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
+
         if (!validationResult.IsValid)
         {
             var errors = validationResult.Errors
@@ -39,6 +40,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
             _logger.Warning("[WARN] Validation failed for {EventName}: {Errors}", nameof(CreateOrderCommand), errors);
             return Result.Fail(errors);
         }
+
         try
         {
             if (!_userContext.IsAuthenticated)

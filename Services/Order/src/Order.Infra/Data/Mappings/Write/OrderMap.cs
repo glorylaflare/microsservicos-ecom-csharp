@@ -17,7 +17,7 @@ public class OrderMap : IEntityTypeConfiguration<Domain.Models.Order>
             oi.Property(i => i.Quantity).IsRequired();
         });
         builder.Property(o => o.TotalAmount).IsRequired().HasColumnType("decimal(18,2)");
-        builder.Property(o => o.Status).IsRequired();
+        builder.Property(o => o.Status).IsRequired().HasConversion<string>();
         builder.Property(o => o.CreatedAt).IsRequired().HasColumnType("datetime");
         builder.Property(o => o.UpdatedAt).HasColumnType("datetime");
     }
