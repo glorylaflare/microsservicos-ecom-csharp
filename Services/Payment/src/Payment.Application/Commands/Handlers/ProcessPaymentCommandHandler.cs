@@ -7,6 +7,7 @@ using MercadoPago.Client.Payment;
 using MercadoPago.Config;
 using Microsoft.Extensions.Configuration;
 using Payment.Domain.Interface;
+using Payment.Domain.Models;
 using Serilog;
 namespace Payment.Application.Commands.Handlers;
 
@@ -37,7 +38,14 @@ public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentComman
             cancellationToken: cancellationToken
         );
 
+        if ( paymentData == null ) 
+        {
+            _logger.Error("[ERROR] Paymentdata not found");
+            return Result.Fail("Paymentdata not found in Mercado Pago database");
+        }
+
         var metadata = paymentData?.Metadata;
+        var status = paymentData.Status;
         
         if (metadata == null || !metadata.Any())
         {
@@ -65,8 +73,11 @@ public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentComman
         }
         
         _logger.Information("[INFO] Processing payment of type: {PaymentType}", request.Type);
-        
-        payment.MarkAsPaid();
+
+        var currentStatus = validateStatus(status);
+
+        payment.SetStatus(currentStatus);
+
         _paymentRepository.Update(payment);
         await _paymentRepository.SaveChangesAsync();
 
@@ -78,5 +89,17 @@ public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentComman
         _logger.Information("[INFO] Payment with order ID {OrderId} processed successfully", orderId);
 
         return Result.Ok(Unit.Value);
+    }
+
+    public PaymentStatus validateStatus(string status)
+    {
+        if (!status.Equals("approved"))
+        {
+            _logger.Information("Payment status '{Status}' is not approved; setting payment status to Failed", status);
+            return PaymentStatus.Failed;
+        }
+
+        _logger.Information("Payment status '{Status}' is approved; payment processed successfully", status);
+        return PaymentStatus.Paid;
     }
 }

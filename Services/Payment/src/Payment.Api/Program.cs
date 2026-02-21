@@ -5,11 +5,10 @@ using BuildingBlocks.Observability.Extensions;
 using BuildingBlocks.Observability.Middlewares;
 using BuildingBlocks.Security.Extensions;
 using BuildingBlocks.SharedKernel.Config;
-using CorrelationId;
-using CorrelationId.DependencyInjection;
 using Payment.Api.Extensions;
 using Payment.Application.Commands;
 using Payment.Application.Interfaces;
+using Payment.Application.Services;
 using Payment.Domain.Interface;
 using Payment.Infra.Data.Context.Read;
 using Payment.Infra.Data.Context.Write;
@@ -22,8 +21,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddDefaultCorrelationId();
-builder.Services.AddCustomLogging();
+builder.Services.AddCustomLogging(builder.Configuration);
 
 builder.Services.AddAuthenticationService(builder.Configuration);
 builder.Services.AddUserContext();
@@ -33,8 +31,10 @@ builder.Services.AddMediatR(cfg =>
 
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<IPaymentReadService, PaymentReadService>();
+builder.Services.AddScoped<IPaymentExpirationService, PaymentExpirationService>();
 builder.Services.AddValidators();
 builder.Services.AddConsumers();
+builder.Services.AddCronJob(builder.Configuration);
 
 builder.Services.Configure<DatabaseSettings>(
     builder.Configuration.GetSection("DatabaseSettings"));
@@ -50,10 +50,11 @@ var app = builder.Build();
 
 await app.AddMigrateDatabase<WriteDbContext>();
 
+app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseMiddleware<ErrorHandleMiddleware>();
-app.UseCorrelationId();
 
 await app.ConfigureEventBus();
+app.UseCronJob();
 
 if (app.Environment.IsDevelopment())
 {
