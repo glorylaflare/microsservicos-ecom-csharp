@@ -17,6 +17,7 @@ public class OrderRequestConsumer : IIntegrationEventHandler<OrderRequestedEvent
     public async Task HandleAsync(OrderRequestedEvent @event)
     {
         _logger.Information("[INFO] Handling {EventName} for Order ID: {OrderId}", nameof(OrderRequestedEvent), @event.Data.OrderId);
+
         await _mediator.Send(new OrderRequestCommand(@event.Data.OrderId, @event.Data.Items));
     }
 }

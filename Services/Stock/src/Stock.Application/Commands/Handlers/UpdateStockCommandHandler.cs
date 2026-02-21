@@ -19,7 +19,9 @@ public class UpdateStockCommandHandler : IRequestHandler<UpdateStockCommand, Res
     public async Task<Result> Handle(UpdateStockCommand request, CancellationToken cancellationToken)
     {
         _logger.Information("[INFO] Handling {EventName} for product ID: {ProductId}", nameof(UpdateStockCommand), request.ProductId);
+
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
+
         if (!validationResult.IsValid)
         {
             var errors = validationResult.Errors
@@ -27,18 +29,23 @@ public class UpdateStockCommandHandler : IRequestHandler<UpdateStockCommand, Res
             _logger.Warning("[WARN] Validation failed for {EventName}: {Errors}", nameof(UpdateStockCommand), errors);
             return Result.Fail(errors);
         }
+
         try
         {
             var product = await _productRepository.GetByIdAsync(request.ProductId);
+
             if (product is null)
             {
                 _logger.Warning("[WARN] Product with ID {ProductId} not found", request.ProductId);
                 return Result.Fail($"Product with ID {request.ProductId} not found.");
             }
+
             product.DecreaseStock(request.Quantity);
             _productRepository.Update(product);
             await _productRepository.SaveChangesAsync();
+
             _logger.Information("[INFO] Stock for product ID {ProductId} updated successfully", request.ProductId);
+
             return Result.Ok();
         }
         catch (Exception ex)
