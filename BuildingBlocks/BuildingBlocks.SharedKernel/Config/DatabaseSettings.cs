@@ -9,6 +9,7 @@ public class DatabaseSettings
     public bool EnableConnectionPooling { get; } = true;
     public int MinPoolSize { get; } = 0;
     public int MaxPoolSize { get; } = 50;
+
     public string ToConnectionString()
     {
         var pooling = EnableConnectionPooling ?
