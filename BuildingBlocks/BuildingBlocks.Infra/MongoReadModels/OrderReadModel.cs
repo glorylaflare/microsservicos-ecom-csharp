@@ -6,12 +6,10 @@ namespace BuildingBlocks.Infra.MongoReadModels;
 public class OrderReadModel
 {
     [BsonId]
-    [BsonRepresentation(BsonType.String)]
-    public Guid MongoId { get; init; }
-    [BsonElement("userId")]
-    public required string UserId { get; init; }
     [BsonElement("orderId")]
     public required int Id { get; init; }
+    [BsonElement("userId")]
+    public required string UserId { get; init; }
     [BsonElement("items")]
     public required List<OrderItemReadModel> Items { get; set; } = new();
     [BsonElement("status")]

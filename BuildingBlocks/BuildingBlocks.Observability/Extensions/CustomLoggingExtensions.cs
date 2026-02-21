@@ -1,12 +1,15 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
+
 namespace BuildingBlocks.Observability.Extensions;
 
 public static class CustomLoggingExtensions
 {
-    public static IServiceCollection AddCustomLogging(this IServiceCollection services)
+    public static IServiceCollection AddCustomLogging(this IServiceCollection services, IConfiguration configuration)
     {
         var customTheme = new AnsiConsoleTheme(new Dictionary<ConsoleThemeStyle, string>
         {
@@ -17,24 +20,31 @@ public static class CustomLoggingExtensions
             [ConsoleThemeStyle.LevelError] = "\x1b[31m",
             [ConsoleThemeStyle.LevelFatal] = "\x1b[31m"
         });
+
+        var seqUrl = configuration["Seq:Url"];
+
         Log.Logger = new LoggerConfiguration()
             .Enrich.FromLogContext()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+            .MinimumLevel.Override("System", LogEventLevel.Warning)
             .MinimumLevel.Information()
             .WriteTo.Console(
-                outputTemplate: "{Timestamp:HH:mm:ss} [{Level:u3}] {Message:lj} {NewLine}{Exception}",
+                outputTemplate: "{Timestamp:HH:mm:ss} [{Level:u3}] [CorrelationId: {CorrelationId}] {Message:lj} {NewLine}{Exception}",
                 theme: customTheme,
                 applyThemeToRedirectedOutput: true)
-            .WriteTo.Seq("http://localhost:5341")
+            .WriteTo.Seq(seqUrl)
             .WriteTo.File(
                 path: "Logs/log-.txt",
                 rollingInterval: RollingInterval.Day,
-                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj} {NewLine}{Exception}")
+                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [CorrelationId: {CorrelationId}] [{Level:u3}] {Message:lj} {NewLine}{Exception}")
             .CreateLogger();
+
         services.AddLogging(loggingBuilder =>
         {
             loggingBuilder.ClearProviders();
             loggingBuilder.AddSerilog(Log.Logger, dispose: true);
         });
+
         return services;
     }
 }

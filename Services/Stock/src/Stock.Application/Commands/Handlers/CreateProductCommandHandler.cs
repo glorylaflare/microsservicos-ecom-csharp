@@ -11,16 +11,19 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
     private readonly IProductRepository _productRepository;
     private readonly IValidator<CreateProductCommand> _validator;
     private readonly ILogger _logger;
+
     public CreateProductCommandHandler(IProductRepository productRepository, IValidator<CreateProductCommand> validator)
     {
         _productRepository = productRepository;
         _validator = validator;
         _logger = Log.ForContext<CreateProductCommandHandler>();
     }
+
     public async Task<Result<int>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
         _logger.Information("[INFO] Handling {EventName} for product: {ProductName}", nameof(CreateProductCommand), request.Name);
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
+
         if (!validationResult.IsValid)
         {
             var errors = validationResult.Errors
@@ -28,6 +31,7 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
             _logger.Warning("[WARN] Validation failed for {EventName}: {Errors}", nameof(CreateProductCommand), errors);
             return Result.Fail(errors);
         }
+        
         try
         {
             var product = new Product(

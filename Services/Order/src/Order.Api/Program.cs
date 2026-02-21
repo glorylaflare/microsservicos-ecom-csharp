@@ -5,8 +5,6 @@ using BuildingBlocks.Observability.Extensions;
 using BuildingBlocks.Observability.Middlewares;
 using BuildingBlocks.Security.Extensions;
 using BuildingBlocks.SharedKernel.Config;
-using CorrelationId;
-using CorrelationId.DependencyInjection;
 using Order.Api.Extensions;
 using Order.Application.Commands;
 using Order.Application.Interfaces;
@@ -22,8 +20,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddDefaultCorrelationId();
-builder.Services.AddCustomLogging();
+builder.Services.AddCustomLogging(builder.Configuration);
 
 builder.Services.AddAuthenticationService(builder.Configuration);
 builder.Services.AddUserContext();
@@ -60,8 +57,8 @@ await app.Services.CreateScope()
     .GetRequiredService<MongoDbInitializer>()
     .InitializeAsync();
 
+app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseMiddleware<ErrorHandleMiddleware>();
-app.UseCorrelationId();
 
 await app.ConfigureEventBus();
 

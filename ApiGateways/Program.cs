@@ -3,16 +3,13 @@ using ApiGateways.Middlewares;
 using BuildingBlocks.Observability.Extensions;
 using BuildingBlocks.Observability.Middlewares;
 using BuildingBlocks.Security.Extensions;
-using CorrelationId;
-using CorrelationId.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDefaultCorrelationId();
-builder.Services.AddCustomLogging();
+builder.Services.AddCustomLogging(builder.Configuration);
 
 builder.Services.AddAuthenticationService(builder.Configuration);
 builder.Services.AddAuthorizationService();
@@ -22,8 +19,8 @@ builder.Services.AddHealthChecksService();
 
 var app = builder.Build();
 
+app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseMiddleware<ErrorHandleMiddleware>();
-app.UseCorrelationId();
 
 if (app.Environment.IsDevelopment())
 {

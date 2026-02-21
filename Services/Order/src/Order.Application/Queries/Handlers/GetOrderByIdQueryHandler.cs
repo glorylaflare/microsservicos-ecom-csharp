@@ -44,13 +44,13 @@ public class GetOrderByIdQueryHandler : IRequestHandler<GetOrderByIdQuery, Resul
                     order.Id,
                     order.Items,
                     order.TotalAmount,
-                    order.Status.ToString(),
+                    order.Status,
                     order.CreatedAt,
                     order.UpdatedAt
                 ),
                 new GetPaymentResponse(
                     payment.Id,
-                    payment.Status.ToString()
+                    payment.Status
                 )
             );
             

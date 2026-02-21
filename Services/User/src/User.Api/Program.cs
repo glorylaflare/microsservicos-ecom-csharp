@@ -4,8 +4,6 @@ using BuildingBlocks.Observability.Extensions;
 using BuildingBlocks.Observability.Middlewares;
 using BuildingBlocks.Security.Extensions;
 using BuildingBlocks.SharedKernel.Config;
-using CorrelationId;
-using CorrelationId.DependencyInjection;
 using User.Api.Extensions;
 using User.Application.Commands;
 using User.Application.Interfaces;
@@ -22,8 +20,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddDefaultCorrelationId();
-builder.Services.AddCustomLogging();
+builder.Services.AddCustomLogging(builder.Configuration);
 
 builder.Services.AddAuthenticationService(builder.Configuration);
 builder.Services.AddUserContext();
@@ -52,8 +49,8 @@ var app = builder.Build();
 
 await app.AddMigrateDatabase<WriteDbContext>();
 
+app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseMiddleware<ErrorHandleMiddleware>();
-app.UseCorrelationId();
 
 if (app.Environment.IsDevelopment())
 {

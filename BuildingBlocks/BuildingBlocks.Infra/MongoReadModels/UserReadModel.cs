@@ -6,8 +6,6 @@ namespace BuildingBlocks.Infra.MongoReadModels;
 public class UserReadModel
 {
     [BsonId]
-    [BsonRepresentation(BsonType.String)]
-    public Guid MongoId { get; init; }
     [BsonElement("id")]
     public string Id { get; init; } = string.Empty;
     [BsonElement("username")]

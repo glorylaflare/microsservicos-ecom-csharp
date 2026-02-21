@@ -41,6 +41,7 @@ public class PaymentController : ControllerBase
     }
 
     [HttpPost("webhook")]
+    [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> WebhookAsync([FromBody] ProcessPaymentCommand command)

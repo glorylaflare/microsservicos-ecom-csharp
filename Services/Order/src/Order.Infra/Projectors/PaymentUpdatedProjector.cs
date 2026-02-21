@@ -22,12 +22,18 @@ public class PaymentUpdatedProjector : IIntegrationEventHandler<PaymentUpdatedEv
     {
         _logger.Information("[INFO] Projecting {EventName} for Payment ID: {PaymentId}", nameof(PaymentUpdatedEvent), @event.Data.PaymentId);
 
-        await _payments.InsertOneAsync(new PaymentReadModel
+        var model = new PaymentReadModel
         {
             Id = @event.Data.PaymentId,
             OrderId = @event.Data.OrderId,
             Status = @event.Data.Status,
-        });
+        };
+
+        await _payments.ReplaceOneAsync(
+            p => p.Id == @event.Data.PaymentId,
+            model,
+            new ReplaceOptions<PaymentReadModel> { IsUpsert = true }
+        );
 
         _logger.Information("[INFO] Projected {EventName} for Payment ID: {PaymentId}", nameof(PaymentUpdatedEvent), @event.Data.PaymentId);
     }

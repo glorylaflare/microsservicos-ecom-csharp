@@ -15,6 +15,7 @@ public class OrderRequestCommandHandler : IRequestHandler<OrderRequestCommand, U
     private readonly IDbTransactionManager _dbTransactionManager;
     private readonly IEventBus _eventBus;
     private readonly ILogger _logger;
+
     public OrderRequestCommandHandler(IProductRepository productRepository, IDbTransactionManager dbTransactionManager, IEventBus eventBus)
     {
         _productRepository = productRepository;
@@ -22,10 +23,12 @@ public class OrderRequestCommandHandler : IRequestHandler<OrderRequestCommand, U
         _eventBus = eventBus;
         _logger = Log.ForContext<OrderRequestCommandHandler>();
     }
+
     public async Task<Unit> Handle(OrderRequestCommand request, CancellationToken cancellationToken)
     {
         var totalAmount = 0m;
         var reservedItems = new List<ProductItemDto>();
+
         try
         {
             await _dbTransactionManager.ExecuteResilientTransactionAsync(async () =>
@@ -33,16 +36,23 @@ public class OrderRequestCommandHandler : IRequestHandler<OrderRequestCommand, U
                 foreach (var item in request.Items)
                 {
                     var product = await _productRepository.GetByIdAsync(item.ProductId);
+
                     if (product is null)
                     {
                         throw new ProductNotFoundException(item.ProductId);
                     }
+
                     if (product.StockQuantity < item.Quantity)
                     {
                         throw new InsufficientStockException(item.ProductId, item.Quantity, product.StockQuantity);
                     }
+
                     product.DecreaseStock(item.Quantity);
                     totalAmount += item.Quantity * product.Price;
+
+                    _logger.Information("[INFO] Reserved {Quantity} units of Product ID: {ProductId} for Order ID: {OrderId}", item.Quantity, item.ProductId, request.OrderId);
+                    _logger.Information("[INFO] Product ID: {ProductId} stock updated to {StockQuantity} after reservation", item.ProductId, product.StockQuantity);
+
                     reservedItems.Add(new ProductItemDto(
                         ProductId: item.ProductId,
                         Name: product.Name,
@@ -50,8 +60,10 @@ public class OrderRequestCommandHandler : IRequestHandler<OrderRequestCommand, U
                         Quantity: item.Quantity,
                         UnitPrice: product.Price
                     ));
+
                     _productRepository.Update(product);
                 }
+
                 await _productRepository.SaveChangesAsync();
             });
             
@@ -80,6 +92,7 @@ public class OrderRequestCommandHandler : IRequestHandler<OrderRequestCommand, U
         }
         
         _logger.Information("[INFO] {EventName} for Order ID: {OrderId} processing completed", nameof(OrderRequestedEvent), request.OrderId);
+
         return Unit.Value;
     }
 }

@@ -7,6 +7,7 @@ public static class ConsumersExtensions
     public static IServiceCollection AddConsumers(this IServiceCollection services)
     {
         services.AddTransient<StockReservationResultConsumer>();
+        services.AddTransient<PaymentUpdatedConsumer>();
 
         #region MongoDb projections
         services.AddTransient<OrderCreatedProjector>();

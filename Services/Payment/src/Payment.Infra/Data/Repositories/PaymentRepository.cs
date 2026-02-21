@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Payment.Domain.Interface;
+using Payment.Domain.Models;
 using Payment.Infra.Data.Context.Write;
 namespace Payment.Infra.Data.Repositories;
 
@@ -16,4 +17,13 @@ public class PaymentRepository : IPaymentRepository
     public async Task<Domain.Models.Payment?> GetByIdAsync(int orderId) => await _payments.FirstOrDefaultAsync(p => p.OrderId == orderId);
     public void Update(Domain.Models.Payment payment) => _payments.Update(payment);
     public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
+
+    public async Task<IReadOnlyList<Domain.Models.Payment>> GetExpiredPaymentsAsync(DateTime currentTime) => await _context.Payments
+            .Where(p => p.Status == PaymentStatus.Pending && p.ExpirationDate <= currentTime)
+            .ToListAsync();
+
+    public async Task<int> SetExpiredPaymentsAsync(DateTime currentTime) => await _context.Payments
+            .Where(p => p.Status == PaymentStatus.Pending && p.ExpirationDate <= currentTime)
+            .ExecuteUpdateAsync(s => s.SetProperty(p => p.Status, PaymentStatus.Failed)
+                                      .SetProperty(p => p.UpdatedAt, DateTime.UtcNow));
 }
