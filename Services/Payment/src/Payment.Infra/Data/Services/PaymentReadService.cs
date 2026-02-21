@@ -7,25 +7,29 @@ namespace Payment.Infra.Data.Services;
 public class PaymentReadService : IPaymentReadService
 {
     private readonly DbSet<PaymentReadModel> _payments;
+
     public PaymentReadService(ReadDbContext context)
     {
         _payments = context.Payments;
     }
+
     public async Task<IEnumerable<PaymentReadModel>> GetAllAsync()
     {
         return await _payments.Select(p => new PaymentReadModel
-        {
-            Id = p.Id,
-            OrderId = p.OrderId,
-            Amount = p.Amount,
-            Status = p.Status,
-            CheckoutUrl = p.CheckoutUrl,
-            CreatedDate = p.CreatedDate,
-            UpdatedAt = p.UpdatedAt
-        })
+            {
+                Id = p.Id,
+                OrderId = p.OrderId,
+                Amount = p.Amount,
+                Status = p.Status,
+                CheckoutUrl = p.CheckoutUrl,
+                ExpirationDate = p.ExpirationDate,
+                CreatedAt = p.CreatedAt,
+                UpdatedAt = p.UpdatedAt
+            })
             .AsNoTracking()
             .ToListAsync();
     }
+
     public async Task<PaymentReadModel?> GetByIdAsync(int paymentId)
     {
         return await _payments.Where(p => p.Id == paymentId)
@@ -36,7 +40,8 @@ public class PaymentReadService : IPaymentReadService
                 Amount = p.Amount,
                 Status = p.Status,
                 CheckoutUrl = p.CheckoutUrl,
-                CreatedDate = p.CreatedDate,
+                ExpirationDate= p.ExpirationDate,
+                CreatedAt = p.CreatedAt,
                 UpdatedAt = p.UpdatedAt
             })
             .AsNoTracking()

@@ -9,17 +9,20 @@ public class GetAllPaymentQueryHandler : IRequestHandler<GetAllPaymentsQuery, Re
 {
     private readonly IPaymentReadService _paymentService;
     private readonly ILogger _logger;
+
     public GetAllPaymentQueryHandler(IPaymentReadService paymentService)
     {
         _paymentService = paymentService;
         _logger = Log.ForContext<GetAllPaymentQueryHandler>();
     }
+
     public async Task<Result<IEnumerable<GetPaymentResponse>>> Handle(GetAllPaymentsQuery request, CancellationToken cancellationToken)
     {
         try
         {
             _logger.Information("[INFO] Handling {EventName}", nameof(GetAllPaymentsQuery));
             var payments = await _paymentService.GetAllAsync();
+
             if (payments is null || !payments.Any())
             {
                 _logger.Warning("[WARN] No payments found while handling {EventName}", nameof(GetAllPaymentsQuery));
@@ -27,7 +30,8 @@ public class GetAllPaymentQueryHandler : IRequestHandler<GetAllPaymentsQuery, Re
             }
             var response = payments.Select(payment => new GetPaymentResponse(
                 payment.Id,
-                payment.Status.ToString()
+                payment.Status!.ToString(),
+                payment.CreatedAt
             ));
             _logger.Information("[INFO] Successfully fetched and mapped {PaymentCount} payments", response.Count());
             return Result.Ok(response);

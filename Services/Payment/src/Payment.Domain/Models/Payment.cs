@@ -7,20 +7,26 @@ public class Payment : EntityBase
     public decimal Amount { get; private set; }
     public PaymentStatus Status { get; private set; }
     public string? CheckoutUrl { get; private set; }
+    public DateTime ExpirationDate { get; private set; }
+
     public Payment() { }
-    public Payment(int orderId, decimal amount, string? checkoutUrl)
+
+    public Payment(int orderId, decimal amount, string? checkoutUrl, DateTime expirationDate)
     {
         OrderId = orderId;
         Amount = amount;
         Status = PaymentStatus.Pending;
         CheckoutUrl = checkoutUrl;
+        ExpirationDate = expirationDate;
     }
-    public void MarkAsPaid()
+
+    public void SetStatus(PaymentStatus status)
     {
-        Status = PaymentStatus.Paid;
+        Status = status;
         UpdatedAt = DateTime.UtcNow;
     }
 }
+
 public enum PaymentStatus
 {
     Pending,

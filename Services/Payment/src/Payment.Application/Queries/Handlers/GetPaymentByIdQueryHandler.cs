@@ -9,23 +9,27 @@ public class GetPaymentByIdQueryHandler : IRequestHandler<GetPaymentByIdQuery, R
 {
     private readonly IPaymentReadService _paymentService;
     private readonly ILogger _logger;
+
     public GetPaymentByIdQueryHandler(IPaymentReadService paymentService)
     {
         _paymentService = paymentService;
         _logger = Log.ForContext<GetPaymentByIdQueryHandler>();
     }
+
     public async Task<Result<GetPaymentResponse>> Handle(GetPaymentByIdQuery request, CancellationToken cancellationToken)
     {
         try
         {
             _logger.Information("[INFO] Handling {EventName} for Id: {PaymentId}", nameof(GetPaymentByIdQuery), request.id);
             var payment = await _paymentService.GetByIdAsync(request.id);
+            
             if (payment == null)
             {
                 _logger.Warning("[WARN] Payment not found for Id: {PaymentId}", request.id);
                 return Result.Fail(new Error("Payment not found"));
             }
-            var response = new GetPaymentResponse(payment.Id, payment.Status.ToString());
+
+            var response = new GetPaymentResponse(payment.Id, payment.Status!.ToString(), payment.CreatedAt);
             return Result.Ok(response);
         }
         catch (Exception ex)

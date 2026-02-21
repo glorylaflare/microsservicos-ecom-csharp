@@ -11,6 +11,7 @@ using MercadoPago.Resource.Preference;
 using Microsoft.Extensions.Configuration;
 using Payment.Domain.Interface;
 using Serilog;
+
 namespace Payment.Application.Commands.Handlers;
 
 public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand, Unit>
@@ -20,6 +21,8 @@ public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand,
     private readonly IEventBus _eventBus;
     private readonly IPaymentRepository _paymentRepository;
     private readonly ILogger _logger;
+    private int _defaultExpirationDate;
+
     public CreatePaymentCommandHandler(IConfiguration configuration, IPaymentRepository paymentRepository, IEventBus eventBus, IValidator<CreatePaymentCommand> validator)
     {
         _configuration = configuration;
@@ -27,11 +30,13 @@ public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand,
         _eventBus = eventBus;
         _validator = validator;
         _logger = Log.ForContext<CreatePaymentCommandHandler>();
+        _defaultExpirationDate = int.Parse(_configuration["MercadoPago:DefaultExpirationMinutes"] ?? "30");
     }
+
     public async Task<Unit> Handle(CreatePaymentCommand request, CancellationToken cancellationToken)
     {
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
-        
+
         if (!validationResult.IsValid)
         {
             var errors = validationResult.Errors
@@ -64,7 +69,8 @@ public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand,
             var payment = new Domain.Models.Payment(
                 orderId: request.OrderId,
                 amount: request.TotalAmount,
-                checkoutUrl: preference.Value.InitPoint
+                checkoutUrl: preference.Value.InitPoint,
+                expirationDate: DateTime.UtcNow.AddMinutes(_defaultExpirationDate)
             );
 
             await _paymentRepository.AddAsync(payment);
@@ -87,6 +93,7 @@ public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand,
         _logger.Information("[INFO] Finished processing CreatePaymentCommand for {EventId}", request.EventId);
         return Unit.Value;
     }
+
     private async Task<Result<Preference>> CreateMercadoPagoPaymentPreference(CreatePaymentCommand request, CancellationToken cancellationToken)
     {
         try
@@ -105,6 +112,7 @@ public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand,
                 NotificationUrl = _configuration["MercadoPago:NotificationUrl"],
                 ExternalReference = request.EventId.ToString(),
                 Expires = true,
+                ExpirationDateTo = DateTime.UtcNow.AddMinutes(_defaultExpirationDate),
                 Metadata = new Dictionary<string, object>
                 {
                     { "orderId", request.OrderId }

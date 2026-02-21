@@ -9,11 +9,13 @@ public class StockReservationResultConsumer : IIntegrationEventHandler<StockRese
 {
     private readonly ILogger _logger;
     private readonly IMediator _mediator;
+
     public StockReservationResultConsumer(IMediator mediator)
     {
         _mediator = mediator;
         _logger = Log.ForContext<StockReservationResultConsumer>();
     }
+
     public async Task HandleAsync(StockReservationResultEvent @event)
     {
         _logger.Information("[INFO] Handling {EventName}: {EventId}, OrderId: {OrderId}", nameof(StockReservationResultEvent), @event.EventId, @event.Data.OrderId);

@@ -14,7 +14,8 @@ public class PaymentReadMap : IEntityTypeConfiguration<PaymentReadModel>
         builder.Property(x => x.Amount);
         builder.Property(x => x.Status);
         builder.Property(x => x.CheckoutUrl);
-        builder.Property(x => x.CreatedDate);
+        builder.Property(x => x.ExpirationDate);
+        builder.Property(x => x.CreatedAt);
         builder.Property(x => x.UpdatedAt);
     }
 }
