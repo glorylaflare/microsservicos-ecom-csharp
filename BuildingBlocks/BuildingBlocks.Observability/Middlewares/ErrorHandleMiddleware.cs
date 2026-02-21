@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Serilog;
 using System.Text.Json;
+
 namespace BuildingBlocks.Observability.Middlewares;
 
 public class ErrorHandleMiddleware
@@ -25,15 +26,20 @@ public class ErrorHandleMiddleware
     }
     private Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
-        _logger.Error(exception, $"[ERROR] An unhandled exception has occurred while processing the request. CorrelationId={context.TraceIdentifier}");
+        var correlationId = context.Items["X-Correlation-ID"]?.ToString();
+
+        _logger.Error(exception, $"[ERROR] An unhandled exception has occurred while processing the request. CorrelationId={correlationId}");
+
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        
         var response = JsonSerializer.Serialize(new
         {
             StatusCode = context.Response.StatusCode,
             Message = exception.Message,
-            CorrelationId = context.TraceIdentifier
+            CorrelationId = correlationId
         });
+        
         return context.Response.WriteAsync(response);
     }
 }
