@@ -9,5 +9,6 @@ public static class EventBusExtensions
     {
         var eventBus = app.ApplicationServices.GetRequiredService<IEventBus>();
         await eventBus.SubscribeAsync<OrderRequestedEvent, OrderRequestConsumer>();
+        await eventBus.SubscribeAsync<OrderFailedEvent, OrderFailedConsumer>();
     }
 }

@@ -6,6 +6,8 @@ public static class ConsumersExtensions
     public static IServiceCollection AddConsumers(this IServiceCollection services)
     {
         services.AddTransient<OrderRequestConsumer>();
+        services.AddTransient<OrderFailedConsumer>();
+
         return services;
     }
 }
