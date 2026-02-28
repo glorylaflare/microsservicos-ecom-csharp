@@ -1,4 +1,5 @@
 using Auth0.AuthenticationApi.Models;
+using BuildingBlocks.Contracts.MongoEvents;
 using BuildingBlocks.Messaging;
 using FluentAssertions;
 using Moq;
@@ -41,7 +42,7 @@ public class CreateUserTests
             .Setup(a => a.SignupUserAsync(_request.Email, _request.Password))
             .ReturnsAsync(_response);
         _mockRepo
-            .Setup(r => r.AddAsync(user))
+            .Setup(r => r.AddAsync(It.IsAny<User.Domain.Models.User>()))
             .Returns(Task.CompletedTask);
         _mockRepo
             .Setup(r => r.SaveChangesAsync())
@@ -51,7 +52,9 @@ public class CreateUserTests
         var result = await handler.Handle(_request, _cancellationToken);
         //Assert
         result.IsSuccess.Should().BeTrue();
-        result.Value.Should().Be(user.Id);
+        result.Value.Should().Be(0);
+        _mockRepo.Verify(r => r.AddAsync(It.IsAny<User.Domain.Models.User>()), Times.Once);
+        _mockEventBus.Verify(e => e.PublishAsync(It.IsAny<UserCreatedEvent>()), Times.Once);
     }
     [Fact]
     public async Task CreateUser_WithInvalidData_ShouldReturnValidationErrors()
@@ -70,5 +73,7 @@ public class CreateUserTests
         var result = await handler.Handle(_request, _cancellationToken);
         //Assert
         result.IsFailed.Should().BeTrue();
+        _mockRepo.Verify(r => r.AddAsync(It.IsAny<User.Domain.Models.User>()), Times.Never);
+        _mockEventBus.Verify(e => e.PublishAsync(It.IsAny<UserCreatedEvent>()), Times.Never);
     }
 }

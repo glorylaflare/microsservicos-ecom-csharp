@@ -8,17 +8,21 @@ namespace Order.IntegrationTests.Infra.Repositories;
 public class OrderRepositoryTests
 {
     private readonly DatabaseFixture _fixture;
+
     private Domain.Models.Order _order = new Domain.Models.Order("1",
     new List<OrderItem>
     {
         new OrderItem(productId: 1, quantity: 20)
     });
+    
     private readonly OrderRepository _repository;
+    
     public OrderRepositoryTests(DatabaseFixture fixture)
     {
         _fixture = fixture;
         _repository = new OrderRepository(_fixture._context);
     }
+    
     [Fact]
     public async Task AddAsync_WhenValid_ShouldCreateOrder()
     {
@@ -29,6 +33,7 @@ public class OrderRepositoryTests
         //Assert
         result.Should().NotBeNull();
     }
+    
     [Fact]
     public async Task AddAsync_WhenValid_ShouldReturnStatusPending()
     {
@@ -39,6 +44,7 @@ public class OrderRepositoryTests
         //Assert
         result!.Status.Should().Be(Status.Pending);
     }
+    
     [Fact]
     public async Task Update_WhenValid_ShouldUpdateOrderStatus()
     {
