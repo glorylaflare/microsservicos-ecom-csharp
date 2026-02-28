@@ -37,11 +37,11 @@ public class DeactivateUserTests
             .Returns(Task.CompletedTask);
         //Act
         var handler = new DeactivateUserCommandHandler(_mockRepo.Object, _mockValidator.Object);
-        user.Deactivate();
         var result = await handler.Handle(new DeactivateUserCommand(_user.Email), _cancellationToken);
         //Assert
         result.IsSuccess.Should().BeTrue();
         user.Status.Should().Be(User.Domain.Models.Status.Inactive);
+        _mockRepo.Verify(r => r.SaveChangesAsync(), Times.Once);
     }
     [Fact]
     public async Task DeactivateUser_ShouldReturnFailure_WhenUserNotFound()
@@ -60,5 +60,31 @@ public class DeactivateUserTests
         var result = await handler.Handle(new DeactivateUserCommand(_user.Email), _cancellationToken);
         //Assert
         result.IsFailed.Should().BeTrue();
+        _mockRepo.Verify(r => r.SaveChangesAsync(), Times.Never);
+    }
+
+    [Fact]
+    public async Task DeactivateUser_ShouldReturnFailure_WhenValidationFails()
+    {
+        //Arrange
+        var _request = new DeactivateUserCommand(_user.Email);
+        var _cancellationToken = It.IsAny<CancellationToken>();
+        var validationErrors = new List<FluentValidation.Results.ValidationFailure>
+        {
+            new FluentValidation.Results.ValidationFailure("Email", "Email is required")
+        };
+
+        _mockValidator
+            .Setup(v => v.ValidateAsync(_request, _cancellationToken))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult(validationErrors));
+
+        var handler = new DeactivateUserCommandHandler(_mockRepo.Object, _mockValidator.Object);
+
+        //Act
+        var result = await handler.Handle(_request, _cancellationToken);
+
+        //Assert
+        result.IsFailed.Should().BeTrue();
+        _mockRepo.Verify(r => r.GetByEmailAsync(It.IsAny<string>()), Times.Never);
     }
 }

@@ -7,26 +7,55 @@ namespace User.IntegrationTests.Infra.Repositories;
 public class UserRepositoryTests
 {
     private readonly DatabaseFixture _fixture;
-    private Domain.Models.User _user = new(
-        "Auth0|1234567890",
-        "testuser",
-        "test@email.com"
-    );
     private readonly UserRepository _repository;
+
+    private static Domain.Models.User CreateUser()
+    {
+        var suffix = Random.Shared.Next(10000, 99999);
+
+        return new Domain.Models.User(
+            auth0UserId: $"auth0|{suffix}",
+            username: $"testuser{suffix}",
+            email: $"test{suffix}@email.com"
+        );
+    }
+
     public UserRepositoryTests(DatabaseFixture fixture)
     {
         _fixture = fixture;
         _repository = new UserRepository(_fixture._context);
     }
+
     [Fact]
     public async Task AddAsync_WhenValid_ShouldCreateUser()
     {
+        //Arrange
+        var user = CreateUser();
+
         //Act
-        await _repository.AddAsync(_user);
+        await _repository.AddAsync(user);
         await _repository.SaveChangesAsync();
-        var result = await _repository.GetByIdAsync(_user.Id);
+        var result = await _repository.GetByIdAsync(user.Id);
+
         //Assert
         result.Should().NotBeNull();
-        result.Email.Should().Be(_user.Email);
+        result!.Email.Should().Be(user.Email);
+    }
+
+    [Fact]
+    public async Task GetByEmailAsync_WhenValid_ShouldReturnUser()
+    {
+        //Arrange
+        var user = CreateUser();
+
+        await _repository.AddAsync(user);
+        await _repository.SaveChangesAsync();
+
+        //Act
+        var result = await _repository.GetByEmailAsync(user.Email);
+
+        //Assert
+        result.Should().NotBeNull();
+        result!.Id.Should().Be(user.Id);
     }
 }
