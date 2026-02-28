@@ -9,9 +9,13 @@ namespace Payment.IntegrationTests.Infra.Repositories;
 public class PaymentRepositoryTests
 {
     private readonly DatabaseFixture _fixture;
-
-    private Domain.Models.Payment _payment = new Domain.Models.Payment(1, 10.8m, "https://", DateTime.UtcNow.AddMinutes(30));
-
+    private static int GenerateOrderId() => Random.Shared.Next(10000, 99999);
+    private static Domain.Models.Payment CreatePayment() => new Domain.Models.Payment(
+        orderId: GenerateOrderId(),
+        amount: 10.8m,
+        checkoutUrl: "https://",
+        expirationDate: DateTime.UtcNow.AddMinutes(30)
+    );
     private readonly PaymentRepository _repository;
 
     public PaymentRepositoryTests(DatabaseFixture fixture)
@@ -23,27 +27,33 @@ public class PaymentRepositoryTests
     [Fact]
     public async Task AddAsync_WhenValid_ShouldCreatePayment()
     {
+        //Arrange
+        var payment = CreatePayment();
+
         //Act
-        await _repository.AddAsync(_payment);
+        await _repository.AddAsync(payment);
         await _repository.SaveChangesAsync();
-        var result = await _repository.GetByIdAsync(_payment.Id);
+        var result = await _repository.GetByIdAsync(payment.OrderId);
 
         //Assert
         result.Should().NotBeNull();
+        result!.OrderId.Should().Be(payment.OrderId);
     }
 
     [Fact]
-    public async Task Update_WhenValid_ShouldUpdatePayment() 
+    public async Task Update_WhenValid_ShouldUpdatePayment()
     {
         //Arrange
-        await _repository.AddAsync(_payment);
+        var payment = CreatePayment();
+
+        await _repository.AddAsync(payment);
         await _repository.SaveChangesAsync();
 
         //Act
-        _payment.SetStatus(PaymentStatus.Paid);
-        _repository.Update(_payment);
+        payment.SetStatus(PaymentStatus.Paid);
+        _repository.Update(payment);
         await _repository.SaveChangesAsync();
-        var result = await _repository.GetByIdAsync(_payment.OrderId);
+        var result = await _repository.GetByIdAsync(payment.OrderId);
 
         //Assert
         result!.Status.Should().Be(PaymentStatus.Paid);
