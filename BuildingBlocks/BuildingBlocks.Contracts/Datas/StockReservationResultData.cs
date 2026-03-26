@@ -18,8 +18,10 @@ public record StockReservationResultData
         TotalAmount = totalAmount;
         Reason = reason;
     }
+
     public static StockReservationResultData Success(int orderId, List<ProductItemDto> items, decimal totalAmount) =>
         new(orderId, true, items, totalAmount, null);
+    
     public static StockReservationResultData Failure(int orderId, string reason) =>
         new(orderId, false, null, 0, reason);
 }

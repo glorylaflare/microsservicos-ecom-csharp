@@ -29,14 +29,14 @@ public static class CustomLoggingExtensions
             .MinimumLevel.Override("System", LogEventLevel.Warning)
             .MinimumLevel.Information()
             .WriteTo.Console(
-                outputTemplate: "{Timestamp:HH:mm:ss} [{Level:u3}] [CorrelationId: {CorrelationId}] {Message:lj} {NewLine}{Exception}",
+                outputTemplate: "{Timestamp:HH:mm:ss} [{Level:u3}] {Message:lj} {NewLine}{Exception}",
                 theme: customTheme,
                 applyThemeToRedirectedOutput: true)
             .WriteTo.Seq(seqUrl)
             .WriteTo.File(
                 path: "Logs/log-.txt",
                 rollingInterval: RollingInterval.Day,
-                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [CorrelationId: {CorrelationId}] [{Level:u3}] {Message:lj} {NewLine}{Exception}")
+                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj} {NewLine}{Exception}")
             .CreateLogger();
 
         services.AddLogging(loggingBuilder =>
