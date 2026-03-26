@@ -1,4 +1,4 @@
-﻿namespace Auth.Api.Models;
+﻿namespace Auth.Infra.Configurations;
 
 public class Auth0Settings
 {

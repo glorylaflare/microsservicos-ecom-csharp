@@ -1,7 +1,8 @@
-using Auth.Api.Responses;
+using Auth.Application.Responses;
 using FluentResults;
 using MediatR;
-namespace Auth.Api.Commands;
+
+namespace Auth.Application.Commands;
 
 public record AuthenticateUserCommand(
     string Email,
