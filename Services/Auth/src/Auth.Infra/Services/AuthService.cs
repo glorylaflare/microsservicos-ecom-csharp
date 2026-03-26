@@ -1,16 +1,16 @@
-using Auth.Api.Interfaces;
-using Auth.Api.Models;
+using Auth.Application.Interfaces;
+using Auth.Infra.Configurations;
 using Auth0.AuthenticationApi;
 using Auth0.AuthenticationApi.Models;
 using Microsoft.Extensions.Options;
 using Serilog;
 
-namespace Auth.Api.Services
+namespace Auth.Infra.Services
 {
     public class AuthService : IAuthService
     {
         private readonly AuthenticationApiClient _authClient;
-        private readonly Serilog.ILogger _logger;
+        private readonly ILogger _logger;
         private readonly Auth0Settings _auth0Settings;
 
         public AuthService(IOptions<Auth0Settings> auth0Settings)
@@ -23,6 +23,7 @@ namespace Auth.Api.Services
         public async Task<AccessTokenResponse> GetTokenAsync(string email, string password)
         {
             _logger.Information("[INFO] Authenticating user with email: {Email}", email);
+
             return await _authClient.GetTokenAsync(new ResourceOwnerTokenRequest
             {
                 ClientId = _auth0Settings.ClientId,

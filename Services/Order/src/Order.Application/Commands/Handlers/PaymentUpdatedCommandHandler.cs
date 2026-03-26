@@ -1,6 +1,4 @@
-﻿using BuildingBlocks.Contracts;
-using BuildingBlocks.Contracts.Datas;
-using BuildingBlocks.Contracts.Events;
+﻿using BuildingBlocks.Contracts.Datas;
 using BuildingBlocks.Contracts.MongoEvents;
 using BuildingBlocks.Messaging;
 using MediatR;
@@ -13,14 +11,14 @@ namespace Order.Application.Commands.Handlers;
 public class PaymentUpdatedCommandHandler : IRequestHandler<PaymentUpdatedCommand, Unit>
 {
     private readonly IOrderRepository _orderRepository;
-    private readonly IUserReadService _userService; 
+    private readonly IOrderEmailPublisher _orderEmailPublisher;
     private readonly IEventBus _eventBus;
     private readonly ILogger _logger;
 
-    public PaymentUpdatedCommandHandler(IOrderRepository orderRepository, IEventBus eventBus, IUserReadService userService)
+    public PaymentUpdatedCommandHandler(IOrderRepository orderRepository, IEventBus eventBus, IOrderEmailPublisher orderEmailPublisher)
     {
         _orderRepository = orderRepository;
-        _userService = userService;
+        _orderEmailPublisher = orderEmailPublisher;
         _eventBus = eventBus;
         _logger = Log.ForContext<PaymentUpdatedCommandHandler>();
     }
@@ -44,13 +42,16 @@ public class PaymentUpdatedCommandHandler : IRequestHandler<PaymentUpdatedComman
                 case "paid":
                     _logger.Information("[INFO] Payment successful for OrderId: {OrderId}. Updating order status to Completed.", request.OrderId);
                     await ConfirmedPayment(order);
+                    await _orderEmailPublisher.PublishCompleted(order);
                     break;
                 case "failed":
                     _logger.Information("[INFO] Payment failed for OrderId: {OrderId}. Updating order status to Cancelled.", request.OrderId);
                     await FailedPayment(order);
+                    await _orderEmailPublisher.PublishFailed(order);
                     break;
                 default:
                     _logger.Information("[INFO] Payment pending for OrderId: {OrderId}. No order status change.", request.OrderId);
+                    await _orderEmailPublisher.PublishPending(order, request.CheckoutUrl);
                     break;
             }
 
@@ -69,10 +70,7 @@ public class PaymentUpdatedCommandHandler : IRequestHandler<PaymentUpdatedComman
         _orderRepository.Update(order);
         await _orderRepository.SaveChangesAsync();
 
-        await PublishEvent(
-            order: order, 
-            isFailed: false
-        );
+        await PublishMongoEvent(order);
     }
 
     public async Task FailedPayment(Domain.Models.Order order)
@@ -81,15 +79,11 @@ public class PaymentUpdatedCommandHandler : IRequestHandler<PaymentUpdatedComman
         _orderRepository.Update(order);
         await _orderRepository.SaveChangesAsync();
 
-        await PublishEvent(
-            order: order,
-            isFailed: true
-        );
+        await PublishMongoEvent(order);
     }
 
-    public async Task PublishEvent(Domain.Models.Order order, bool isFailed)
+    public async Task PublishMongoEvent(Domain.Models.Order order)
     {
-        #region MongoDb updated view
         _logger.Information("[INFO] Publishing OrderUpdatedEvent for OrderId: {OrderId} with Status: {Status}", order.Id, order.Status);
 
         var data = new OrderUpdatedData(
@@ -100,27 +94,5 @@ public class PaymentUpdatedCommandHandler : IRequestHandler<PaymentUpdatedComman
         );
         var evt = new OrderUpdatedEvent(data);
         await _eventBus.PublishAsync(evt);
-        #endregion
-
-        if (isFailed)
-        {
-            var user = await _userService.GetByIdAsync(order.UserId);
-
-            _logger.Warning("[WARN] Payment not successful for OrderId: {OrderId}. Publishing OrderFailedEvent.", order.Id);
-
-            var reason = "EXPIRADO";
-
-            var orderDto = order.Items
-                .Select(i => new OrderItemDto(i.ProductId, i.Quantity))
-                .ToList();
-
-            var dataFailed = new OrderFailedData(
-                orderDto,
-                reason,
-                user!.Email
-            );
-            var evtFailed = new OrderFailedEvent(dataFailed);
-            await _eventBus.PublishAsync(evtFailed);
-        }
     }
 }

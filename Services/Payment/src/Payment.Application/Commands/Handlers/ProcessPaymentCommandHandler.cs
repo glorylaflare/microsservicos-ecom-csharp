@@ -45,7 +45,7 @@ public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentComman
         }
 
         var metadata = paymentData?.Metadata;
-        var status = paymentData.Status;
+        var status = paymentData?.Status;
         
         if (metadata == null || !metadata.Any())
         {
@@ -81,7 +81,11 @@ public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentComman
         _paymentRepository.Update(payment);
         await _paymentRepository.SaveChangesAsync();
 
-        var data = new PaymentUpdatedData(payment.Id, payment.OrderId, payment.CheckoutUrl!, payment.Status.ToString());
+        var data = new PaymentUpdatedData(
+            payment.Id, 
+            payment.OrderId, 
+            payment.CheckoutUrl!, 
+            payment.Status.ToString());
         var evt = new PaymentUpdatedEvent(data);
 
         await _eventBus.PublishAsync(evt);

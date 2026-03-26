@@ -1,26 +1,30 @@
-using Auth.Api.Interfaces;
-using Auth.Api.Responses;
+using Auth.Application.Interfaces;
+using Auth.Application.Responses;
 using Auth0.Core.Exceptions;
 using FluentResults;
 using FluentValidation;
 using MediatR;
 using Serilog;
-namespace Auth.Api.Commands.Handlers;
+
+namespace Auth.Application.Commands.Handlers;
 
 public class AuthenticationUserCommandHandler : IRequestHandler<AuthenticateUserCommand, Result<TokenResponse>>
 {
     private readonly IValidator<AuthenticateUserCommand> _validator;
     private readonly IAuthService _authService;
     private readonly Serilog.ILogger _logger;
+
     public AuthenticationUserCommandHandler(IValidator<AuthenticateUserCommand> validator, IAuthService authService)
     {
         _validator = validator;
         _authService = authService;
         _logger = Log.ForContext<AuthenticationUserCommandHandler>();
     }
+    
     public async Task<Result<TokenResponse>> Handle(AuthenticateUserCommand request, CancellationToken cancellationToken)
     {
         _logger.Information("[INFO] Handling {EventName} for email: {Email}", nameof(AuthenticateUserCommand), request.Email);
+        
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
@@ -29,6 +33,7 @@ public class AuthenticationUserCommandHandler : IRequestHandler<AuthenticateUser
             _logger.Warning("[WARN] Validation failed for {EventName}: {Errors}", nameof(AuthenticateUserCommand), errors);
             return Result.Fail(errors);
         }
+        
         try
         {
             var tokenResponse = await _authService.GetTokenAsync(request.Email, request.Password);

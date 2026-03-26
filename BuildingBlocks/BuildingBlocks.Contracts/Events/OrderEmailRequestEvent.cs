@@ -4,9 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace BuildingBlocks.Contracts.Events;
 
-public record OrderFailedEvent : IntegrationEvent<OrderFailedData>
+public record OrderEmailRequestEvent : IntegrationEvent<OrderEmailRequestData>
 {
     [JsonConstructor]
-    public OrderFailedEvent(OrderFailedData data)
+    public OrderEmailRequestEvent(OrderEmailRequestData data)
         : base(data) { }
 }

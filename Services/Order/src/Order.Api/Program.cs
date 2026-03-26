@@ -7,6 +7,7 @@ using BuildingBlocks.Security.Extensions;
 using BuildingBlocks.SharedKernel.Config;
 using Order.Api.Extensions;
 using Order.Application.Commands;
+using Order.Application.Integrations;
 using Order.Application.Interfaces;
 using Order.Domain.Interfaces;
 using Order.Infra.Data.Context;
@@ -32,6 +33,7 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderReadService, OrderReadService>();
 builder.Services.AddScoped<IUserReadService, UserReadService>();
 builder.Services.AddScoped<IPaymentReadService, PaymentReadService>();
+builder.Services.AddScoped<IOrderEmailPublisher, OrderEmailPublisher>();
 builder.Services.AddValidators();
 builder.Services.AddConsumers();
 

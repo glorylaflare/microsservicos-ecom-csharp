@@ -1,6 +1,7 @@
-using Auth.Api.Commands;
+using Auth.Application.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+
 namespace Auth.Api.Controllers;
 
 [Route("api/auth")]

@@ -21,6 +21,8 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\..\..\BuildingBlocks\BuildingBlocks.Observability\BuildingBlocks.Observability.csproj" />
+	  <ProjectReference Include="..\Auth.Application\Auth.Application.csproj" />
+	  <ProjectReference Include="..\Auth.Infra\Auth.Infra.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -6,7 +6,7 @@ using Stock.Application.Commands;
 
 namespace Stock.Application.Consumers;
 
-public class OrderFailedConsumer : IIntegrationEventHandler<OrderFailedEvent>
+public class OrderFailedConsumer : IIntegrationEventHandler<OrderEmailRequestEvent>
 {
     private readonly ILogger _logger;
     private readonly IMediator _mediator;
@@ -17,7 +17,7 @@ public class OrderFailedConsumer : IIntegrationEventHandler<OrderFailedEvent>
         _logger = Log.ForContext<OrderFailedConsumer>();
     }
 
-    public async Task HandleAsync(OrderFailedEvent @event)
+    public async Task HandleAsync(OrderEmailRequestEvent @event)
     {
         var totalQuantity = @event.Data.Items.Sum(item => item.Quantity);
 
