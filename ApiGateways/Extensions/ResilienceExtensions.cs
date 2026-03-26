@@ -1,12 +1,10 @@
 using Polly;
 using Polly.CircuitBreaker;
 using Polly.Contrib.WaitAndRetry;
-using Polly.Fallback;
 using Polly.Registry;
 using Polly.Retry;
 using Polly.Timeout;
 using Serilog;
-using System.Net;
 namespace ApiGateways.Extensions;
 
 public static class ResilienceExtensions
