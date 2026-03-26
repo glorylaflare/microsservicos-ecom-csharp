@@ -21,6 +21,6 @@ public class PaymentUpdatedConsumer : IIntegrationEventHandler<PaymentUpdatedEve
     {
         _logger.Information("[INFO] Handling {EventName} for OrderId: {OrderId} with Status: {Status}", nameof(PaymentUpdatedEvent), @event.Data.OrderId, @event.Data.Status);
 
-        await _mediator.Send(new PaymentUpdatedCommand(@event.Data.OrderId, @event.Data.Status));
+        await _mediator.Send(new PaymentUpdatedCommand(@event.Data.OrderId, @event.Data.Status, @event.Data.CheckoutUrl));
     }
 }
