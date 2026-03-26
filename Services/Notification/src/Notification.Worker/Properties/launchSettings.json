@@ -1,10 +1,7 @@
 {
   "profiles": {
     "Notification.Worker": {
-      "commandName": "Project",
-      "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development"
-      }
+      "commandName": "Project"
     },
     "Container (Dockerfile)": {
       "commandName": "Docker"
