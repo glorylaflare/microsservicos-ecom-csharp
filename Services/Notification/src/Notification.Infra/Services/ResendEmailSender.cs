@@ -28,7 +28,7 @@ public class ResendEmailSender : IEmailSender
         var emailMessage = new EmailMessage()
         {
             From = _settings.FromEmail,
-            To = "marcelojunior1017@gmail.com",
+            To = message.To,
             Subject = message.Subject,
             HtmlBody = message.Body,
         };
