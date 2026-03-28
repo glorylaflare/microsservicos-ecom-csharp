@@ -3,25 +3,24 @@ using BuildingBlocks.Contracts.Events;
 using BuildingBlocks.Messaging;
 using FluentResults;
 using MediatR;
-using MercadoPago.Client.Payment;
-using MercadoPago.Config;
-using Microsoft.Extensions.Configuration;
+using Payment.Application.Interfaces;
 using Payment.Domain.Interface;
 using Payment.Domain.Models;
 using Serilog;
+
 namespace Payment.Application.Commands.ProcessPayment;
 
 public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentCommand, Result<Unit>>
 {
     private readonly IPaymentRepository _paymentRepository;
-    private readonly IConfiguration _configuration;
+    private readonly IMercadoPagoPaymentService _mercadoPagoService;
     private readonly ILogger _logger;
     private readonly IEventBus _eventBus;
 
-    public ProcessPaymentCommandHandler(IPaymentRepository paymentRepository, IConfiguration configuration, IEventBus eventBus)
+    public ProcessPaymentCommandHandler(IPaymentRepository paymentRepository, IMercadoPagoPaymentService mercadoPagoService, IEventBus eventBus)
     {
         _paymentRepository = paymentRepository;
-        _configuration = configuration;
+        _mercadoPagoService = mercadoPagoService;
         _eventBus = eventBus;
         _logger = Log.ForContext<ProcessPaymentCommandHandler>();
     }
@@ -29,41 +28,21 @@ public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentComman
     public async Task<Result<Unit>> Handle(ProcessPaymentCommand request, CancellationToken cancellationToken)
     {
         _logger.Information("[INFO] Handling {CommandName}", nameof(ProcessPaymentCommand));
-        
-        MercadoPagoConfig.AccessToken = _configuration["MercadoPago:AccessToken"];
-        
-        var paymentClient = new PaymentClient();
-        var paymentData = await paymentClient.GetAsync(
-            id: long.Parse(request.Data.Id),
-            cancellationToken: cancellationToken
-        );
 
-        if ( paymentData == null ) 
+        if (!long.TryParse(request.Data.Id, out var paymentId))
         {
-            _logger.Error("[ERROR] Paymentdata not found");
-            return Result.Fail("Paymentdata not found in Mercado Pago database");
+            _logger.Error("Invalid payment id: {Id}", request.Data.Id);
+            return Result.Fail("Invalid payment id");
         }
 
-        var metadata = paymentData?.Metadata;
-        var status = paymentData?.Status;
-        
-        if (metadata == null || !metadata.Any())
+        var processResult = await _mercadoPagoService.ProcessMercadoPagoPayment(paymentId);
+        if (processResult.IsFailed)
         {
-            _logger.Error("[ERROR] Metadata not found in payment data");
-            return Result.Fail("Metadata not found in payment data");
+            _logger.Error("[ERROR] Failed to process MercadoPago payment for PaymentId: {PaymentId}", paymentId);
+            return Result.Fail("Failed to process MercadoPago payment");
         }
 
-        if (!metadata.TryGetValue("order_id", out var orderIdValue))
-        {
-            _logger.Error("[ERROR] order_id not found in payment metadata");
-            return Result.Fail("order_id not found in payment metadata");
-        }
-
-        if (!int.TryParse(orderIdValue.ToString(), out int orderId))
-        {
-            _logger.Error("[ERROR] Invalid order_id format: {OrderId}", orderIdValue);
-            return Result.Fail("Invalid order_id format in payment metadata");
-        }
+        var orderId = processResult.Value.OrderId;
 
         var payment = await _paymentRepository.GetByIdAsync(orderId);
         if (payment == null)
@@ -71,10 +50,16 @@ public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentComman
             _logger.Error("[ERROR] Payment with order ID {OrderId} not found", orderId);
             return Result.Fail($"Payment with order ID {orderId} not found");
         }
-        
+
+        if (payment.Status == PaymentStatus.Paid)
+        {
+            _logger.Information("Payment already processed for OrderId: {OrderId}", orderId);
+            return Result.Ok(Unit.Value);
+        }
+
         _logger.Information("[INFO] Processing payment of type: {PaymentType}", request.Type);
 
-        var currentStatus = validateStatus(status);
+        var currentStatus = validateStatus(processResult.Value.Status);
 
         payment.SetStatus(currentStatus);
 

@@ -8,11 +8,11 @@ public class Payment : EntityBase
     public PaymentStatus Status { get; private set; }
     public string? CheckoutUrl { get; private set; }
     public string? MercadoPagoPreference { get; private set; }
-    public DateTime ExpirationDate { get; private set; }
+    public DateTime? ExpirationDate { get; private set; }
 
     public Payment() { }
 
-    public Payment(int orderId, decimal amount, string? checkoutUrl, string mercadoPagoPreference, DateTime expirationDate)
+    public Payment(int orderId, decimal amount, string? checkoutUrl, string mercadoPagoPreference, DateTime? expirationDate)
     {
         OrderId = orderId;
         Amount = amount;

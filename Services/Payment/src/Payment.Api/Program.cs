@@ -5,11 +5,13 @@ using BuildingBlocks.Observability.Extensions;
 using BuildingBlocks.Observability.Middlewares;
 using BuildingBlocks.Security.Extensions;
 using BuildingBlocks.SharedKernel.Config;
+using MercadoPago.Config;
 using Payment.Api.Extensions;
 using Payment.Application.Commands.CreatePayment;
 using Payment.Application.Interfaces;
 using Payment.Application.Services;
 using Payment.Domain.Interface;
+using Payment.Infra.Configurations;
 using Payment.Infra.Data.Context.Read;
 using Payment.Infra.Data.Context.Write;
 using Payment.Infra.Data.Repositories;
@@ -25,6 +27,10 @@ builder.Services.AddCustomLogging(builder.Configuration);
 
 builder.Services.AddAuthenticationService(builder.Configuration);
 builder.Services.AddUserContext();
+
+builder.Services.Configure<MercadoPagoSettings>(
+    builder.Configuration.GetSection("MercadoPago"));
+builder.Services.AddMercadoPagoToken(builder.Configuration);
 
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(CreatePaymentCommand).Assembly));
