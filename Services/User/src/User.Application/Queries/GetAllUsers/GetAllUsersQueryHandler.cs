@@ -3,7 +3,7 @@ using MediatR;
 using Serilog;
 using User.Application.Interfaces;
 using User.Application.Responses;
-namespace User.Application.Queries.Handlers;
+namespace User.Application.Queries.GetAllUsers;
 
 public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, Result<IEnumerable<GetUserResponse>>>
 {

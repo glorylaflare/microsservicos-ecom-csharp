@@ -3,7 +3,7 @@ using MediatR;
 using Serilog;
 using Stock.Application.Interfaces;
 using Stock.Application.Responses;
-namespace Stock.Application.Queries.Handlers;
+namespace Stock.Application.Queries.GetProductById;
 
 public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, Result<GetProductResponse>>
 {

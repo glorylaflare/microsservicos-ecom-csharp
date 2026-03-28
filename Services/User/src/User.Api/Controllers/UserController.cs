@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using User.Application.Commands.CreateUser;
 using User.Application.Commands.DeactivateUser;
-using User.Application.Queries;
+using User.Application.Queries.GetAllUsers;
+using User.Application.Queries.GetUsersById;
 namespace User.Api.Controllers;
 
 [Authorize]

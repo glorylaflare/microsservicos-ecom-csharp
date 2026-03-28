@@ -3,8 +3,7 @@ using BuildingBlocks.Messaging;
 using FluentAssertions;
 using MediatR;
 using Moq;
-using Order.Application.Commands;
-using Order.Application.Commands.Handlers;
+using Order.Application.Commands.StockRejected;
 using Order.Domain.Interfaces;
 using Order.Domain.Models;
 

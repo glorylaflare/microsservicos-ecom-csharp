@@ -4,7 +4,6 @@ using BuildingBlocks.Messaging;
 using FluentAssertions;
 using Moq;
 using User.Application.Commands.CreateUser;
-using User.Application.Commands.Handlers;
 using User.Application.Interfaces;
 using User.Domain.Interfaces;
 namespace User.UnitTests.Application.Commands;

@@ -3,16 +3,16 @@ using MediatR;
 using Serilog;
 using Stock.Application.Interfaces;
 using Stock.Application.Responses;
-namespace Stock.Application.Queries.Handlers;
+namespace Stock.Application.Queries.GetAllProducts;
 
-public class GetAllProductQueryHandler : IRequestHandler<GetAllProductsQuery, Result<IEnumerable<GetProductResponse>>>
+public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, Result<IEnumerable<GetProductResponse>>>
 {
     private readonly IProductReadService _productService;
     private readonly ILogger _logger;
-    public GetAllProductQueryHandler(IProductReadService productService)
+    public GetAllProductsQueryHandler(IProductReadService productService)
     {
         _productService = productService;
-        _logger = Log.ForContext<GetAllProductQueryHandler>();
+        _logger = Log.ForContext<GetAllProductsQueryHandler>();
     }
     public async Task<Result<IEnumerable<GetProductResponse>>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
     {

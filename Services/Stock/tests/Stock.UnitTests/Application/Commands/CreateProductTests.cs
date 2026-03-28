@@ -1,7 +1,6 @@
 using FluentAssertions;
 using Moq;
 using Stock.Application.Commands.CreateProduct;
-using Stock.Application.Commands.Handlers;
 using Stock.Domain.Interfaces;
 using Stock.Domain.Models;
 namespace Stock.UnitTests.Application.Commands;

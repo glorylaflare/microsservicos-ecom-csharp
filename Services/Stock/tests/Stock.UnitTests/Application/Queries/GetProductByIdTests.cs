@@ -2,8 +2,7 @@ using BuildingBlocks.Infra.ReadModels;
 using FluentAssertions;
 using Moq;
 using Stock.Application.Interfaces;
-using Stock.Application.Queries;
-using Stock.Application.Queries.Handlers;
+using Stock.Application.Queries.GetProductById;
 using Stock.Application.Responses;
 namespace Stock.UnitTests.Application.Queries;
 

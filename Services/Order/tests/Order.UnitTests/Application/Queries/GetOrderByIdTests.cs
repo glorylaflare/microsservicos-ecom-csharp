@@ -2,8 +2,7 @@ using BuildingBlocks.Infra.MongoReadModels;
 using FluentAssertions;
 using Moq;
 using Order.Application.Interfaces;
-using Order.Application.Queries;
-using Order.Application.Queries.Handlers;
+using Order.Application.Queries.GetOrderById;
 using Order.Application.Responses;
 namespace Order.UnitTests.Application.Queries;
 

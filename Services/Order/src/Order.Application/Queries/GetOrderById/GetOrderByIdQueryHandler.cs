@@ -3,7 +3,8 @@ using MediatR;
 using Order.Application.Interfaces;
 using Order.Application.Responses;
 using Serilog;
-namespace Order.Application.Queries.Handlers;
+
+namespace Order.Application.Queries.GetOrderById;
 
 public class GetOrderByIdQueryHandler : IRequestHandler<GetOrderByIdQuery, Result<GetOrderComposeResponse>>
 {

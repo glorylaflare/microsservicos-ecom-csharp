@@ -3,7 +3,6 @@ using FluentValidation;
 using Moq;
 using User.Application.Commands.CreateUser;
 using User.Application.Commands.DeactivateUser;
-using User.Application.Commands.Handlers;
 using User.Domain.Interfaces;
 namespace User.UnitTests.Application.Commands;
 
