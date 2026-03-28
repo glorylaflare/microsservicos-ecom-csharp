@@ -1,4 +1,6 @@
-﻿using BuildingBlocks.Contracts.Datas;
+﻿using BuildingBlocks.Contracts;
+using BuildingBlocks.Contracts.Datas;
+using BuildingBlocks.Contracts.Events;
 using BuildingBlocks.Contracts.MongoEvents;
 using BuildingBlocks.Messaging;
 using MediatR;
@@ -79,7 +81,27 @@ public class PaymentUpdatedCommandHandler : IRequestHandler<PaymentUpdatedComman
         _orderRepository.Update(order);
         await _orderRepository.SaveChangesAsync();
 
+        #region failed order events
+        await PublishFailedOrder(order);
         await PublishMongoEvent(order);
+        #endregion
+    }
+
+    private async Task PublishFailedOrder(Domain.Models.Order order)
+    {
+        _logger.Warning("[WARN] Payment not successful for OrderId: {OrderId}. Publishing OrderFailedEvent.", order.Id);
+
+        var orderDto = order.Items
+            .Select(i => new OrderItemDto(i.ProductId, i.Quantity))
+            .ToList();
+
+        var data = new OrderFailedData(
+            order.Id,
+            orderDto,
+            "EXPIRED"
+        );
+        var evt = new OrderFailedEvent(data);
+        await _eventBus.PublishAsync(evt);
     }
 
     public async Task PublishMongoEvent(Domain.Models.Order order)
