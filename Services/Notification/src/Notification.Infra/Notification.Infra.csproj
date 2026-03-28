@@ -1,17 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Resend" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Resend" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Notification.Application\Notification.Application.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Notification.Application\Notification.Application.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Templates\" />
+		<None Include="Templates\*.html" CopyToOutputDirectory="Always" />
+	</ItemGroup>
 
 </Project>
