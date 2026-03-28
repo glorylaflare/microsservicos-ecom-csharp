@@ -1,7 +1,7 @@
 using BuildingBlocks.Contracts.Events;
 using BuildingBlocks.Messaging;
 using MediatR;
-using Payment.Application.Commands;
+using Payment.Application.Commands.CreatePayment;
 using Serilog;
 namespace Payment.Application.Consumer;
 
