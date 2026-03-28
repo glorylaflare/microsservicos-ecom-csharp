@@ -23,7 +23,7 @@ public class ResendEmailSender : IEmailSender
 
     public async Task SendAsync(Message message)
     {
-        _logger.Information("API KEY: {Key}", _settings.ApiKey);
+        _logger.Debug("[DEBUG] API KEY: {Key}", _settings.ApiKey);
 
         var emailMessage = new EmailMessage()
         {
@@ -41,10 +41,7 @@ public class ResendEmailSender : IEmailSender
         {
             var errorMessage = response.Exception?.Message ?? "Unknown error";
 
-            _logger.Error(
-                "[ERROR] Error sending email via Resend. Error: {Error}",
-                errorMessage
-            );
+            _logger.Error("[ERROR] Error sending email via Resend. Error: {Error}", errorMessage);
 
             throw new EmailSendException(
                 $"Error sending email via Resend: {errorMessage}"

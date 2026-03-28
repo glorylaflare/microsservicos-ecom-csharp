@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagamento Pendente</title>
+</head>
+<body style="margin:0;padding:0;background-color:#edf2f7;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;">
+
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+           style="background-color:#edf2f7;padding:36px 16px;">
+        <tr>
+            <td align="center">
+
+                <table role="presentation" cellpadding="0" cellspacing="0"
+                       style="width:100%;max-width:600px;">
+
+                    <!-- ═══════════════ HEADER ═══════════════ -->
+                    <tr>
+                        <td style="background:linear-gradient(135deg,#1e3a5f 0%,#1d4ed8 100%);
+                                   border-radius:12px 12px 0 0;
+                                   padding:36px 40px 28px;
+                                   text-align:center;">
+
+                            <!-- Brand Icon -->
+                            <table role="presentation" cellpadding="0" cellspacing="0"
+                                   style="margin:0 auto 16px auto;">
+                                <tr>
+                                    <td style="background:rgba(255,255,255,0.15);
+                                               border-radius:50%;
+                                               width:76px;height:76px;
+                                               text-align:center;vertical-align:middle;
+                                               line-height:76px;">
+                                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none"
+                                             xmlns="http://www.w3.org/2000/svg"
+                                             style="vertical-align:middle;">
+                                            <path d="M5 5H8.5L10.5 25H30.5L33 10H12"
+                                                  stroke="white" stroke-width="2.2"
+                                                  stroke-linecap="round" stroke-linejoin="round"
+                                                  fill="none"/>
+                                            <circle cx="15" cy="33" r="2.5" fill="white"/>
+                                            <circle cx="27" cy="33" r="2.5" fill="white"/>
+                                            <path d="M14 17h14M14 21h10"
+                                                  stroke="white" stroke-width="2"
+                                                  stroke-linecap="round"/>
+                                        </svg>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <span style="display:block;color:#ffffff;font-size:22px;
+                                         font-weight:700;letter-spacing:1.2px;">
+                                E&#8209;Commerce
+                            </span>
+                            <span style="display:block;color:rgba(255,255,255,0.55);
+                                         font-size:12px;margin-top:5px;letter-spacing:0.4px;">
+                                A melhor experiência de compra online
+                            </span>
+                        </td>
+                    </tr>
+
+                    <!-- ═══════════════ STATUS STRIP ═══════════════ -->
+                    <tr>
+                        <td style="background-color:#d97706;padding:13px 40px;text-align:center;">
+                            <span style="color:#ffffff;font-size:13px;font-weight:700;
+                                         letter-spacing:0.9px;text-transform:uppercase;">
+                                ⏳&nbsp;&nbsp;Aguardando Pagamento
+                            </span>
+                        </td>
+                    </tr>
+
+                    <!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+                    <tr>
+                        <td style="background-color:#ffffff;padding:36px 40px 32px;">
+
+                            <h1 style="margin:0 0 10px 0;color:#1e3a5f;font-size:24px;
+                                       font-weight:700;line-height:1.3;">
+                                Seu pedido está quase pronto!
+                            </h1>
+                            <p style="margin:0 0 28px 0;color:#64748b;font-size:15px;line-height:1.75;">
+                                Identificamos que o pagamento do seu pedido ainda não foi concluído.
+                                Finalize agora para garantir seus itens.
+                            </p>
+
+                            <!-- Order ID Badge -->
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                                   style="margin-bottom:28px;">
+                                <tr>
+                                    <td style="background:#fffbeb;
+                                               border-left:4px solid #d97706;
+                                               border-radius:0 8px 8px 0;
+                                               padding:16px 20px;">
+                                        <span style="display:block;color:#92400e;font-size:11px;
+                                                     font-weight:700;text-transform:uppercase;
+                                                     letter-spacing:1px;">
+                                            Número do Pedido
+                                        </span>
+                                        <span style="display:block;color:#1e3a5f;font-size:26px;
+                                                     font-weight:700;margin-top:4px;">
+                                            #{{OrderId}}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Urgency Note -->
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+                                   style="margin-bottom:28px;">
+                                <tr>
+                                    <td style="background:#fff7ed;border:1px solid #fed7aa;
+                                               border-radius:8px;padding:14px 18px;">
+                                        <p style="margin:0;color:#9a3412;font-size:13px;
+                                                  line-height:1.65;text-align:center;">
+                                            ⚠️&nbsp; Sua reserva pode expirar em breve.
+                                            Conclua o pagamento para não perder seus itens.
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Primary CTA Button -->
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td align="center" style="padding-bottom:12px;">
+                                        <a href="{{CheckoutUrl}}"
+                                           style="display:inline-block;
+                                                  background:linear-gradient(135deg,#2563eb,#1d4ed8);
+                                                  color:#ffffff;font-size:16px;font-weight:700;
+                                                  text-decoration:none;padding:16px 44px;
+                                                  border-radius:8px;letter-spacing:0.4px;">
+                                            Finalizar Pagamento &rarr;
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center">
+                                        <p style="margin:0;color:#94a3b8;font-size:12px;">
+                                            Clique no botão acima para ser redirecionado ao checkout seguro.
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </td>
+                    </tr>
+
+                    <!-- ═══════════════ SECURITY BADGES ═══════════════ -->
+                    <tr>
+                        <td style="background:#f8fafc;border-top:1px solid #e2e8f0;
+                                   border-bottom:1px solid #e2e8f0;padding:18px 40px;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td width="33%" style="text-align:center;padding:6px 8px;">
+                                        <span style="display:block;font-size:22px;line-height:1;">🔒</span>
+                                        <span style="display:block;font-size:10px;color:#64748b;
+                                                     font-weight:700;margin-top:7px;
+                                                     text-transform:uppercase;letter-spacing:0.5px;">
+                                            Checkout Seguro
+                                        </span>
+                                    </td>
+                                    <td width="33%" style="text-align:center;padding:6px 8px;
+                                                           border-left:1px solid #e2e8f0;
+                                                           border-right:1px solid #e2e8f0;">
+                                        <span style="display:block;font-size:22px;line-height:1;">💳</span>
+                                        <span style="display:block;font-size:10px;color:#64748b;
+                                                     font-weight:700;margin-top:7px;
+                                                     text-transform:uppercase;letter-spacing:0.5px;">
+                                            Múltiplos Meios
+                                        </span>
+                                    </td>
+                                    <td width="33%" style="text-align:center;padding:6px 8px;">
+                                        <span style="display:block;font-size:22px;line-height:1;">✅</span>
+                                        <span style="display:block;font-size:10px;color:#64748b;
+                                                     font-weight:700;margin-top:7px;
+                                                     text-transform:uppercase;letter-spacing:0.5px;">
+                                            Compra Garantida
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- ═══════════════ FOOTER ═══════════════ -->
+                    <tr>
+                        <td style="background:#1e3a5f;border-radius:0 0 12px 12px;
+                                   padding:24px 40px;text-align:center;">
+                            <p style="margin:0 0 8px 0;color:rgba(255,255,255,0.55);font-size:13px;">
+                                Precisa de ajuda?&nbsp;
+                                <a href="mailto:suporte@ecommerce.com"
+                                   style="color:#93c5fd;text-decoration:underline;">
+                                    suporte@ecommerce.com
+                                </a>
+                            </p>
+                            <p style="margin:0;color:rgba(255,255,255,0.28);font-size:11px;
+                                      letter-spacing:0.3px;">
+                                &copy; 2026 E-Commerce&nbsp;&nbsp;&middot;&nbsp;&nbsp;Todos os direitos reservados
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>

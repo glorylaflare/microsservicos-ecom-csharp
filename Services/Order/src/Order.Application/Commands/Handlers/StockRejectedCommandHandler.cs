@@ -1,4 +1,6 @@
+using BuildingBlocks.Contracts;
 using BuildingBlocks.Contracts.Datas;
+using BuildingBlocks.Contracts.Events;
 using BuildingBlocks.Contracts.MongoEvents;
 using BuildingBlocks.Messaging;
 using MediatR;
@@ -33,6 +35,20 @@ public class StockRejectedCommandHandler : IRequestHandler<StockRejectedCommand,
         order.Cancelled();
         _orderRepository.Update(order);
         await _orderRepository.SaveChangesAsync();
+
+        _logger.Warning("[WARN] Payment not successful for OrderId: {OrderId}. Publishing OrderFailedEvent.", order.Id);
+
+        var orderDto = order.Items
+            .Select(i => new OrderItemDto(i.ProductId, i.Quantity))
+            .ToList();
+
+        var data = new OrderFailedData(
+            order.Id,
+            orderDto,
+            "INSUFFICIENT STOCK"
+        );
+        var evt = new OrderFailedEvent(data);
+        await _eventBus.PublishAsync(evt);
 
         #region MongoDb update view
         _logger.Information("[INFO] OrderReadModel with ID {OrderId} status updated to {Status}", order.Id, order.Status);
