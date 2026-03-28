@@ -2,7 +2,8 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Payment.Application.Commands.ProcessPayment;
-using Payment.Application.Queries;
+using Payment.Application.Queries.GetAllPayments;
+using Payment.Application.Queries.GetPaymentById;
 using System.ComponentModel.DataAnnotations;
 namespace Payment.Api.Controllers;
 
