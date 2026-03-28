@@ -9,10 +9,12 @@ namespace Auth.Api.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IMediator _mediator;
+    
     public AuthController(IMediator mediator)
     {
         _mediator = mediator;
     }
+
     [HttpPost("login")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
