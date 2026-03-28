@@ -40,7 +40,7 @@ public class UpdateStockCommandHandler : IRequestHandler<UpdateStockCommand, Res
                 return Result.Fail($"Product with ID {request.ProductId} not found.");
             }
 
-            product.DecreaseStock(request.Quantity);
+            product.Restock(request.Quantity);
             _productRepository.Update(product);
             await _productRepository.SaveChangesAsync();
 
