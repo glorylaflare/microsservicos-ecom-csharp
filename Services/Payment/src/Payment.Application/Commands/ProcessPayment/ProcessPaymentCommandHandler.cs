@@ -61,6 +61,7 @@ public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentComman
 
         var currentStatus = validateStatus(processResult.Value.Status);
 
+        payment.AttachMercadoPagoPayment(paymentId);
         payment.SetStatus(currentStatus);
 
         _paymentRepository.Update(payment);

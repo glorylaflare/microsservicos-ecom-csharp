@@ -16,6 +16,7 @@ using Payment.Infra.Data.Context.Read;
 using Payment.Infra.Data.Context.Write;
 using Payment.Infra.Data.Repositories;
 using Payment.Infra.Data.Services;
+using Payment.Infra.Data.Services.MercadoPago;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +39,7 @@ builder.Services.AddMediatR(cfg =>
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<IPaymentReadService, PaymentReadService>();
 builder.Services.AddScoped<IPaymentExpirationService, PaymentExpirationService>();
+builder.Services.AddScoped<IMercadoPagoPaymentService, MercadoPagoPaymentService>();
 builder.Services.AddValidators();
 builder.Services.AddConsumers();
 builder.Services.AddCronJob(builder.Configuration);
