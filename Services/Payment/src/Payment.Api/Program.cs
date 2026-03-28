@@ -6,7 +6,7 @@ using BuildingBlocks.Observability.Middlewares;
 using BuildingBlocks.Security.Extensions;
 using BuildingBlocks.SharedKernel.Config;
 using Payment.Api.Extensions;
-using Payment.Application.Commands;
+using Payment.Application.Commands.CreatePayment;
 using Payment.Application.Interfaces;
 using Payment.Application.Services;
 using Payment.Domain.Interface;

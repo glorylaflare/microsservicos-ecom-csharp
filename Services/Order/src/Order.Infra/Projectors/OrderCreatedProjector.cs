@@ -20,12 +20,12 @@ public class OrderCreatedProjector : IIntegrationEventHandler<OrderCreatedEvent>
 
     public async Task HandleAsync(OrderCreatedEvent @event)
     {
-        _logger.Information("[INFO] Projecting {EventName} for Order ID: {OrderId}", nameof(OrderCreatedEvent), @event.Data.Id);
+        _logger.Information("[INFO] Projecting {EventName} for Order ID: {OrderId}", nameof(OrderCreatedEvent), @event.Data.OrderId);
 
         await _orders.InsertOneAsync(new OrderReadModel
         {
             UserId = @event.Data.UserId,
-            Id = @event.Data.Id,
+            Id = @event.Data.OrderId,
             Items = @event.Data.Items.Select(i => new OrderItemReadModel
             {
                 ProductId = i.ProductId,
@@ -36,6 +36,6 @@ public class OrderCreatedProjector : IIntegrationEventHandler<OrderCreatedEvent>
             CreatedAt = @event.Data.CreatedAt
         });
 
-        _logger.Information("[INFO] Successfully projected {EventName} for Order ID: {OrderId}", nameof(OrderCreatedEvent), @event.Data.Id);
+        _logger.Information("[INFO] Successfully projected {EventName} for Order ID: {OrderId}", nameof(OrderCreatedEvent), @event.Data.OrderId);
     }
 }

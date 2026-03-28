@@ -6,7 +6,7 @@ using BuildingBlocks.Observability.Middlewares;
 using BuildingBlocks.Security.Extensions;
 using BuildingBlocks.SharedKernel.Config;
 using Stock.Api.Extensions;
-using Stock.Application.Commands;
+using Stock.Application.Commands.CreateProduct;
 using Stock.Application.Interfaces;
 using Stock.Domain.Interfaces;
 using Stock.Infra.Data.Context;

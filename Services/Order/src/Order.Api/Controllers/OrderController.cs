@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Order.Application.Commands;
+using Order.Application.Commands.CreateOrder;
 using Order.Application.Queries;
 using System.ComponentModel.DataAnnotations;
 namespace Order.Api.Controllers;

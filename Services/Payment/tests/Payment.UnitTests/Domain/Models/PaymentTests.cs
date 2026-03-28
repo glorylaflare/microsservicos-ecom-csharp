@@ -9,6 +9,7 @@ public class PaymentTests
     private const int _ORDERID = 1;
     private const decimal _AMOUNT = 10m;
     private const string _CHECKOUTURL = "https://url.com";
+    private string _MERCADOPAGOPREFERENCE = Guid.NewGuid().ToString();
     private DateTime _expirationDate = DateTime.UtcNow.AddMinutes(30);
     #endregion
 
@@ -16,7 +17,7 @@ public class PaymentTests
     public void CreatePayment_WithValidParameters_ShouldHavePendingStatus()
     {
         // Act
-        var payment = new Payment.Domain.Models.Payment(_ORDERID, _AMOUNT, _CHECKOUTURL, _expirationDate);
+        var payment = new Payment.Domain.Models.Payment(_ORDERID, _AMOUNT, _CHECKOUTURL, _MERCADOPAGOPREFERENCE ,_expirationDate);
         // Assert
         payment.Status.Should().Be(PaymentStatus.Pending);
     }
@@ -27,7 +28,7 @@ public class PaymentTests
     public void SetStatus_WithValidStatus_ShouldUpdatePaymentStatus(PaymentStatus status)
     {
         //Arrange
-        var payment = new Payment.Domain.Models.Payment(_ORDERID, _AMOUNT, _CHECKOUTURL, _expirationDate);
+        var payment = new Payment.Domain.Models.Payment(_ORDERID, _AMOUNT, _CHECKOUTURL, _MERCADOPAGOPREFERENCE, _expirationDate);
         var expectedStatus = status;
         // Act
         payment.SetStatus(status);

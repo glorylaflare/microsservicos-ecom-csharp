@@ -43,6 +43,10 @@ namespace Payment.Infra.Data.Migrations
                     b.Property<DateTime>("ExpirationDate")
                         .HasColumnType("datetime");
 
+                    b.Property<string>("MercadoPagoPreference")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 

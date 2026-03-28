@@ -3,10 +3,11 @@ using BuildingBlocks.Messaging.Extensions;
 using BuildingBlocks.Observability.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Notification.Application.Commands;
+using Notification.Application.Commands.OrderCompleted;
 using Notification.Application.Interfaces;
 using Notification.Infra.Configurations;
 using Notification.Infra.Services;
+using Notification.Infra.Services.Resend;
 using Notification.Worker.Configurations;
 using Resend;
 

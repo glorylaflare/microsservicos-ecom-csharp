@@ -12,6 +12,7 @@ public class PaymentMap : IEntityTypeConfiguration<Domain.Models.Payment>
         builder.Property(p => p.Amount).IsRequired().HasColumnType("decimal(18,2)");
         builder.Property(p => p.Status).IsRequired().HasConversion<string>();
         builder.Property(p => p.CheckoutUrl).IsRequired();
+        builder.Property(p => p.MercadoPagoPreference).IsRequired();
         builder.Property(p => p.ExpirationDate).IsRequired().HasColumnType("datetime");
         builder.Property(p => p.CreatedAt).IsRequired().HasColumnType("datetime");
         builder.Property(p => p.UpdatedAt).HasColumnType("datetime");

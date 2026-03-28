@@ -1,6 +1,6 @@
 using FluentAssertions;
 using Moq;
-using Stock.Application.Commands;
+using Stock.Application.Commands.UpdateStock;
 using Stock.Domain.Interfaces;
 using Stock.Domain.Models;
 namespace Stock.UnitTests.Application.Commands;

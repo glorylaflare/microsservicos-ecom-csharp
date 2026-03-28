@@ -1,5 +1,5 @@
 using FluentValidation;
-using Order.Application.Commands;
+using Order.Application.Commands.CreateOrder;
 namespace Order.Api.Extensions;
 
 public static class ValidatorExtensions

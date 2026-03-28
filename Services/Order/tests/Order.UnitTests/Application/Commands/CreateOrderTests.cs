@@ -1,12 +1,12 @@
 using BuildingBlocks.Security.Context;
 using FluentAssertions;
 using Moq;
-using Order.Application.Commands;
 using Order.Application.Commands.Handlers;
 using BuildingBlocks.Contracts.Events;
 using BuildingBlocks.Contracts.MongoEvents;
 using Order.Domain.Interfaces;
 using Order.Domain.Models;
+using Order.Application.Commands.CreateOrder;
 namespace Order.UnitTests.Application.Commands;
 
 public class CreateOrderTests

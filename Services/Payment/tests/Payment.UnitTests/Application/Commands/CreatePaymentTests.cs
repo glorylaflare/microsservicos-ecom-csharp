@@ -3,7 +3,7 @@ using FluentAssertions;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Moq;
-using Payment.Application.Commands;
+using Payment.Application.Commands.CreatePayment;
 using Payment.Application.Commands.Handlers;
 using Payment.Domain.Interface;
 

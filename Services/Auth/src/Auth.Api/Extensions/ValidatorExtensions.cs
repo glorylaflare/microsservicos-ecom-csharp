@@ -1,4 +1,4 @@
-using Auth.Application.Commands;
+using Auth.Application.Commands.AuthenticateUser;
 using FluentValidation;
 namespace Auth.Api.Extensions;
 

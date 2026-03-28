@@ -5,7 +5,7 @@ using BuildingBlocks.Observability.Middlewares;
 using BuildingBlocks.Security.Extensions;
 using BuildingBlocks.SharedKernel.Config;
 using User.Api.Extensions;
-using User.Application.Commands;
+using User.Application.Commands.CreateUser;
 using User.Application.Interfaces;
 using User.Application.Services;
 using User.Domain.Interfaces;

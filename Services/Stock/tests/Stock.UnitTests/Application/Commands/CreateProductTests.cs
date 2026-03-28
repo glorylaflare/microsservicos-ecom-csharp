@@ -1,6 +1,6 @@
 using FluentAssertions;
 using Moq;
-using Stock.Application.Commands;
+using Stock.Application.Commands.CreateProduct;
 using Stock.Application.Commands.Handlers;
 using Stock.Domain.Interfaces;
 using Stock.Domain.Models;

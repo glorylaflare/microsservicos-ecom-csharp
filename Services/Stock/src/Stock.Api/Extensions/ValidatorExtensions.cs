@@ -1,5 +1,7 @@
 using FluentValidation;
-using Stock.Application.Commands;
+using Stock.Application.Commands.CreateProduct;
+using Stock.Application.Commands.UpdateProduct;
+using Stock.Application.Commands.UpdateStock;
 namespace Stock.Api.Extensions;
 
 public static class ValidatorExtensions

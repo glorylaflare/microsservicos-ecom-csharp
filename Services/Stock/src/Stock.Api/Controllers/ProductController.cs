@@ -1,7 +1,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Stock.Application.Commands;
+using Stock.Application.Commands.CreateProduct;
+using Stock.Application.Commands.UpdateProduct;
+using Stock.Application.Commands.UpdateStock;
 using Stock.Application.Queries;
 using System.ComponentModel.DataAnnotations;
 namespace Stock.Api.Controllers;

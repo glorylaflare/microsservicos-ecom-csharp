@@ -4,14 +4,14 @@ namespace BuildingBlocks.Contracts.Datas;
 
 public record UserCreatedData
 {
-    public string Id { get; init; }
+    public string UserId { get; init; }
     public string Username { get; init; }
     public string Email { get; init; }
 
     [JsonConstructor]
-    public UserCreatedData(string id, string username, string email)
+    public UserCreatedData(string userId, string username, string email)
     {
-        Id = id;
+        UserId = userId;
         Username = username;
         Email = email;
     }
