@@ -3,7 +3,8 @@ using MediatR;
 using Payment.Application.Interfaces;
 using Payment.Application.Responses;
 using Serilog;
-namespace Payment.Application.Queries.Handlers;
+
+namespace Payment.Application.Queries.GetPaymentById;
 
 public class GetPaymentByIdQueryHandler : IRequestHandler<GetPaymentByIdQuery, Result<GetPaymentResponse>>
 {

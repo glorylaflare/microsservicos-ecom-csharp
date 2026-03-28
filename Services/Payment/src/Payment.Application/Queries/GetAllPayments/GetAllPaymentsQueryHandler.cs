@@ -3,17 +3,18 @@ using MediatR;
 using Payment.Application.Interfaces;
 using Payment.Application.Responses;
 using Serilog;
-namespace Payment.Application.Queries.Handlers;
 
-public class GetAllPaymentQueryHandler : IRequestHandler<GetAllPaymentsQuery, Result<IEnumerable<GetPaymentResponse>>>
+namespace Payment.Application.Queries.GetAllPayments;
+
+public class GetAllPaymentsQueryHandler : IRequestHandler<GetAllPaymentsQuery, Result<IEnumerable<GetPaymentResponse>>>
 {
     private readonly IPaymentReadService _paymentService;
     private readonly ILogger _logger;
 
-    public GetAllPaymentQueryHandler(IPaymentReadService paymentService)
+    public GetAllPaymentsQueryHandler(IPaymentReadService paymentService)
     {
         _paymentService = paymentService;
-        _logger = Log.ForContext<GetAllPaymentQueryHandler>();
+        _logger = Log.ForContext<GetAllPaymentsQueryHandler>();
     }
 
     public async Task<Result<IEnumerable<GetPaymentResponse>>> Handle(GetAllPaymentsQuery request, CancellationToken cancellationToken)

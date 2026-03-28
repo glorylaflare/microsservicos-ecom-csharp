@@ -2,8 +2,7 @@
 using FluentAssertions;
 using Moq;
 using Payment.Application.Interfaces;
-using Payment.Application.Queries;
-using Payment.Application.Queries.Handlers;
+using Payment.Application.Queries.GetAllPayments;
 using Payment.Application.Responses;
 
 namespace Payment.UnitTests.Application.Queries;
@@ -53,7 +52,7 @@ public class GetAllPaymentTests
 			p.CreatedAt
 		));
 
-		var handler = new GetAllPaymentQueryHandler(_mockService.Object);
+		var handler = new GetAllPaymentsQueryHandler(_mockService.Object);
 
 		//Act
 		var result = await handler.Handle(_request, cancellationToken);
@@ -72,7 +71,7 @@ public class GetAllPaymentTests
 			.Setup(s => s.GetAllAsync())
 			.ReturnsAsync(new List<PaymentReadModel>());
 
-		var handler = new GetAllPaymentQueryHandler(_mockService.Object);
+		var handler = new GetAllPaymentsQueryHandler(_mockService.Object);
 
 		//Act
 		var result = await handler.Handle(_request, cancellationToken);
