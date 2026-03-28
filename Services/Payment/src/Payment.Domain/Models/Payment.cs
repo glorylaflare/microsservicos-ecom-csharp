@@ -7,16 +7,19 @@ public class Payment : EntityBase
     public decimal Amount { get; private set; }
     public PaymentStatus Status { get; private set; }
     public string? CheckoutUrl { get; private set; }
-    public DateTime ExpirationDate { get; private set; }
+    public string? MercadoPagoPreference { get; private set; }
+    public long MercadoPagoPaymentId { get; private set; }
+    public DateTime? ExpirationDate { get; private set; }
 
     public Payment() { }
 
-    public Payment(int orderId, decimal amount, string? checkoutUrl, DateTime expirationDate)
+    public Payment(int orderId, decimal amount, string? checkoutUrl, string mercadoPagoPreference, DateTime? expirationDate)
     {
         OrderId = orderId;
         Amount = amount;
         Status = PaymentStatus.Pending;
         CheckoutUrl = checkoutUrl;
+        MercadoPagoPreference = mercadoPagoPreference;
         ExpirationDate = expirationDate;
     }
 
@@ -25,6 +28,9 @@ public class Payment : EntityBase
         Status = status;
         UpdatedAt = DateTime.UtcNow;
     }
+
+    public void AttachMercadoPagoPayment(long paymentId) 
+        => MercadoPagoPaymentId = paymentId;
 }
 
 public enum PaymentStatus

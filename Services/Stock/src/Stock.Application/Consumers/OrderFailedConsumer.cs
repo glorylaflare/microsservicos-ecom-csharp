@@ -2,7 +2,7 @@
 using BuildingBlocks.Messaging;
 using MediatR;
 using Serilog;
-using Stock.Application.Commands;
+using Stock.Application.Commands.OrderFailed;
 
 namespace Stock.Application.Consumers;
 

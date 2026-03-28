@@ -14,6 +14,7 @@ public class PaymentRepositoryTests
         orderId: GenerateOrderId(),
         amount: 10.8m,
         checkoutUrl: "https://",
+        mercadoPagoPreference: Guid.NewGuid().ToString(),
         expirationDate: DateTime.UtcNow.AddMinutes(30)
     );
     private readonly PaymentRepository _repository;

@@ -24,7 +24,7 @@ public class UserCreatedProjector : IIntegrationEventHandler<UserCreatedEvent>
 
         await _users.InsertOneAsync(new UserReadModel
         {
-            Id = @event.Data.Id,
+            Id = @event.Data.UserId,
             Username = @event.Data.Username,
             Email = @event.Data.Email
         });

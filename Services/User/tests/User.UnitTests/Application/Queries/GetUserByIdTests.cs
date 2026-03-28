@@ -2,8 +2,7 @@ using BuildingBlocks.Infra.ReadModels;
 using FluentAssertions;
 using Moq;
 using User.Application.Interfaces;
-using User.Application.Queries;
-using User.Application.Queries.Handlers;
+using User.Application.Queries.GetUsersById;
 using User.Application.Responses;
 namespace User.UnitTests.Application.Queries;
 

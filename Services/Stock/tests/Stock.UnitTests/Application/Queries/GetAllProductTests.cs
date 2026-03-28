@@ -2,8 +2,7 @@ using BuildingBlocks.Infra.ReadModels;
 using FluentAssertions;
 using Moq;
 using Stock.Application.Interfaces;
-using Stock.Application.Queries;
-using Stock.Application.Queries.Handlers;
+using Stock.Application.Queries.GetAllProducts;
 using Stock.Application.Responses;
 namespace Stock.UnitTests.Application.Queries;
 
@@ -51,7 +50,7 @@ public class GetAllProductTests
             p.CreatedAt,
             p.UpdatedAt
         ));
-        var handler = new GetAllProductQueryHandler(_mockService.Object);
+        var handler = new GetAllProductsQueryHandler(_mockService.Object);
         //Act
         var result = await handler.Handle(_request, cancellationToken);
         //Assert
@@ -66,7 +65,7 @@ public class GetAllProductTests
         _mockService
             .Setup(s => s.GetAllAsync())
             .ReturnsAsync(new List<ProductReadModel>());
-        var handler = new GetAllProductQueryHandler(_mockService.Object);
+        var handler = new GetAllProductsQueryHandler(_mockService.Object);
         //Act
         var result = await handler.Handle(_request, cancellationToken);
         //Assert

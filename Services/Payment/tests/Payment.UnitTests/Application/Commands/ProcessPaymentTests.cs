@@ -1,9 +1,8 @@
 ﻿using BuildingBlocks.Messaging;
 using FluentAssertions;
-using Microsoft.Extensions.Configuration;
 using Moq;
-using Payment.Application.Commands;
-using Payment.Application.Commands.Handlers;
+using Payment.Application.Commands.ProcessPayment;
+using Payment.Application.Interfaces;
 using Payment.Domain.Interface;
 using Payment.Domain.Models;
 
@@ -12,11 +11,11 @@ namespace Payment.UnitTests.Application.Commands;
 public class ProcessPaymentTests
 {
 	private readonly Mock<IPaymentRepository> _mockRepo = new();
-	private readonly Mock<IConfiguration> _mockConfig = new();
+	private readonly Mock<IMercadoPagoPaymentService> _mockMercadoPagoService = new();
 	private readonly Mock<IEventBus> _mockEventBus = new();
 
 	[Fact]
-	public async Task ProcessPayment_WithInvalidPaymentId_ShouldThrowFormatException()
+	public async Task ProcessPayment_WithInvalidPaymentId_ShouldReturnFailureResult()
 	{
 		//Arrange
 		var command = new ProcessPaymentCommand
@@ -25,13 +24,14 @@ public class ProcessPaymentTests
 			Data = new PaymentData { Id = "invalid-id" }
 		};
 		var cancellationToken = It.IsAny<CancellationToken>();
-		var handler = new ProcessPaymentCommandHandler(_mockRepo.Object, _mockConfig.Object, _mockEventBus.Object);
+		var handler = new ProcessPaymentCommandHandler(_mockRepo.Object, _mockMercadoPagoService.Object, _mockEventBus.Object);
 
 		//Act
-		Func<Task> action = async () => await handler.Handle(command, cancellationToken);
+		var result = await handler.Handle(command, cancellationToken);
 
 		//Assert
-		await action.Should().ThrowAsync<FormatException>();
+		result.IsFailed.Should().BeTrue();
+		result.Errors.Should().ContainSingle(e => e.Message == "Invalid payment id");
 	}
 
 	[Theory]
@@ -40,7 +40,7 @@ public class ProcessPaymentTests
 	public void ValidateStatus_WithDifferentStatus_ShouldReturnExpectedValue(string status, PaymentStatus expected)
 	{
 		//Arrange
-		var handler = new ProcessPaymentCommandHandler(_mockRepo.Object, _mockConfig.Object, _mockEventBus.Object);
+		var handler = new ProcessPaymentCommandHandler(_mockRepo.Object, _mockMercadoPagoService.Object, _mockEventBus.Object);
 
 		//Act
 		var result = handler.validateStatus(status);

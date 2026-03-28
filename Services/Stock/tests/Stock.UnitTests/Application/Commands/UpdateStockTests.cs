@@ -1,6 +1,6 @@
 using FluentAssertions;
 using Moq;
-using Stock.Application.Commands;
+using Stock.Application.Commands.UpdateStock;
 using Stock.Domain.Interfaces;
 using Stock.Domain.Models;
 namespace Stock.UnitTests.Application.Commands;
@@ -35,7 +35,7 @@ public class UpdateStockTests
         _mockRepo
             .Setup(r => r.SaveChangesAsync())
             .Returns(Task.CompletedTask);
-        var handler = new Stock.Application.Commands.Handlers.UpdateStockCommandHandler(_mockRepo.Object, _mockValidator.Object);
+        var handler = new UpdateStockCommandHandler(_mockRepo.Object, _mockValidator.Object);
         //Act
         var result = await handler.Handle(_request, _cancellationToken);
         //Assert
@@ -53,7 +53,7 @@ public class UpdateStockTests
         _mockValidator
             .Setup(v => v.ValidateAsync(_request, _cancellationToken))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult(validationErrors));
-        var handler = new Stock.Application.Commands.Handlers.UpdateStockCommandHandler(_mockRepo.Object, _mockValidator.Object);
+        var handler = new UpdateStockCommandHandler(_mockRepo.Object, _mockValidator.Object);
         //Act
         var result = await handler.Handle(_request, _cancellationToken);
         //Assert

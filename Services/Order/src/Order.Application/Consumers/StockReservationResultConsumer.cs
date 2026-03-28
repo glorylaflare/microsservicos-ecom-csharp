@@ -1,8 +1,10 @@
 using BuildingBlocks.Contracts.Events;
 using BuildingBlocks.Messaging;
 using MediatR;
-using Order.Application.Commands;
+using Order.Application.Commands.StockRejected;
+using Order.Application.Commands.StockReserved;
 using Serilog;
+
 namespace Order.Application.Consumers;
 
 public class StockReservationResultConsumer : IIntegrationEventHandler<StockReservationResultEvent>

@@ -2,10 +2,13 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
-using User.Application.Commands;
-using User.Application.Queries;
+using User.Application.Commands.CreateUser;
+using User.Application.Commands.DeactivateUser;
+using User.Application.Queries.GetAllUsers;
+using User.Application.Queries.GetUsersById;
 namespace User.Api.Controllers;
 
+[Authorize]
 [Route("api/users")]
 [ApiController]
 public class UserController : ControllerBase
@@ -17,7 +20,6 @@ public class UserController : ControllerBase
         _mediator = mediator;
     }
 
-    [Authorize]
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -29,7 +31,6 @@ public class UserController : ControllerBase
             : Ok(result.Value);
     }
 
-    [Authorize]
     [HttpGet("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -53,7 +54,6 @@ public class UserController : ControllerBase
             : CreatedAtAction(nameof(GetUserById), new { id = result.Value }, result);
     }
 
-    [Authorize]
     [HttpPatch("deactivate")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

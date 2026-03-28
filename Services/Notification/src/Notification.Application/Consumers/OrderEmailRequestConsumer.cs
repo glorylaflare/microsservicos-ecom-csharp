@@ -2,7 +2,9 @@
 using BuildingBlocks.Contracts.Events;
 using BuildingBlocks.Messaging;
 using MediatR;
-using Notification.Application.Commands;
+using Notification.Application.Commands.OrderCompleted;
+using Notification.Application.Commands.OrderFailed;
+using Notification.Application.Commands.OrderPending;
 using Serilog;
 
 namespace Notification.Application.Consumers;

@@ -20,16 +20,16 @@ public class OrderUpdatedProjector : IIntegrationEventHandler<OrderUpdatedEvent>
 
     public async Task HandleAsync(OrderUpdatedEvent @event)
     {
-        _logger.Information("[INFO] Projecting {EventName} for Order ID: {OrderId}", nameof(OrderUpdatedEvent), @event.Data.Id);
+        _logger.Information("[INFO] Projecting {EventName} for Order ID: {OrderId}", nameof(OrderUpdatedEvent), @event.Data.OrderId);
 
         await _orders.UpdateOneAsync(
-            o => o.Id == @event.Data.Id,
+            o => o.Id == @event.Data.OrderId,
             Builders<OrderReadModel>.Update
                 .Set(o => o.Status, @event.Data.Status)
                 .Set(o => o.TotalAmount, @event.Data.TotalAmount)
                 .Set(o => o.UpdatedAt, @event.Data.UpdatedAt)
         );
 
-        _logger.Information("[INFO] Successfully projected {EventName} for Order ID: {OrderId}", nameof(OrderUpdatedEvent), @event.Data.Id);
+        _logger.Information("[INFO] Successfully projected {EventName} for Order ID: {OrderId}", nameof(OrderUpdatedEvent), @event.Data.OrderId);
     }
 }

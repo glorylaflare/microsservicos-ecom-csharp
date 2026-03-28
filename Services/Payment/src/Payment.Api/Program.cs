@@ -5,15 +5,18 @@ using BuildingBlocks.Observability.Extensions;
 using BuildingBlocks.Observability.Middlewares;
 using BuildingBlocks.Security.Extensions;
 using BuildingBlocks.SharedKernel.Config;
+using MercadoPago.Config;
 using Payment.Api.Extensions;
-using Payment.Application.Commands;
+using Payment.Application.Commands.CreatePayment;
 using Payment.Application.Interfaces;
 using Payment.Application.Services;
 using Payment.Domain.Interface;
+using Payment.Infra.Configurations;
 using Payment.Infra.Data.Context.Read;
 using Payment.Infra.Data.Context.Write;
 using Payment.Infra.Data.Repositories;
 using Payment.Infra.Data.Services;
+using Payment.Infra.Data.Services.MercadoPago;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,12 +29,17 @@ builder.Services.AddCustomLogging(builder.Configuration);
 builder.Services.AddAuthenticationService(builder.Configuration);
 builder.Services.AddUserContext();
 
+builder.Services.Configure<MercadoPagoSettings>(
+    builder.Configuration.GetSection("MercadoPago"));
+builder.Services.AddMercadoPagoToken(builder.Configuration);
+
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(CreatePaymentCommand).Assembly));
 
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<IPaymentReadService, PaymentReadService>();
 builder.Services.AddScoped<IPaymentExpirationService, PaymentExpirationService>();
+builder.Services.AddScoped<IMercadoPagoPaymentService, MercadoPagoPaymentService>();
 builder.Services.AddValidators();
 builder.Services.AddConsumers();
 builder.Services.AddCronJob(builder.Configuration);

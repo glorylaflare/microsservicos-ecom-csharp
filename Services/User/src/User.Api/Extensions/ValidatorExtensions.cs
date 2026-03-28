@@ -1,5 +1,6 @@
 using FluentValidation;
-using User.Application.Commands;
+using User.Application.Commands.CreateUser;
+using User.Application.Commands.DeactivateUser;
 namespace User.Api.Extensions;
 
 public static class ValidatorExtensions

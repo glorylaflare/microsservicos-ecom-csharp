@@ -6,7 +6,7 @@ using BuildingBlocks.Observability.Middlewares;
 using BuildingBlocks.Security.Extensions;
 using BuildingBlocks.SharedKernel.Config;
 using Order.Api.Extensions;
-using Order.Application.Commands;
+using Order.Application.Commands.CreateOrder;
 using Order.Application.Integrations;
 using Order.Application.Interfaces;
 using Order.Domain.Interfaces;

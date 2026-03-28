@@ -2,8 +2,7 @@
 using FluentAssertions;
 using Moq;
 using Payment.Application.Interfaces;
-using Payment.Application.Queries;
-using Payment.Application.Queries.Handlers;
+using Payment.Application.Queries.GetPaymentById;
 using Payment.Application.Responses;
 
 namespace Payment.UnitTests.Application.Queries;

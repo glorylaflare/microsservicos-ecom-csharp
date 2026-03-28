@@ -2,7 +2,8 @@ using BuildingBlocks.Contracts.Events;
 using BuildingBlocks.Messaging;
 using MediatR;
 using Serilog;
-using Stock.Application.Commands;
+using Stock.Application.Commands.OrderRequest;
+
 namespace Stock.Application.Consumers;
 
 public class OrderRequestConsumer : IIntegrationEventHandler<OrderRequestedEvent>

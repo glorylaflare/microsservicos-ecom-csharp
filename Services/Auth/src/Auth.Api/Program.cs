@@ -1,8 +1,8 @@
 using Auth.Api.Extensions;
-using Auth.Application.Commands;
+using Auth.Application.Commands.AuthenticateUser;
 using Auth.Application.Interfaces;
 using Auth.Infra.Configurations;
-using Auth.Infra.Services;
+using Auth.Infra.Services.Auth0;
 using BuildingBlocks.Observability.Extensions;
 using BuildingBlocks.Observability.Middlewares;
 

@@ -1,8 +1,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Payment.Application.Commands;
-using Payment.Application.Queries;
+using Payment.Application.Commands.ProcessPayment;
+using Payment.Application.Queries.GetAllPayments;
+using Payment.Application.Queries.GetPaymentById;
 using System.ComponentModel.DataAnnotations;
 namespace Payment.Api.Controllers;
 
@@ -40,8 +41,8 @@ public class PaymentController : ControllerBase
             : Ok(result.Value);
     }
 
-    [HttpPost("webhook")]
     [AllowAnonymous]
+    [HttpPost("webhook")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> WebhookAsync([FromBody] ProcessPaymentCommand command)

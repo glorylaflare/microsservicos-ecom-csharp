@@ -1,5 +1,5 @@
 using FluentValidation;
-using Payment.Application.Commands;
+using Payment.Application.Commands.CreatePayment;
 namespace Payment.Api.Extensions;
 
 public static class ValidatorExtensions

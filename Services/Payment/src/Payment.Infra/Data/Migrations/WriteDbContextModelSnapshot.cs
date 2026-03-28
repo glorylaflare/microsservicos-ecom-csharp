@@ -34,14 +34,22 @@ namespace Payment.Infra.Data.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("CheckoutUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime");
 
-                    b.Property<DateTime>("ExpirationDate")
+                    b.Property<DateTime?>("ExpirationDate")
                         .HasColumnType("datetime");
+
+                    b.Property<long>("MercadoPagoPaymentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("MercadoPagoPreference")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
