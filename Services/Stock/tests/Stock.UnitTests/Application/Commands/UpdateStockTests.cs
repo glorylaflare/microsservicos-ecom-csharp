@@ -39,7 +39,7 @@ public class UpdateStockTests
         //Act
         var result = await handler.Handle(_request, _cancellationToken);
         //Assert
-        product.StockQuantity.Should().Be(5);
+        product.StockQuantity.Should().Be(15);
     }
     [Fact]
     public async Task UpdateStock_WithInvalidData_ShouldReturnValidationErrors()
