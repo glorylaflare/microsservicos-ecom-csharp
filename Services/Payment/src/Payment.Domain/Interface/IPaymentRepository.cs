@@ -5,5 +5,5 @@ namespace Payment.Domain.Interface;
 public interface IPaymentRepository : IRepository<Models.Payment>
 {
     Task<int> SetExpiredPaymentsAsync(DateTime currentTime);
-    Task SaveChangesAsync();
+    Task SaveChangesAsync(CancellationToken cancellationToken = default);
 }

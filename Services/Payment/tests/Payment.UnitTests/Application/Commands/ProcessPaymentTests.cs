@@ -14,15 +14,16 @@ public class ProcessPaymentTests
 	private readonly Mock<IMercadoPagoPaymentService> _mockMercadoPagoService = new();
 	private readonly Mock<IEventBus> _mockEventBus = new();
 
+	private static WebhookPayload CreateWebhookPayload(string paymentId)
+	{
+		return new WebhookPayload("payment.updated", "v1", new Data { Id = paymentId }, DateTime.UtcNow, 123, false, "payment", "1");
+	}
+
 	[Fact]
 	public async Task ProcessPayment_WithInvalidPaymentId_ShouldReturnFailureResult()
 	{
 		//Arrange
-		var command = new ProcessPaymentCommand
-		{
-			Type = "payment",
-			Data = new PaymentData { Id = "invalid-id" }
-		};
+		var command = new ProcessPaymentCommand(CreateWebhookPayload("invalid-id"));
 		var cancellationToken = It.IsAny<CancellationToken>();
 		var handler = new ProcessPaymentCommandHandler(_mockRepo.Object, _mockMercadoPagoService.Object, _mockEventBus.Object);
 
@@ -43,7 +44,7 @@ public class ProcessPaymentTests
 		var handler = new ProcessPaymentCommandHandler(_mockRepo.Object, _mockMercadoPagoService.Object, _mockEventBus.Object);
 
 		//Act
-		var result = handler.validateStatus(status);
+		var result = handler.ValidateStatus(status);
 
 		//Assert
 		result.Should().Be(expected);

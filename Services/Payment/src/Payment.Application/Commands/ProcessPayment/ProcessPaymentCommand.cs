@@ -1,13 +1,7 @@
 using FluentResults;
 using MediatR;
+using Payment.Domain.Models;
+
 namespace Payment.Application.Commands.ProcessPayment;
 
-public class ProcessPaymentCommand : IRequest<Result<Unit>>
-{
-    public required string Type { get; set; }
-    public required PaymentData Data { get; set; }
-}
-public class PaymentData
-{
-    public required string Id { get; set; }
-}
+public record ProcessPaymentCommand(WebhookPayload WebhookPayload) : IRequest<Result<Unit>>;

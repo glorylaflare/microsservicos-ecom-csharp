@@ -11,7 +11,7 @@ namespace Payment.UnitTests.Application.Queries;
 
 public class GetAllPaymentTests
 {
-	private readonly GetAllPaymentsQuery _request = new GetAllPaymentsQuery(skip: 0, take: 10);
+	private readonly GetAllPaymentsQuery _request = new GetAllPaymentsQuery(0, 10);
 	private readonly Mock<IPaymentReadService> _mockService = new();
 	private readonly List<PaymentReadModel> _paymentReadModels = new List<PaymentReadModel>
 	{

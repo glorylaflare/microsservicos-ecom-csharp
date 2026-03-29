@@ -14,13 +14,16 @@ namespace Payment.Infra.Data.Migrations
             CREATE OR ALTER VIEW vw_Payments AS
             SELECT
                 Id,
-                OrderId,
-                Amount,
+                Provider,
+                EventId,
+                Action,
+                ApiVersion,
+                PaymentId,
+                DateCreated,
+                LiveMode,
+                Type,
+                UserId,
                 Status,
-                CheckoutUrl,
-                MercadoPagoPreference,
-                MercadoPagoPaymentId,
-                ExpirationDate,
                 CreatedAt,
                 UpdatedAt
             FROM Payments

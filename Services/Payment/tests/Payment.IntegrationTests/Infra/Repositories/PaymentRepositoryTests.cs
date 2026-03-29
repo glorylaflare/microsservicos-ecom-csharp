@@ -44,7 +44,7 @@ public class PaymentRepositoryTests
 
         //Act
         await _repository.AddAsync(payment, cancellationToken);
-        await _repository.SaveChangesAsync();
+		await _repository.SaveChangesAsync(cancellationToken);
         var result = await _repository.FindOneAsync(new PaymentByOrderIdSpec(payment.OrderId), cancellationToken);
 
         //Assert
@@ -60,12 +60,12 @@ public class PaymentRepositoryTests
         var cancellationToken = CancellationToken.None;
 
         await _repository.AddAsync(payment, cancellationToken);
-        await _repository.SaveChangesAsync();
+		await _repository.SaveChangesAsync(cancellationToken);
 
         //Act
         payment.SetStatus(PaymentStatus.Paid);
         _repository.Update(payment);
-        await _repository.SaveChangesAsync();
+		await _repository.SaveChangesAsync(cancellationToken);
         var result = await _repository.FindOneAsync(new PaymentByOrderIdSpec(payment.OrderId), cancellationToken);
 
         //Assert

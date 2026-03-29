@@ -11,7 +11,7 @@ public class Payment : EntityBase
     public long MercadoPagoPaymentId { get; private set; }
     public DateTime? ExpirationDate { get; private set; }
 
-    public Payment() { }
+    protected Payment() { }
 
     public Payment(int orderId, decimal amount, string? checkoutUrl, string mercadoPagoPreference, DateTime? expirationDate)
     {

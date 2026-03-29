@@ -15,5 +15,5 @@ public class PaymentRepository : Repository<Domain.Models.Payment>, IPaymentRepo
             .ExecuteUpdateAsync(s => s.SetProperty(p => p.Status, PaymentStatus.Failed)
                                       .SetProperty(p => p.UpdatedAt, DateTime.UtcNow));
 
-    public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
+    public async Task SaveChangesAsync(CancellationToken cancellationToken) => await _context.SaveChangesAsync(cancellationToken);
 }
