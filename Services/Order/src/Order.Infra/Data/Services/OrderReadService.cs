@@ -2,7 +2,7 @@ using BuildingBlocks.Infra.MongoReadModels;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using Order.Application.Interfaces;
-using Order.Infra.Data.Context;
+using Order.Infra.Data.Context.Read;
 namespace Order.Infra.Data.Services;
 
 public class OrderReadService : IOrderReadService

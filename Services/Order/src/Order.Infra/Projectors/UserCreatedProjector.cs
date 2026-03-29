@@ -2,7 +2,7 @@
 using BuildingBlocks.Infra.MongoReadModels;
 using BuildingBlocks.Messaging;
 using MongoDB.Driver;
-using Order.Infra.Data.Context;
+using Order.Infra.Data.Context.Read;
 using Serilog;
 
 namespace Order.Infra.Projectors;
