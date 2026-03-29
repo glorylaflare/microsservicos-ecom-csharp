@@ -1,11 +1,9 @@
+using BuildingBlocks.Infra.Interfaces;
+
 namespace Payment.Domain.Interface;
 
-public interface IPaymentRepository
+public interface IPaymentRepository : IRepository<Models.Payment>
 {
-    Task<Models.Payment?> GetByIdAsync(int orderId);
-    Task AddAsync(Models.Payment payment);
-    void Update(Models.Payment payment);
-    Task SaveChangesAsync();
-    Task<IReadOnlyList<Models.Payment>> GetExpiredPaymentsAsync(DateTime currentTime);
     Task<int> SetExpiredPaymentsAsync(DateTime currentTime);
+    Task SaveChangesAsync(CancellationToken cancellationToken = default);
 }

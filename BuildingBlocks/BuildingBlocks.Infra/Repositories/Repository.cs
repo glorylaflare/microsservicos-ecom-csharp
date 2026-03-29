@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BuildingBlocks.Infra.Repositories;
 
-public class Repository<TEntity, TResult> : IRepository<TEntity, TResult> where TEntity : class
+public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
 {
     protected readonly DbContext _context;
     protected readonly DbSet<TEntity> _dbSet;
@@ -25,10 +25,6 @@ public class Repository<TEntity, TResult> : IRepository<TEntity, TResult> where 
         {
             await _dbSet.AddAsync(entity, cancellationToken);
         }
-        catch (OperationCanceledException)
-        {
-            throw;
-        }
         catch (Exception ex)
         {
             throw new RepositoryException($"Unexpected repository error while adding {typeof(TEntity).Name}.", ex);
@@ -45,31 +41,20 @@ public class Repository<TEntity, TResult> : IRepository<TEntity, TResult> where 
         {
             await _dbSet.AddRangeAsync(entities, cancellationToken);
         }
-        catch (OperationCanceledException)
-        {
-            throw;
-        }
         catch (Exception ex)
         {
             throw new RepositoryException($"Unexpected repository error while adding multiple {typeof(TEntity).Name} entities.", ex);
         }
     }
 
-    public async Task<TResult?> FindOneAsync(
-        ISpecification<TEntity, TResult> spec, 
+    public async Task<TEntity?> FindOneAsync(
+        ISpecification<TEntity> spec,
         CancellationToken cancellationToken)
     {
-        ValidateProjectionSpecification(spec);
-
         try
         {
             return await ApplySpecification(spec)
-                .Select(spec.Selector)
                 .FirstOrDefaultAsync(cancellationToken);
-        }
-        catch (OperationCanceledException)
-        {
-            throw;
         }
         catch (InvalidOperationException ex)
         {
@@ -81,7 +66,27 @@ public class Repository<TEntity, TResult> : IRepository<TEntity, TResult> where 
         }
     }
 
-    public async Task<IEnumerable<TEntity>> FindAllAsync(CancellationToken cancellationToken)
+    public async Task<TResult?> FindOneAsync<TResult>(
+        ISpecification<TEntity, TResult> spec,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            return await ApplySpecification(spec)
+                .Select(spec.Selector)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+        catch (InvalidOperationException ex)
+        {
+            throw new RepositorySpecificationException($"Invalid specification used for {typeof(TEntity).Name} FindOne query.", ex);
+        }
+        catch (Exception ex)
+        {
+            throw new RepositoryQueryException($"Failed to query {typeof(TEntity).Name} in FindOne.", ex);
+        }
+    }
+
+    public async Task<List<TEntity>> FindAllAsync(CancellationToken cancellationToken)
     {
         try
         {
@@ -89,31 +94,40 @@ public class Repository<TEntity, TResult> : IRepository<TEntity, TResult> where 
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);
         }
-        catch (OperationCanceledException)
-        {
-            throw;
-        }
         catch (Exception ex)
         {
             throw new RepositoryQueryException($"Failed to query all {typeof(TEntity).Name} entities.", ex);
         }
     }
 
-    public async Task<IEnumerable<TResult>> WhereAsync(
-        ISpecification<TEntity, TResult> spec, 
+    public async Task<List<TEntity>> WhereAsync(
+        ISpecification<TEntity> spec, 
         CancellationToken cancellationToken)
     {
-        ValidateProjectionSpecification(spec);
+        try
+        {
+            return await ApplySpecification(spec)
+                .ToListAsync(cancellationToken);
+        }
+        catch (InvalidOperationException ex)
+        {
+            throw new RepositorySpecificationException($"Invalid specification used for {typeof(TEntity).Name} Where query.", ex);
+        }
+        catch (Exception ex)
+        {
+            throw new RepositoryQueryException($"Failed to query {typeof(TEntity).Name} in Where.", ex);
+        }
+    }
 
+    public async Task<List<TResult>> WhereAsync<TResult>(
+        ISpecification<TEntity, TResult> spec,
+        CancellationToken cancellationToken)
+    {
         try
         {
             return await ApplySpecification(spec)
                 .Select(spec.Selector)
                 .ToListAsync(cancellationToken);
-        }
-        catch (OperationCanceledException)
-        {
-            throw;
         }
         catch (InvalidOperationException ex)
         {
@@ -139,10 +153,6 @@ public class Repository<TEntity, TResult> : IRepository<TEntity, TResult> where 
                 ignoreIncludes: true,
                 ignoreOrdering: true)
                 .CountAsync(cancellationToken);
-        }
-        catch (OperationCanceledException)
-        {
-            throw;
         }
         catch (InvalidOperationException ex)
         {
@@ -204,10 +214,10 @@ public class Repository<TEntity, TResult> : IRepository<TEntity, TResult> where 
     {
         ArgumentNullException.ThrowIfNull(spec);
 
-        IQueryable<TEntity> query = _dbSet.AsQueryable();
+        IQueryable<TEntity> query = _dbSet.AsQueryable().AsNoTracking();
 
-        if (spec.AsNoTracking)
-            query = query.AsNoTracking();
+        if (!spec.AsNoTracking)
+            query = query.AsTracking();
 
         if (spec.Criteria != null) 
             query = query.Where(spec.Criteria);
@@ -231,18 +241,5 @@ public class Repository<TEntity, TResult> : IRepository<TEntity, TResult> where 
         }
 
         return query;
-    }
-
-    private static void ValidateProjectionSpecification(ISpecification<TEntity, TResult> spec)
-    {
-        ArgumentNullException.ThrowIfNull(spec);
-
-        if (spec.Selector is null)
-        {
-            var inner = new InvalidOperationException("The specification projection selector was not configured.");
-            throw new RepositorySpecificationException(
-                $"Invalid projection specification for {typeof(TEntity).Name}. Define Selector before executing the query.",
-                inner);
-        }
     }
 }

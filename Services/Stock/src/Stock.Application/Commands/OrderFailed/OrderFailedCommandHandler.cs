@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Serilog;
+using Stock.Application.Commands.CreateProduct;
 using Stock.Application.Interfaces;
 using Stock.Domain.Interfaces;
 
@@ -20,6 +21,8 @@ public class OrderFailedCommandHandler : IRequestHandler<OrderFailedCommand, Uni
 
     public async Task<Unit> Handle(OrderFailedCommand request, CancellationToken cancellationToken)
     {
+        _logger.Information("[INFO] Handling {EventName}", nameof(OrderFailedCommand));
+
         try
         {
             await _dbTransactionManager.ExecuteResilientTransactionAsync(async () =>

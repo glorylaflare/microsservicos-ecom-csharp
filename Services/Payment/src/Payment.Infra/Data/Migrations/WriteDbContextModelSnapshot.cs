@@ -65,6 +65,123 @@ namespace Payment.Infra.Data.Migrations
 
                     b.ToTable("Payments", (string)null);
                 });
+
+            modelBuilder.Entity("Payment.Domain.Models.WebhookEvent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EventId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Provider")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId")
+                        .IsUnique();
+
+                    b.ToTable("WebhookEvents", (string)null);
+                });
+
+            modelBuilder.Entity("Payment.Domain.Models.WebhookPayload", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("ApiVersion")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("LiveMode")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("WebhookEventId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WebhookEventId")
+                        .IsUnique()
+                        .HasFilter("[WebhookEventId] IS NOT NULL");
+
+                    b.ToTable("WebhookPayload", (string)null);
+                });
+
+            modelBuilder.Entity("Payment.Domain.Models.WebhookPayload", b =>
+                {
+                    b.HasOne("Payment.Domain.Models.WebhookEvent", null)
+                        .WithOne("Payload")
+                        .HasForeignKey("Payment.Domain.Models.WebhookPayload", "WebhookEventId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.OwnsOne("Payment.Domain.Models.Data", "Data", b1 =>
+                        {
+                            b1.Property<long>("WebhookPayloadId")
+                                .HasColumnType("bigint");
+
+                            b1.Property<string>("Id")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("PaymentId");
+
+                            b1.HasKey("WebhookPayloadId");
+
+                            b1.ToTable("WebhookPayload");
+
+                            b1.WithOwner()
+                                .HasForeignKey("WebhookPayloadId");
+                        });
+
+                    b.Navigation("Data")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Payment.Domain.Models.WebhookEvent", b =>
+                {
+                    b.Navigation("Payload")
+                        .IsRequired();
+                });
 #pragma warning restore 612, 618
         }
     }

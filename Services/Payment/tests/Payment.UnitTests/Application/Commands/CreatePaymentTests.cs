@@ -26,24 +26,24 @@ public class CreatePaymentTests
     public async Task CreatePayment_WithInvalidItems_ShouldReturnUnitValue()
     {
         //Arrange
-        var _cancellationToken = It.IsAny<CancellationToken>();
+        var cancellationToken = CancellationToken.None;
         var validationErrors = new List<FluentValidation.Results.ValidationFailure>
         {
             new FluentValidation.Results.ValidationFailure("Items", "At least one item is required.")
         };
 
         _mockValidator
-            .Setup(v => v.ValidateAsync(_request, _cancellationToken))
+            .Setup(v => v.ValidateAsync(_request, cancellationToken))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult(validationErrors));
 
         var handler = new CreatePaymentCommandHandler(_mockRepo.Object, _mockMercadoPagoService.Object, _mockEventBus.Object, _mockValidator.Object);
 
         //Act
-        var result = await handler.Handle(_request, _cancellationToken);
+        var result = await handler.Handle(_request, cancellationToken);
 
         //Assert
-        result.Should().Be(Unit.Value);
-        _mockRepo.Verify(r => r.AddAsync(It.IsAny<Payment.Domain.Models.Payment>()), Times.Never);
+        result.IsFailed.Should().BeTrue();
+        _mockRepo.Verify(r => r.AddAsync(It.IsAny<Payment.Domain.Models.Payment>(), It.IsAny<CancellationToken>()), Times.Never);
         _mockEventBus.Verify(e => e.PublishAsync(It.IsAny<BuildingBlocks.Messaging.IntegrationEventBase>()), Times.Never);
         _mockMercadoPagoService.Verify(m => m.CreateMercadoPagoPayment(It.IsAny<PaymentRequest>(), It.IsAny<CancellationToken>()), Times.Never);
     }
@@ -52,10 +52,10 @@ public class CreatePaymentTests
     public async Task CreatePayment_WhenMercadoPagoPreferenceFails_ShouldNotPersistPayment()
     {
         //Arrange
-        var _cancellationToken = It.IsAny<CancellationToken>();
+        var cancellationToken = CancellationToken.None;
 
         _mockValidator
-            .Setup(v => v.ValidateAsync(_request, _cancellationToken))
+            .Setup(v => v.ValidateAsync(_request, cancellationToken))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
         _mockMercadoPagoService
             .Setup(m => m.CreateMercadoPagoPayment(It.IsAny<PaymentRequest>(), It.IsAny<CancellationToken>()))
@@ -64,11 +64,12 @@ public class CreatePaymentTests
         var handler = new CreatePaymentCommandHandler(_mockRepo.Object, _mockMercadoPagoService.Object, _mockEventBus.Object, _mockValidator.Object);
 
         //Act
-        var result = await handler.Handle(_request, _cancellationToken);
+        var result = await handler.Handle(_request, cancellationToken);
 
         //Assert
-        result.Should().Be(Unit.Value);
-        _mockRepo.Verify(r => r.AddAsync(It.IsAny<Payment.Domain.Models.Payment>()), Times.Never);
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().Be(Unit.Value);
+        _mockRepo.Verify(r => r.AddAsync(It.IsAny<Payment.Domain.Models.Payment>(), It.IsAny<CancellationToken>()), Times.Never);
         _mockEventBus.Verify(e => e.PublishAsync(It.IsAny<BuildingBlocks.Messaging.IntegrationEventBase>()), Times.Never);
     }
 }

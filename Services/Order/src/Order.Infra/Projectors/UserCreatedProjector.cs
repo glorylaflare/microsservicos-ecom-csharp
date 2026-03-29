@@ -2,7 +2,7 @@
 using BuildingBlocks.Infra.MongoReadModels;
 using BuildingBlocks.Messaging;
 using MongoDB.Driver;
-using Order.Infra.Data.Context;
+using Order.Infra.Data.Context.Read;
 using Serilog;
 
 namespace Order.Infra.Projectors;
@@ -20,7 +20,7 @@ public class UserCreatedProjector : IIntegrationEventHandler<UserCreatedEvent>
 
     public async Task HandleAsync(UserCreatedEvent @event)
     {
-        _logger.Information("Projecting {Event} to read model", nameof(UserCreatedEvent));
+        _logger.Information("[INFO] Projecting {Event} to read model", nameof(UserCreatedEvent));
 
         await _users.InsertOneAsync(new UserReadModel
         {
@@ -29,6 +29,6 @@ public class UserCreatedProjector : IIntegrationEventHandler<UserCreatedEvent>
             Email = @event.Data.Email
         });
 
-        _logger.Information("Projected {Event} to read model", nameof(UserCreatedEvent));
+        _logger.Information("[INFO] Projected {Event} to read model", nameof(UserCreatedEvent));
     }
 }

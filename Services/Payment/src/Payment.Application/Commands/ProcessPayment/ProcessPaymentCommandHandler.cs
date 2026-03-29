@@ -4,6 +4,7 @@ using BuildingBlocks.Messaging;
 using FluentResults;
 using MediatR;
 using Payment.Application.Interfaces;
+using Payment.Application.Specifications;
 using Payment.Domain.Interface;
 using Payment.Domain.Models;
 using Serilog;
@@ -29,9 +30,11 @@ public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentComman
     {
         _logger.Information("[INFO] Handling {CommandName}", nameof(ProcessPaymentCommand));
 
-        if (!long.TryParse(request.Data.Id, out var paymentId))
+        var webhook = request.WebhookPayload;
+
+        if (!long.TryParse(webhook.Data.Id, out var paymentId))
         {
-            _logger.Error("Invalid payment id: {Id}", request.Data.Id);
+            _logger.Error("Invalid payment id: {Id}", webhook.Data.Id);
             return Result.Fail("Invalid payment id");
         }
 
@@ -44,7 +47,7 @@ public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentComman
 
         var orderId = processResult.Value.OrderId;
 
-        var payment = await _paymentRepository.GetByIdAsync(orderId);
+        var payment = await _paymentRepository.FindOneAsync(new PaymentByOrderIdSpec(orderId), cancellationToken);
         if (payment == null)
         {
             _logger.Error("[ERROR] Payment with order ID {OrderId} not found", orderId);
@@ -57,9 +60,9 @@ public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentComman
             return Result.Ok(Unit.Value);
         }
 
-        _logger.Information("[INFO] Processing payment of type: {PaymentType}", request.Type);
+        _logger.Information("[INFO] Processing payment of type: {PaymentType}", webhook.Type);
 
-        var currentStatus = validateStatus(processResult.Value.Status);
+        var currentStatus = ValidateStatus(processResult.Value.Status);
 
         payment.AttachMercadoPagoPayment(paymentId);
         payment.SetStatus(currentStatus);
@@ -81,7 +84,7 @@ public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentComman
         return Result.Ok(Unit.Value);
     }
 
-    public PaymentStatus validateStatus(string status)
+    public PaymentStatus ValidateStatus(string status)
     {
         if (!status.Equals("approved"))
         {

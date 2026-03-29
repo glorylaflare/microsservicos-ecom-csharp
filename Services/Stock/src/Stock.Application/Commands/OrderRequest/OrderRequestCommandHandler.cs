@@ -4,6 +4,7 @@ using BuildingBlocks.Contracts.Events;
 using BuildingBlocks.Messaging;
 using MediatR;
 using Serilog;
+using Stock.Application.Commands.OrderFailed;
 using Stock.Application.Interfaces;
 using Stock.Domain.Exceptions;
 using Stock.Domain.Interfaces;
@@ -27,6 +28,8 @@ public class OrderRequestCommandHandler : IRequestHandler<OrderRequestCommand, U
 
     public async Task<Unit> Handle(OrderRequestCommand request, CancellationToken cancellationToken)
     {
+        _logger.Information("[INFO] Handling {EventName} for Order ID: {OrderId}", nameof(OrderRequestCommand), request.OrderId);
+
         var totalAmount = 0m;
         var reservedItems = new List<ProductItemDto>();
 

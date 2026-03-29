@@ -1,7 +1,9 @@
+using BuildingBlocks.SharedKernel.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Payment.Application.Commands.ProcessPayment;
+using Payment.Application.Commands.ReceiveMercadoPagoWebhook;
 using Payment.Application.Queries.GetAllPayments;
 using Payment.Application.Queries.GetPaymentById;
 using System.ComponentModel.DataAnnotations;
@@ -22,9 +24,9 @@ public class PaymentController : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] Pagination pagination)
     {
-        var result = await _mediator.Send(new GetAllPaymentsQuery());
+        var result = await _mediator.Send(new GetAllPaymentsQuery(pagination.Skip, pagination.Take));
         return result.IsFailed
             ? NotFound(result.Errors)
             : Ok(result.Value);
@@ -45,9 +47,12 @@ public class PaymentController : ControllerBase
     [HttpPost("webhook")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> WebhookAsync([FromBody] ProcessPaymentCommand command)
+    public async Task<IActionResult> WebhookAsync()
     {
-        var result = await _mediator.Send(command);
+        using var reader = new StreamReader(Request.Body);
+        var payload = await reader.ReadToEndAsync();
+
+        var result = await _mediator.Send(new ReceiveMercadoPagoWebhookCommand(payload));
         return result.IsFailed
             ? BadRequest(result.Errors)
             : Ok(result.Value);

@@ -1,7 +1,7 @@
 ﻿using BuildingBlocks.Infra.MongoReadModels;
 using MongoDB.Driver;
 using Order.Application.Interfaces;
-using Order.Infra.Data.Context;
+using Order.Infra.Data.Context.Read;
 
 namespace Order.Infra.Data.Services;
 

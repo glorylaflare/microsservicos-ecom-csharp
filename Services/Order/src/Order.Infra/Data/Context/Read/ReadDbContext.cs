@@ -2,7 +2,7 @@ using BuildingBlocks.Infra.MongoReadModels;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
-namespace Order.Infra.Data.Context;
+namespace Order.Infra.Data.Context.Read;
 
 public class ReadDbContext
 {

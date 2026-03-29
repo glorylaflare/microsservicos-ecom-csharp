@@ -26,6 +26,12 @@ public static class CronJobExtensions
             "*/12 * * * *" 
         );
 
+        RecurringJob.AddOrUpdate<IWebhookProcessorService>(
+            "webhook-processor-job",
+            service => service.ProcessWebhookAsync(),
+            "*/10 * * * * *"
+        );
+
         return app;
     }
 }

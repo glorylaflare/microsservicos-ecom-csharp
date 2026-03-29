@@ -5,12 +5,12 @@ using BuildingBlocks.Observability.Extensions;
 using BuildingBlocks.Observability.Middlewares;
 using BuildingBlocks.Security.Extensions;
 using BuildingBlocks.SharedKernel.Config;
-using MercadoPago.Config;
 using Payment.Api.Extensions;
 using Payment.Application.Commands.CreatePayment;
 using Payment.Application.Interfaces;
 using Payment.Application.Services;
 using Payment.Domain.Interface;
+using Payment.Domain.Interfaces;
 using Payment.Infra.Configurations;
 using Payment.Infra.Data.Context.Read;
 using Payment.Infra.Data.Context.Write;
@@ -37,8 +37,11 @@ builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(CreatePaymentCommand).Assembly));
 
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<IWebhookRepository, WebhookRepository>();
 builder.Services.AddScoped<IPaymentReadService, PaymentReadService>();
+builder.Services.AddScoped<IWebhookEventReadService, WebhookEventReadService>();
 builder.Services.AddScoped<IPaymentExpirationService, PaymentExpirationService>();
+builder.Services.AddScoped<IWebhookProcessorService, WebhookProcessorService>();
 builder.Services.AddScoped<IMercadoPagoPaymentService, MercadoPagoPaymentService>();
 builder.Services.AddValidators();
 builder.Services.AddConsumers();

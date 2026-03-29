@@ -4,12 +4,6 @@ using BuildingBlocks.Messaging;
 using FluentResults;
 using FluentValidation;
 using MediatR;
-using MercadoPago.Client.Preference;
-using MercadoPago.Config;
-using MercadoPago.Error;
-using MercadoPago.Resource.Preference;
-using Microsoft.Extensions.Configuration;
-using Payment.Application.Commands.ProcessPayment;
 using Payment.Application.Interfaces;
 using Payment.Application.Requests;
 using Payment.Domain.Interface;
@@ -17,7 +11,7 @@ using Serilog;
 
 namespace Payment.Application.Commands.CreatePayment;
 
-public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand, Unit>
+public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand, Result<Unit>>
 {
     private readonly IValidator<CreatePaymentCommand> _validator;
     private readonly IEventBus _eventBus;
@@ -38,7 +32,7 @@ public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand,
         _logger = Log.ForContext<CreatePaymentCommandHandler>();
     }
 
-    public async Task<Unit> Handle(CreatePaymentCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Unit>> Handle(CreatePaymentCommand request, CancellationToken cancellationToken)
     {
         _logger.Information("[INFO] Handling {CommandName}", nameof(CreatePaymentCommand));
         
@@ -48,10 +42,9 @@ public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand,
             var errors = validationResult.Errors
                 .Select(e => new Error(e.ErrorMessage));
             _logger.Warning("[WARN] Validation failed for {EventName}: {Errors}", nameof(CreatePaymentCommand), errors);
-            
-            return Unit.Value;
+            return Result.Fail(errors);
         }
-        
+
         try
         {
             var paymentRequest = new PaymentRequest(request.EventId, request.OrderId, request.TotalAmount, request.Items);
@@ -71,29 +64,28 @@ public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand,
                 expirationDate: preference.Value.ExpirationDateTo
             );
 
-            await _paymentRepository.AddAsync(payment);
+            await _paymentRepository.AddAsync(payment, cancellationToken);
             await _paymentRepository.SaveChangesAsync();
 
             _logger.Information("[INFO] Payment created with ID: {PaymentId} for EventId: {EventId}", payment.Id, request.EventId);
 
             var data = new PaymentUpdatedData(
-                payment.Id, 
-                payment.OrderId, 
-                payment.CheckoutUrl!, 
+                payment.Id,
+                payment.OrderId,
+                payment.CheckoutUrl!,
                 payment.Status.ToString());
             var evt = new PaymentUpdatedEvent(data);
-            
+
             await _eventBus.PublishAsync(evt);
             _logger.Information("[INFO] PaymentCreatedEvent published for PaymentId: {PaymentId}", payment.Id);
+
+            _logger.Information("[INFO] Finished processing CreatePaymentCommand for {EventId}", request.EventId);
+            return Result.Ok(Unit.Value);
         }
-        
         catch (Exception ex)
         {
             _logger.Error(ex, "[ERROR] An unexpected error occurred while creating payment preference for {EventId}.", request.EventId);
-            throw;
+            return Result.Fail("An error occurred while creating the payment");
         }
-        
-        _logger.Information("[INFO] Finished processing CreatePaymentCommand for {EventId}", request.EventId);
-        return Unit.Value;
     }
 }

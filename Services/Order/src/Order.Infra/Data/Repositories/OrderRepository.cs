@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Order.Domain.Interfaces;
-using Order.Infra.Data.Context;
+using Order.Infra.Data.Context.Write;
 namespace Order.Infra.Data.Repositories;
 
 public class OrderRepository : IOrderRepository
