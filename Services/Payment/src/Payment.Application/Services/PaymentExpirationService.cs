@@ -2,6 +2,7 @@
 using BuildingBlocks.Contracts.Events;
 using BuildingBlocks.Messaging;
 using Payment.Application.Interfaces;
+using Payment.Application.Specifications;
 using Payment.Domain.Interface;
 using Payment.Domain.Models;
 using Serilog;
@@ -25,7 +26,7 @@ public class PaymentExpirationService : IPaymentExpirationService
     {
         var now = DateTime.UtcNow;
 
-        var expiredPayments = await _paymentRepository.GetExpiredPaymentsAsync(now);
+        var expiredPayments = await _paymentRepository.WhereAsync(new GetExpiredPaymentSpec(now));
 
         if (!expiredPayments.Any())
         {

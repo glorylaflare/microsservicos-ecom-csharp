@@ -1,15 +1,17 @@
 ﻿using BuildingBlocks.Infra.ReadModels;
+using BuildingBlocks.SharedKernel.Common;
 using FluentAssertions;
 using Moq;
 using Payment.Application.Interfaces;
 using Payment.Application.Queries.GetAllPayments;
 using Payment.Application.Responses;
+using Payment.Application.Specifications;
 
 namespace Payment.UnitTests.Application.Queries;
 
 public class GetAllPaymentTests
 {
-	private readonly GetAllPaymentsQuery _request = new GetAllPaymentsQuery();
+	private readonly GetAllPaymentsQuery _request = new GetAllPaymentsQuery(skip: 0, take: 10);
 	private readonly Mock<IPaymentReadService> _mockService = new();
 	private readonly List<PaymentReadModel> _paymentReadModels = new List<PaymentReadModel>
 	{
@@ -41,16 +43,16 @@ public class GetAllPaymentTests
 	public async Task GetAllPaymentsQuery_WhenListExists_ShouldReturnSuccess()
 	{
 		//Arrange
-		var cancellationToken = It.IsAny<CancellationToken>();
+		var cancellationToken = CancellationToken.None;
 		_mockService
-			.Setup(s => s.GetAllAsync())
+			.Setup(s => s.WhereAsync(It.IsAny<AllPaymentsSpec>(), It.IsAny<CancellationToken>()))
 			.ReturnsAsync(_paymentReadModels);
 
-		var response = _paymentReadModels.Select(p => new GetPaymentResponse(
+		var response = _paymentReadModels.Select(p => new PaymentResponse(
 			p.Id,
 			p.Status!,
 			p.CreatedAt
-		));
+		)).ToList();
 
 		var handler = new GetAllPaymentsQueryHandler(_mockService.Object);
 
@@ -59,16 +61,22 @@ public class GetAllPaymentTests
 
 		//Assert
 		result.IsSuccess.Should().BeTrue();
-		result.Value.Should().BeEquivalentTo(response);
+		result.Value.Should().BeEquivalentTo(new PageResult<PaymentResponse>
+		{
+			Items = response,
+			Total = response.Count,
+			Skip = _request.Skip,
+			Take = _request.Take
+		});
 	}
 
 	[Fact]
 	public async Task GetAllPaymentsQuery_WhenNoPaymentsExist_ShouldReturnFailure()
 	{
 		//Arrange
-		var cancellationToken = It.IsAny<CancellationToken>();
+		var cancellationToken = CancellationToken.None;
 		_mockService
-			.Setup(s => s.GetAllAsync())
+			.Setup(s => s.WhereAsync(It.IsAny<AllPaymentsSpec>(), It.IsAny<CancellationToken>()))
 			.ReturnsAsync(new List<PaymentReadModel>());
 
 		var handler = new GetAllPaymentsQueryHandler(_mockService.Object);

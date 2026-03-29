@@ -4,6 +4,7 @@ using BuildingBlocks.Messaging;
 using FluentResults;
 using MediatR;
 using Payment.Application.Interfaces;
+using Payment.Application.Specifications;
 using Payment.Domain.Interface;
 using Payment.Domain.Models;
 using Serilog;
@@ -44,7 +45,7 @@ public class ProcessPaymentCommandHandler : IRequestHandler<ProcessPaymentComman
 
         var orderId = processResult.Value.OrderId;
 
-        var payment = await _paymentRepository.GetByIdAsync(orderId);
+        var payment = await _paymentRepository.FindOneAsync(new PaymentByOrderIdSpec(orderId), cancellationToken);
         if (payment == null)
         {
             _logger.Error("[ERROR] Payment with order ID {OrderId} not found", orderId);

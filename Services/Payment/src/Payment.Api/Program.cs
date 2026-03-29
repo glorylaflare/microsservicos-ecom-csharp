@@ -5,7 +5,6 @@ using BuildingBlocks.Observability.Extensions;
 using BuildingBlocks.Observability.Middlewares;
 using BuildingBlocks.Security.Extensions;
 using BuildingBlocks.SharedKernel.Config;
-using MercadoPago.Config;
 using Payment.Api.Extensions;
 using Payment.Application.Commands.CreatePayment;
 using Payment.Application.Interfaces;

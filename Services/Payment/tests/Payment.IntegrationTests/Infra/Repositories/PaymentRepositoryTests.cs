@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using BuildingBlocks.Infra.Specifications;
 using Payment.Domain.Models;
 using Payment.Infra.Data.Repositories;
 using Payment.IntegrationTests.Fixture;
@@ -8,6 +9,15 @@ namespace Payment.IntegrationTests.Infra.Repositories;
 [Collection("Database Collection")]
 public class PaymentRepositoryTests
 {
+    private sealed class PaymentByOrderIdSpec : Specification<Domain.Models.Payment>
+    {
+        public PaymentByOrderIdSpec(int orderId)
+        {
+            AddCriteria(x => x.OrderId == orderId);
+            EnableTracking();
+        }
+    }
+
     private readonly DatabaseFixture _fixture;
     private static int GenerateOrderId() => Random.Shared.Next(10000, 99999);
     private static Domain.Models.Payment CreatePayment() => new Domain.Models.Payment(
@@ -30,11 +40,12 @@ public class PaymentRepositoryTests
     {
         //Arrange
         var payment = CreatePayment();
+        var cancellationToken = CancellationToken.None;
 
         //Act
-        await _repository.AddAsync(payment);
+        await _repository.AddAsync(payment, cancellationToken);
         await _repository.SaveChangesAsync();
-        var result = await _repository.GetByIdAsync(payment.OrderId);
+        var result = await _repository.FindOneAsync(new PaymentByOrderIdSpec(payment.OrderId), cancellationToken);
 
         //Assert
         result.Should().NotBeNull();
@@ -46,15 +57,16 @@ public class PaymentRepositoryTests
     {
         //Arrange
         var payment = CreatePayment();
+        var cancellationToken = CancellationToken.None;
 
-        await _repository.AddAsync(payment);
+        await _repository.AddAsync(payment, cancellationToken);
         await _repository.SaveChangesAsync();
 
         //Act
         payment.SetStatus(PaymentStatus.Paid);
         _repository.Update(payment);
         await _repository.SaveChangesAsync();
-        var result = await _repository.GetByIdAsync(payment.OrderId);
+        var result = await _repository.FindOneAsync(new PaymentByOrderIdSpec(payment.OrderId), cancellationToken);
 
         //Assert
         result!.Status.Should().Be(PaymentStatus.Paid);

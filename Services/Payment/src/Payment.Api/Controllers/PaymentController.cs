@@ -1,3 +1,4 @@
+using BuildingBlocks.SharedKernel.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,9 +23,9 @@ public class PaymentController : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] Pagination pagination)
     {
-        var result = await _mediator.Send(new GetAllPaymentsQuery());
+        var result = await _mediator.Send(new GetAllPaymentsQuery(pagination.Skip, pagination.Take));
         return result.IsFailed
             ? NotFound(result.Errors)
             : Ok(result.Value);

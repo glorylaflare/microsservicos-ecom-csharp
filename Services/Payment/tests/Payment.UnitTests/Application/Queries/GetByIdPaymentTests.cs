@@ -4,6 +4,7 @@ using Moq;
 using Payment.Application.Interfaces;
 using Payment.Application.Queries.GetPaymentById;
 using Payment.Application.Responses;
+using Payment.Application.Specifications;
 
 namespace Payment.UnitTests.Application.Queries;
 
@@ -28,12 +29,12 @@ public class GetByIdPaymentTests
 	public async Task GetPaymentByIdQuery_WhenPaymentExists_ShouldReturnSuccess()
 	{
 		//Arrange
-		var cancellationToken = It.IsAny<CancellationToken>();
+		var cancellationToken = CancellationToken.None;
 		_mockService
-			.Setup(s => s.GetByIdAsync(id))
+			.Setup(s => s.FindOneAsync(It.IsAny<PaymentByPaymentIdSpec>(), It.IsAny<CancellationToken>()))
 			.ReturnsAsync(_paymentReadModel);
 
-		var response = new GetPaymentResponse(
+		var response = new PaymentResponse(
 			_paymentReadModel.Id,
 			_paymentReadModel.Status!,
 			_paymentReadModel.CreatedAt
@@ -53,9 +54,9 @@ public class GetByIdPaymentTests
 	public async Task GetPaymentByIdQuery_WhenPaymentDoesNotExist_ShouldReturnFailure()
 	{
 		//Arrange
-		var cancellationToken = It.IsAny<CancellationToken>();
+		var cancellationToken = CancellationToken.None;
 		_mockService
-			.Setup(s => s.GetByIdAsync(id))
+			.Setup(s => s.FindOneAsync(It.IsAny<PaymentByPaymentIdSpec>(), It.IsAny<CancellationToken>()))
 			.ReturnsAsync((PaymentReadModel?)null);
 
 		var handler = new GetPaymentByIdQueryHandler(_mockService.Object);

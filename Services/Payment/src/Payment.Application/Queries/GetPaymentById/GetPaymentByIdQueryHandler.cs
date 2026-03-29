@@ -2,11 +2,12 @@ using FluentResults;
 using MediatR;
 using Payment.Application.Interfaces;
 using Payment.Application.Responses;
+using Payment.Application.Specifications;
 using Serilog;
 
 namespace Payment.Application.Queries.GetPaymentById;
 
-public class GetPaymentByIdQueryHandler : IRequestHandler<GetPaymentByIdQuery, Result<GetPaymentResponse>>
+public class GetPaymentByIdQueryHandler : IRequestHandler<GetPaymentByIdQuery, Result<PaymentResponse>>
 {
     private readonly IPaymentReadService _paymentService;
     private readonly ILogger _logger;
@@ -17,12 +18,12 @@ public class GetPaymentByIdQueryHandler : IRequestHandler<GetPaymentByIdQuery, R
         _logger = Log.ForContext<GetPaymentByIdQueryHandler>();
     }
 
-    public async Task<Result<GetPaymentResponse>> Handle(GetPaymentByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PaymentResponse>> Handle(GetPaymentByIdQuery request, CancellationToken cancellationToken)
     {
         try
         {
             _logger.Information("[INFO] Handling {EventName} for Id: {PaymentId}", nameof(GetPaymentByIdQuery), request.id);
-            var payment = await _paymentService.GetByIdAsync(request.id);
+            var payment = await _paymentService.FindOneAsync(new PaymentByPaymentIdSpec(request.id), cancellationToken);
             
             if (payment == null)
             {
@@ -30,7 +31,7 @@ public class GetPaymentByIdQueryHandler : IRequestHandler<GetPaymentByIdQuery, R
                 return Result.Fail(new Error("Payment not found"));
             }
 
-            var response = new GetPaymentResponse(payment.Id, payment.Status!.ToString(), payment.CreatedAt);
+            var response = new PaymentResponse(payment.Id, payment.Status!.ToString(), payment.CreatedAt);
             return Result.Ok(response);
         }
         catch (Exception ex)

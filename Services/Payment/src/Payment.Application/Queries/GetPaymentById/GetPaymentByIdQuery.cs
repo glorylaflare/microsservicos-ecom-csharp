@@ -4,4 +4,4 @@ using Payment.Application.Responses;
 
 namespace Payment.Application.Queries.GetPaymentById;
 
-public record GetPaymentByIdQuery(int id) : IRequest<Result<GetPaymentResponse>>;
+public record GetPaymentByIdQuery(int id) : IRequest<Result<PaymentResponse>>;
