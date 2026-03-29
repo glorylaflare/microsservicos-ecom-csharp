@@ -41,8 +41,10 @@ public abstract class Specification<TEntity> : ISpecification<TEntity>
 public abstract class Specification<TEntity, TResult>
     : Specification<TEntity>, ISpecification<TEntity, TResult>
 {
-    public Expression<Func<TEntity, TResult>> Selector { get; protected set; } = default!;
+    public Expression<Func<TEntity, TResult>> Selector { get; }
 
-    protected void ApplySelector(Expression<Func<TEntity, TResult>> selector)
-        => Selector = selector;
+    protected Specification(Expression<Func<TEntity, TResult>> selector)
+    {
+        Selector = selector ?? throw new ArgumentNullException(nameof(selector));
+    }
 }
