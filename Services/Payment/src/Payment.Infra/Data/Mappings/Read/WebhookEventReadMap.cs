@@ -17,7 +17,7 @@ public class WebhookEventReadMap : IEntityTypeConfiguration<WebhookEventReadMode
         builder.Property(x => x.ApiVersion);
         builder.Property(x => x.PaymentId);
         builder.Property(x => x.DateCreated);
-        builder.Property(x => x.Id);
+        builder.Property(x => x.ExternalId);
         builder.Property(x => x.LiveMode);
         builder.Property(x => x.Type);
         builder.Property(x => x.UserId);

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Payment.Infra.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Add_AddWebhookEventEntity_and_WebhookPayload : Migration
+    public partial class AddNewWebhook : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,12 +32,13 @@ namespace Payment.Infra.Data.Migrations
                 name: "WebhookPayload",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Action = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     ApiVersion = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     PaymentId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ExternalId = table.Column<long>(type: "bigint", nullable: false),
                     LiveMode = table.Column<bool>(type: "bit", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),

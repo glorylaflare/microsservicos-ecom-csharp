@@ -5,7 +5,7 @@
 namespace Payment.Infra.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Add_NewViews : Migration
+    public partial class AddNewWebhookView : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
