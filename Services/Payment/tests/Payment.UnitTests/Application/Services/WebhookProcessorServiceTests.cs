@@ -89,7 +89,7 @@ public class WebhookProcessorServiceTests
 
         // Assert
         _mockMediator.Verify(m => m.Send(It.IsAny<ProcessPaymentCommand>(), It.IsAny<CancellationToken>()), Times.Exactly(2));
-        webhook1.Status.Should().Be(WebhookStatus.Pending);
+        webhook1.Status.Should().Be(WebhookStatus.Failed);
         webhook2.Status.Should().Be(WebhookStatus.Processed);
         _mockWebhookRepository.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }

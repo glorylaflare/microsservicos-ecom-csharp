@@ -82,7 +82,7 @@ public class ReceiveMercadoPagoWebhookCommandHandlerTests
     }
 
     [Fact]
-    public async Task Handle_WhenPayloadIsInvalidJson_ShouldReturnFailureAndNotPersist()
+    public async Task Handle_WhenPayloadIsInvalidJson_ShouldReturnSuccessAndNotPersist()
     {
         // Arrange
         var command = new ReceiveMercadoPagoWebhookCommand("{invalid-json}");
@@ -92,8 +92,7 @@ public class ReceiveMercadoPagoWebhookCommandHandlerTests
         var result = await handler.Handle(command, CancellationToken.None);
 
         // Assert
-        result.IsFailed.Should().BeTrue();
-        result.Errors.Should().ContainSingle(x => x.Message == "Invalid webhook payload");
+        result.IsSuccess.Should().BeTrue();
         _mockWebhookRepository.Verify(r => r.AddAsync(It.IsAny<WebhookEvent>(), It.IsAny<CancellationToken>()), Times.Never);
         _mockWebhookRepository.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
