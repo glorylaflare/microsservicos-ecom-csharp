@@ -1,6 +1,5 @@
 ﻿using FluentResults;
 using MediatR;
-using Payment.Application.Commands.ProcessPayment;
 using Payment.Application.Commands.ReceiveMercadoPagoWebhook;
 using Payment.Domain.Interfaces;
 using Payment.Domain.Models;
@@ -24,14 +23,20 @@ public class ReceiveMercadoPagoWebhookCommandHandler : IRequestHandler<ReceiveMe
     {
         _logger.Information("[INFO] Receiving MercadoPago webhook in {CommandName}", nameof(ReceiveMercadoPagoWebhookCommandHandler));
 
+        var isProcessable = IsProcessable(request.Payload);
+        if (!IsProcessable(request.Payload))
+        {
+            _logger.Information("[INFO] Webhook ignored (not a payment event)");
+            return Result.Ok(Unit.Value);
+        }
+
         var data = BuildData(request.Payload);
         if (data.IsFailed)
         {
             return Result.Fail(data.Errors.ToList());
         }
 
-        var eventId = data.Value.Id.ToString();
-
+        var eventId = data.Value.ExternalId.ToString();
         try
         {
             var webhook = new WebhookEvent(
@@ -53,6 +58,23 @@ public class ReceiveMercadoPagoWebhookCommandHandler : IRequestHandler<ReceiveMe
         }
     }
 
+    private bool IsProcessable(string payload)
+    {
+        try
+        {
+            using var doc = JsonDocument.Parse(payload);
+
+            if (!doc.RootElement.TryGetProperty("type", out var type))
+                return false;
+
+            return type.GetString() == "payment";
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     private Result<WebhookPayload> BuildData(string payload)
     {
         try
@@ -64,7 +86,7 @@ public class ReceiveMercadoPagoWebhookCommandHandler : IRequestHandler<ReceiveMe
 
             var data = JsonSerializer.Deserialize<WebhookPayload>(payload, options);
 
-            if (data?.Id == null)
+            if (data?.ExternalId == null)
             {
                 _logger.Warning("[WARN] Webhook payload missing Id. Payload: {Payload}", payload);
                 return Result.Fail("Webhook Id not found");

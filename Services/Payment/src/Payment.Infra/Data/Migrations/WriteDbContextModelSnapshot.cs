@@ -104,37 +104,47 @@ namespace Payment.Infra.Data.Migrations
 
             modelBuilder.Entity("Payment.Domain.Models.WebhookPayload", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Action")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(100)")
+                        .HasAnnotation("Relational:JsonPropertyName", "action");
 
                     b.Property<string>("ApiVersion")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(100)")
+                        .HasAnnotation("Relational:JsonPropertyName", "api_version");
 
                     b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasAnnotation("Relational:JsonPropertyName", "date_created");
+
+                    b.Property<long>("ExternalId")
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Relational:JsonPropertyName", "id");
 
                     b.Property<bool>("LiveMode")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasAnnotation("Relational:JsonPropertyName", "live_mode");
 
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(100)")
+                        .HasAnnotation("Relational:JsonPropertyName", "type");
 
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(100)")
+                        .HasAnnotation("Relational:JsonPropertyName", "user_id");
 
                     b.Property<int?>("WebhookEventId")
                         .HasColumnType("int");
@@ -157,17 +167,20 @@ namespace Payment.Infra.Data.Migrations
 
                     b.OwnsOne("Payment.Domain.Models.Data", "Data", b1 =>
                         {
-                            b1.Property<long>("WebhookPayloadId")
-                                .HasColumnType("bigint");
+                            b1.Property<int>("WebhookPayloadId")
+                                .HasColumnType("int");
 
                             b1.Property<string>("Id")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)")
-                                .HasColumnName("PaymentId");
+                                .HasColumnName("PaymentId")
+                                .HasAnnotation("Relational:JsonPropertyName", "id");
 
                             b1.HasKey("WebhookPayloadId");
 
                             b1.ToTable("WebhookPayload");
+
+                            b1.HasAnnotation("Relational:JsonPropertyName", "data");
 
                             b1.WithOwner()
                                 .HasForeignKey("WebhookPayloadId");

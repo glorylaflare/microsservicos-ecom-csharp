@@ -22,13 +22,16 @@ public class WebhookProcessorService : IWebhookProcessorService
 
     public async Task ProcessWebhookAsync()
     {
+        var cancellationToken = CancellationToken.None;
+
         var pendingEvents = await _webhookRepository.WhereAsync(new GetPendingWebhookEventsSpec());
 
         foreach (var webhook in pendingEvents)
         {
             try
             {
-                await _mediator.Send(new ProcessPaymentCommand(webhook.Payload));
+                var result = await _mediator.Send(new ProcessPaymentCommand(webhook.Payload));
+                if (result.IsFailed) continue;
                 webhook.MarkAsProcessed();
             }
             catch (Exception ex)
@@ -37,6 +40,6 @@ public class WebhookProcessorService : IWebhookProcessorService
             }
         }
 
-        await _webhookRepository.SaveChangesAsync();
+        await _webhookRepository.SaveChangesAsync(cancellationToken);
     }
 }

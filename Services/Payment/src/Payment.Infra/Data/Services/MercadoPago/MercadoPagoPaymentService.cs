@@ -16,7 +16,7 @@ public class MercadoPagoPaymentService : IMercadoPagoPaymentService
 {
     private readonly ILogger _logger ;
     private readonly MercadoPagoSettings _settings;
-    private const string OrderIdKey = "orderId";
+    private const string OrderIdKey = "order_id";
 
     public MercadoPagoPaymentService(IOptions<MercadoPagoSettings> options)
     {
@@ -72,14 +72,14 @@ public class MercadoPagoPaymentService : IMercadoPagoPaymentService
 
         if (!metadata.TryGetValue(OrderIdKey, out var orderIdValue))
         {
-            _logger.Error("[ERROR] orderId not found in payment metadata");
-            return Result.Fail("orderId not found in payment metadata");
+            _logger.Error("[ERROR] order_id not found in payment metadata");
+            return Result.Fail("order_id not found in payment metadata");
         }
 
         if (!int.TryParse(orderIdValue.ToString(), out int orderId))
         {
-            _logger.Error("[ERROR] Invalid orderId format: {OrderId}", orderIdValue);
-            return Result.Fail("Invalid orderId format in payment metadata");
+            _logger.Error("[ERROR] Invalid order_id format: {OrderId}", orderIdValue);
+            return Result.Fail("Invalid order_id format in payment metadata");
         }
 
         var response = new PaymentProcessResponse(orderId, status ?? "unknown");

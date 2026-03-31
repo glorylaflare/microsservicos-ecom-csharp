@@ -8,7 +8,7 @@ public class WebhookEventReadModel
     public string ApiVersion { get; init; }
     public string PaymentId { get; init; }
     public DateTime DateCreated { get; init; }
-    public long Id { get; init; }
+    public long ExternalId { get; init; }
     public bool LiveMode { get; init; }
     public string Type { get; init; }
     public string UserId { get; init; }

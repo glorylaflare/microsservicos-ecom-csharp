@@ -9,9 +9,11 @@ internal class WebhookPayloadMap : IEntityTypeConfiguration<WebhookPayload>
     public void Configure(EntityTypeBuilder<WebhookPayload> builder)
     {
         builder.ToTable("WebhookPayload");
-        builder.HasKey(w => w.Id);
+        builder.Property<int>("Id");
+        builder.HasKey("Id");
         builder.Property(w => w.Action).IsRequired().HasMaxLength(100);
         builder.Property(w => w.ApiVersion).IsRequired().HasMaxLength(100);
+        builder.Property(w => w.ExternalId);
         builder.OwnsOne(w => w.Data, d =>
         {
             d.Property(d => d.Id).IsRequired().HasColumnName("PaymentId");

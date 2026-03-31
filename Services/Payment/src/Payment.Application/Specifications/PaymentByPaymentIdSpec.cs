@@ -5,7 +5,7 @@ namespace Payment.Application.Specifications;
 
 public class PaymentByPaymentIdSpec : Specification<PaymentReadModel, PaymentReadModel>
 {
-    public PaymentByPaymentIdSpec(int orderId) : base(x =>
+    public PaymentByPaymentIdSpec(int paymentId) : base(x =>
         new PaymentReadModel
         {
             Id = x.Id,
@@ -20,6 +20,6 @@ public class PaymentByPaymentIdSpec : Specification<PaymentReadModel, PaymentRea
             UpdatedAt = x.UpdatedAt
         })
     {
-        AddCriteria(x => x.OrderId == orderId);
+        AddCriteria(x => x.Id == paymentId);
     }
 }

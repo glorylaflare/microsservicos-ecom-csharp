@@ -70,7 +70,7 @@ public class WebhookProcessorServiceTests
             .Setup(m => m.Send(It.IsAny<ProcessPaymentCommand>(), It.IsAny<CancellationToken>()))
             .Returns<ProcessPaymentCommand, CancellationToken>((command, _) =>
             {
-                if (command.WebhookPayload.Id == 1)
+                if (command.WebhookPayload.ExternalId == 1)
                 {
                     throw new InvalidOperationException("processing error");
                 }
