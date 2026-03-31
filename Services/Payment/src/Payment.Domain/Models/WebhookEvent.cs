@@ -24,6 +24,12 @@ public class WebhookEvent : EntityBase
         Status = WebhookStatus.Processed;
         UpdatedAt = DateTime.UtcNow;
     }
+
+    public void MarkAsFailed()
+    {
+        Status = WebhookStatus.Failed;
+        UpdatedAt = DateTime.UtcNow;
+    }
 }
 
 public enum WebhookStatus

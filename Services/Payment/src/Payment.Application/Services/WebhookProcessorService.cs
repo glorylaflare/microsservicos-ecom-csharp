@@ -31,12 +31,12 @@ public class WebhookProcessorService : IWebhookProcessorService
             try
             {
                 var result = await _mediator.Send(new ProcessPaymentCommand(webhook.Payload));
-                if (result.IsFailed) continue;
                 webhook.MarkAsProcessed();
             }
             catch (Exception ex)
             {
                 _logger.Error(ex, "[ERROR] Error processing webhook {EventId}", webhook.EventId);
+                webhook.MarkAsFailed();
             }
         }
 
