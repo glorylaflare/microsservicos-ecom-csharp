@@ -4,6 +4,7 @@ using Moq;
 using User.Application.Interfaces;
 using User.Application.Queries.GetUsersById;
 using User.Application.Responses;
+using User.Application.Specifications;
 namespace User.UnitTests.Application.Queries;
 
 public class GetUserByIdTests
@@ -25,9 +26,9 @@ public class GetUserByIdTests
         //Arrange
         var cancellationToken = It.IsAny<CancellationToken>();
         _mockService
-            .Setup(s => s.GetByIdAsync(id))
+            .Setup(s => s.FindOneAsync(It.IsAny<UserByIdSpec>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(_userReadModel);
-        var response = new GetUserResponse(
+        var response = new UserResponse(
             _userReadModel.Id,
             _userReadModel.Username,
             _userReadModel.Email,
@@ -48,7 +49,7 @@ public class GetUserByIdTests
         //Arrange
         var cancellationToken = It.IsAny<CancellationToken>();
         _mockService
-            .Setup(s => s.GetByIdAsync(id))
+            .Setup(s => s.FindOneAsync(It.IsAny<UserByIdSpec>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((UserReadModel?)null);
         var handler = new GetUserByIdQueryHandler(_mockService.Object);
         //Act

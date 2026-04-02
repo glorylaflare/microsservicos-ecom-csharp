@@ -3,6 +3,7 @@ using FluentValidation;
 using Moq;
 using User.Application.Commands.CreateUser;
 using User.Application.Commands.DeactivateUser;
+using User.Application.Specifications;
 using User.Domain.Interfaces;
 namespace User.UnitTests.Application.Commands;
 
@@ -30,10 +31,10 @@ public class DeactivateUserTests
             .Setup(v => v.ValidateAsync(_request, _cancellationToken))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
         _mockRepo
-            .Setup(r => r.GetByEmailAsync(_user.Email))
+            .Setup(r => r.FindOneAsync(It.IsAny<UserByEmailSpec>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(user);
         _mockRepo
-            .Setup(r => r.SaveChangesAsync())
+            .Setup(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
         //Act
         var handler = new DeactivateUserCommandHandler(_mockRepo.Object, _mockValidator.Object);
@@ -41,7 +42,7 @@ public class DeactivateUserTests
         //Assert
         result.IsSuccess.Should().BeTrue();
         user.Status.Should().Be(User.Domain.Models.Status.Inactive);
-        _mockRepo.Verify(r => r.SaveChangesAsync(), Times.Once);
+        _mockRepo.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
     [Fact]
     public async Task DeactivateUser_ShouldReturnFailure_WhenUserNotFound()
@@ -53,14 +54,14 @@ public class DeactivateUserTests
             .Setup(v => v.ValidateAsync(_request, _cancellationToken))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
         _mockRepo
-            .Setup(r => r.GetByEmailAsync(_user.Email))
+            .Setup(r => r.FindOneAsync(It.IsAny<UserByEmailSpec>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((User.Domain.Models.User?)null);
         //Act
         var handler = new DeactivateUserCommandHandler(_mockRepo.Object, _mockValidator.Object);
         var result = await handler.Handle(new DeactivateUserCommand(_user.Email), _cancellationToken);
         //Assert
         result.IsFailed.Should().BeTrue();
-        _mockRepo.Verify(r => r.SaveChangesAsync(), Times.Never);
+        _mockRepo.Verify(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -85,6 +86,6 @@ public class DeactivateUserTests
 
         //Assert
         result.IsFailed.Should().BeTrue();
-        _mockRepo.Verify(r => r.GetByEmailAsync(It.IsAny<string>()), Times.Never);
+        _mockRepo.Verify(r => r.FindOneAsync(It.IsAny<UserByEmailSpec>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 }
