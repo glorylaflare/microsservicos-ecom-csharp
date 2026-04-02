@@ -4,6 +4,7 @@ using BuildingBlocks.Contracts.Events;
 using BuildingBlocks.Contracts.MongoEvents;
 using BuildingBlocks.Messaging;
 using MediatR;
+using Order.Application.Specifications;
 using Order.Domain.Interfaces;
 using Serilog;
 
@@ -26,7 +27,7 @@ public class StockRejectedCommandHandler : IRequestHandler<StockRejectedCommand,
     {
         _logger.Information("[INFO] Handling {CommandName} for OrderId {OrderId}, Reason: {Reason}", nameof(StockRejectedCommand), request.OrderId, request.Reason);
 
-        var order = await _orderRepository.GetByIdAsync(request.OrderId);
+        var order = await _orderRepository.FindOneAsync(new OrderByIdSpec(request.OrderId));
         if (order is null)
         {
             _logger.Warning("[WARN] Order with ID {OrderId} not found", request.OrderId);
@@ -35,7 +36,7 @@ public class StockRejectedCommandHandler : IRequestHandler<StockRejectedCommand,
 
         order.Cancelled();
         _orderRepository.Update(order);
-        await _orderRepository.SaveChangesAsync();
+        await _orderRepository.SaveChangesAsync(cancellationToken);
 
         _logger.Warning("[WARN] Payment not successful for OrderId: {OrderId}. Publishing OrderFailedEvent.", order.Id);
 

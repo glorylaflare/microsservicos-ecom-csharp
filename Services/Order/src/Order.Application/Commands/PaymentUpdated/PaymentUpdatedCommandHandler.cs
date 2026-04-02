@@ -5,6 +5,7 @@ using BuildingBlocks.Contracts.MongoEvents;
 using BuildingBlocks.Messaging;
 using MediatR;
 using Order.Application.Interfaces;
+using Order.Application.Specifications;
 using Order.Domain.Interfaces;
 using Serilog;
 
@@ -31,7 +32,7 @@ public class PaymentUpdatedCommandHandler : IRequestHandler<PaymentUpdatedComman
 
         try
         {
-            var order = await _orderRepository.GetByIdAsync(request.OrderId);
+            var order = await _orderRepository.FindOneAsync(new OrderByIdSpec(request.OrderId));
 
             if (order == null)
             {
@@ -43,12 +44,12 @@ public class PaymentUpdatedCommandHandler : IRequestHandler<PaymentUpdatedComman
             {
                 case "paid":
                     _logger.Information("[INFO] Payment successful for OrderId: {OrderId}. Updating order status to Completed.", request.OrderId);
-                    await ConfirmedPayment(order);
+                    await ConfirmedPayment(order, cancellationToken);
                     await _orderEmailPublisher.PublishCompleted(order);
                     break;
                 case "failed":
                     _logger.Information("[INFO] Payment failed for OrderId: {OrderId}. Updating order status to Cancelled.", request.OrderId);
-                    await FailedPayment(order);
+                    await FailedPayment(order, cancellationToken);
                     await _orderEmailPublisher.PublishFailed(order);
                     break;
                 default:
@@ -66,20 +67,20 @@ public class PaymentUpdatedCommandHandler : IRequestHandler<PaymentUpdatedComman
         }
     }
 
-    public async Task ConfirmedPayment(Domain.Models.Order order)
+    public async Task ConfirmedPayment(Domain.Models.Order order, CancellationToken cancellationToken)
     {
         order.Completed();
         _orderRepository.Update(order);
-        await _orderRepository.SaveChangesAsync();
+        await _orderRepository.SaveChangesAsync(cancellationToken);
 
         await PublishMongoEvent(order);
     }
 
-    public async Task FailedPayment(Domain.Models.Order order)
+    public async Task FailedPayment(Domain.Models.Order order, CancellationToken cancellationToken)
     {
         order.Cancelled();
         _orderRepository.Update(order);
-        await _orderRepository.SaveChangesAsync();
+        await _orderRepository.SaveChangesAsync(cancellationToken);
 
         #region failed order events
         await PublishFailedOrder(order);

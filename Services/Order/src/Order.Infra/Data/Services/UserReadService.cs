@@ -14,8 +14,6 @@ public class UserReadService : IUserReadService
         _users = context.Users;
     }
 
-    public Task<UserReadModel?> GetByIdAsync(string userId)
-    {
-        return _users.Find(u => u.Id == userId).FirstOrDefaultAsync()!;
-    }
+    public async Task<UserReadModel?> GetByIdAsync(string userId)
+        => await _users.Find(u => u.Id == userId).FirstOrDefaultAsync();
 }

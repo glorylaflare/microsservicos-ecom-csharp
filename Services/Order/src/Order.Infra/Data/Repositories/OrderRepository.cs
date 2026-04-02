@@ -1,20 +1,11 @@
-using Microsoft.EntityFrameworkCore;
+using BuildingBlocks.Infra.Repositories;
 using Order.Domain.Interfaces;
 using Order.Infra.Data.Context.Write;
 namespace Order.Infra.Data.Repositories;
 
-public class OrderRepository : IOrderRepository
+public class OrderRepository : Repository<Domain.Models.Order>, IOrderRepository
 {
-    private readonly DbSet<Domain.Models.Order> _orders;
-    private readonly WriteDbContext _context;
-    public OrderRepository(WriteDbContext context)
-    {
-        _orders = context.Orders;
-        _context = context;
-    }
-    public async Task<Domain.Models.Order?> GetByIdAsync(int orderId) =>
-        await _orders.FirstOrDefaultAsync(o => o.Id == orderId);
-    public async Task AddAsync(Domain.Models.Order order) => await _orders.AddAsync(order);
-    public void Update(Domain.Models.Order order) => _orders.Update(order);
-    public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
+    public OrderRepository(WriteDbContext context) : base(context) { }
+
+    public async Task SaveChangesAsync(CancellationToken cancellationToken) => await _context.SaveChangesAsync(cancellationToken);
 }
