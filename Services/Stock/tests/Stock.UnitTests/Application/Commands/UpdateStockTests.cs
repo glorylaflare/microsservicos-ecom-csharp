@@ -1,4 +1,5 @@
 using FluentAssertions;
+using BuildingBlocks.Infra.Interfaces;
 using Moq;
 using Stock.Application.Commands.UpdateStock;
 using Stock.Domain.Interfaces;
@@ -23,21 +24,21 @@ public class UpdateStockTests
             99.99m,
             10
         );
-        var _cancellationToken = It.IsAny<CancellationToken>();
+        var cancellationToken = CancellationToken.None;
         _mockValidator
-            .Setup(v => v.ValidateAsync(_request, _cancellationToken))
+            .Setup(v => v.ValidateAsync(_request, cancellationToken))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
         _mockRepo
-            .Setup(r => r.GetByIdAsync(_request.ProductId))
+            .Setup(r => r.FindOneAsync(It.IsAny<ISpecification<Product>>(), cancellationToken))
             .ReturnsAsync(product);
         _mockRepo
             .Setup(r => r.Update(product));
         _mockRepo
-            .Setup(r => r.SaveChangesAsync())
+            .Setup(r => r.SaveChangesAsync(cancellationToken))
             .Returns(Task.CompletedTask);
         var handler = new UpdateStockCommandHandler(_mockRepo.Object, _mockValidator.Object);
         //Act
-        var result = await handler.Handle(_request, _cancellationToken);
+        var result = await handler.Handle(_request, cancellationToken);
         //Assert
         product.StockQuantity.Should().Be(15);
     }
@@ -45,17 +46,17 @@ public class UpdateStockTests
     public async Task UpdateStock_WithInvalidData_ShouldReturnValidationErrors()
     {
         //Arrange
-        var _cancellationToken = It.IsAny<CancellationToken>();
+        var cancellationToken = CancellationToken.None;
         var validationErrors = new List<FluentValidation.Results.ValidationFailure>
         {
             new FluentValidation.Results.ValidationFailure("Quantity", "Quantity must be greater than zero")
         };
         _mockValidator
-            .Setup(v => v.ValidateAsync(_request, _cancellationToken))
+            .Setup(v => v.ValidateAsync(_request, cancellationToken))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult(validationErrors));
         var handler = new UpdateStockCommandHandler(_mockRepo.Object, _mockValidator.Object);
         //Act
-        var result = await handler.Handle(_request, _cancellationToken);
+        var result = await handler.Handle(_request, cancellationToken);
         //Assert
         result.Errors.Should().ContainSingle(e => e.Message == "Quantity must be greater than zero");
     }

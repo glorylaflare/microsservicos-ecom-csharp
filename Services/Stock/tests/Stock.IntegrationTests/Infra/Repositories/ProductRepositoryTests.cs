@@ -1,3 +1,4 @@
+using BuildingBlocks.Infra.Specifications;
 using FluentAssertions;
 using Stock.Domain.Models;
 using Stock.Infra.Data.Repositories;
@@ -28,11 +29,12 @@ public class ProductRepositoryTests
     {
         //Arrange
         var product = CreateProduct();
+        var cancellationToken = CancellationToken.None;
 
         //Act
-        await _repository.AddAsync(product);
-        await _repository.SaveChangesAsync();
-        var result = await _repository.GetByIdAsync(product.Id);
+        await _repository.AddAsync(product, cancellationToken);
+        await _repository.SaveChangesAsync(cancellationToken);
+        var result = await _repository.FindOneAsync(new ProductByIdSpec(product.Id), cancellationToken);
 
         //Assert
         result.Should().NotBeNull();
@@ -43,17 +45,27 @@ public class ProductRepositoryTests
     {
         //Arrange
         var product = CreateProduct();
+        var cancellationToken = CancellationToken.None;
 
-        await _repository.AddAsync(product);
-        await _repository.SaveChangesAsync();
+        await _repository.AddAsync(product, cancellationToken);
+        await _repository.SaveChangesAsync(cancellationToken);
 
         //Act
         product.DecreaseStock(20);
         _repository.Update(product);
-        await _repository.SaveChangesAsync();
-        var result = await _repository.GetByIdAsync(product.Id);
+        await _repository.SaveChangesAsync(cancellationToken);
+        var result = await _repository.FindOneAsync(new ProductByIdSpec(product.Id), cancellationToken);
 
         //Assert
         result!.StockQuantity.Should().Be(20);
+    }
+
+    private sealed class ProductByIdSpec : Specification<Product>
+    {
+        public ProductByIdSpec(int id)
+        {
+            AddCriteria(p => p.Id == id);
+            EnableTracking();
+        }
     }
 }
