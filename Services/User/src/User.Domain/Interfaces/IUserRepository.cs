@@ -1,9 +1,8 @@
+using BuildingBlocks.Infra.Interfaces;
+
 namespace User.Domain.Interfaces;
 
-public interface IUserRepository
+public interface IUserRepository : IRepository<Models.User>
 {
-    Task AddAsync(Models.User user);
-    Task<Models.User?> GetByIdAsync(int userId);
-    Task<Models.User?> GetByEmailAsync(string email);
-    Task SaveChangesAsync();
+    Task SaveChangesAsync(CancellationToken cancellationToken = default);
 }

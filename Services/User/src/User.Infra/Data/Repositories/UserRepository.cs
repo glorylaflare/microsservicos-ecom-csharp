@@ -1,23 +1,12 @@
-using Microsoft.EntityFrameworkCore;
+using BuildingBlocks.Infra.Repositories;
 using User.Domain.Interfaces;
-using User.Infra.Data.Context;
+using User.Infra.Data.Context.Write;
+
 namespace User.Infra.Data.Repositories;
 
-public class UserRepository : IUserRepository
+public class UserRepository : Repository<Domain.Models.User>, IUserRepository
 {
-    private readonly DbSet<Domain.Models.User> _users;
-    private readonly WriteDbContext _context;
-    
-    public UserRepository(WriteDbContext context)
-    {
-        _context = context;
-        _users = context.Users;
-    }
+    public UserRepository(WriteDbContext context) : base(context) { }
 
-    public async Task AddAsync(Domain.Models.User user) => await _users.AddAsync(user);
-    public async Task<Domain.Models.User?> GetByIdAsync(int userId) =>
-        await _users.FirstOrDefaultAsync(u => u.Id == userId);
-    public async Task<Domain.Models.User?> GetByEmailAsync(string email) =>
-        await _users.FirstOrDefaultAsync(u => u.Email == email);
-    public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
+    public async Task SaveChangesAsync(CancellationToken cancellationToken) => await _context.SaveChangesAsync(cancellationToken);
 }

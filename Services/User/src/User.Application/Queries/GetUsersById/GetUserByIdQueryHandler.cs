@@ -3,10 +3,11 @@ using MediatR;
 using Serilog;
 using User.Application.Interfaces;
 using User.Application.Responses;
+using User.Application.Specifications;
 
 namespace User.Application.Queries.GetUsersById;
 
-public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<GetUserResponse>>
+public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<UserResponse>>
 {
     private readonly IUserReadService _userService;
     private readonly ILogger _logger;
@@ -17,20 +18,20 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<
         _logger = Log.ForContext<GetUserByIdQueryHandler>();
     }
 
-    public async Task<Result<GetUserResponse>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Result<UserResponse>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {
         try
         {
             _logger.Information("[INFO] Handling {EventName} for UserId: {UserId}", nameof(GetUserByIdQuery), request.Id);
 
-            var user = await _userService.GetByIdAsync(request.Id);
+            var user = await _userService.FindOneAsync(new UserByIdSpec(request.Id));
             if (user is null)
             {
                 _logger.Warning("[WARN] User with ID {UserId} not found in the repository", request.Id);
-                return Result.Fail<GetUserResponse>($"User with ID {request.Id} not found.");
+                return Result.Fail<UserResponse>($"User with ID {request.Id} not found.");
             }
 
-            var response = new GetUserResponse(
+            var response = new UserResponse(
                 user.Id,
                 user.Username,
                 user.Email,
@@ -46,7 +47,7 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<
         catch (Exception ex)
         {
             _logger.Error(ex, "[ERROR] Error occurred while fetching user with ID {UserId}", request.Id);
-            return Result.Fail<GetUserResponse>("An error occurred while processing your request.");
+            return Result.Fail<UserResponse>("An error occurred while processing your request.");
         }
     }
 }

@@ -2,6 +2,7 @@ using FluentResults;
 using FluentValidation;
 using MediatR;
 using Serilog;
+using User.Application.Specifications;
 using User.Domain.Interfaces;
 
 namespace User.Application.Commands.DeactivateUser;
@@ -28,13 +29,14 @@ public class DeactivateUserCommandHandler : IRequestHandler<DeactivateUserComman
         {
             var errors = validationResult.Errors
                 .Select(e => new Error(e.ErrorMessage));
+
             _logger.Warning("[WARN] Validation failed for {EventName}: {Errors}", nameof(DeactivateUserCommand), errors);
             return Result.Fail(errors);
         }
 
         try
         {
-            var user = await _userRepository.GetByEmailAsync(request.Email);
+            var user = await _userRepository.FindOneAsync(new UserByEmailSpec(request.Email));
 
             if (user == null)
             {

@@ -7,12 +7,13 @@ using BuildingBlocks.SharedKernel.Config;
 using User.Api.Extensions;
 using User.Application.Commands.CreateUser;
 using User.Application.Interfaces;
-using User.Application.Services;
 using User.Domain.Interfaces;
 using User.Domain.Models;
-using User.Infra.Data.Context;
+using User.Infra.Data.Context.Read;
+using User.Infra.Data.Context.Write;
 using User.Infra.Data.Repositories;
 using User.Infra.Data.Services;
+using User.Infra.Data.Services.Auth0;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,8 +40,7 @@ builder.Services.AddDbContext<WriteDbContext>();
 builder.Services.AddDbContext<ReadDbContext>();
 
 builder.Services.Configure<Auth0Settings>(
-    builder.Configuration.GetSection("Auth0")
-);
+    builder.Configuration.GetSection("Auth0"));
 
 builder.Services.AddEventBus();
 builder.Services.AddHealthChecks();
