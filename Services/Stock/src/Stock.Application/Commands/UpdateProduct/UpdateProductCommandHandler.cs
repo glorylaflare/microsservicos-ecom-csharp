@@ -2,6 +2,7 @@ using FluentResults;
 using FluentValidation;
 using MediatR;
 using Serilog;
+using Stock.Application.Specifications;
 using Stock.Domain.Interfaces;
 
 namespace Stock.Application.Commands.UpdateProduct;
@@ -36,7 +37,7 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
 
         try
         {
-            var product = await _productRepository.GetByIdAsync(request.ProductId);
+            var product = await _productRepository.FindOneAsync(new ProductByIdTrackingSpec(request.ProductId));
 
             if (product is null)
             {
@@ -48,8 +49,9 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
                 request.Name ?? product.Name,
                 request.Description ?? product.Description,
                 request.Price);
+
             _productRepository.Update(product);
-            await _productRepository.SaveChangesAsync();
+            await _productRepository.SaveChangesAsync(cancellationToken);
 
             _logger.Information("[INFO] Product ID {ProductId} updated successfully", request.ProductId);
 

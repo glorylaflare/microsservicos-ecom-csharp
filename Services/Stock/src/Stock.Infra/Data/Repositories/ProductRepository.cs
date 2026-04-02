@@ -1,21 +1,13 @@
-using Microsoft.EntityFrameworkCore;
+using BuildingBlocks.Infra.Repositories;
 using Stock.Domain.Interfaces;
 using Stock.Domain.Models;
-using Stock.Infra.Data.Context;
+using Stock.Infra.Data.Context.Write;
+
 namespace Stock.Infra.Data.Repositories;
 
-public class ProductRepository : IProductRepository
+public class ProductRepository : Repository<Product>, IProductRepository
 {
-    private readonly DbSet<Product> _products;
-    private readonly WriteDbContext _context;
-    public ProductRepository(WriteDbContext context)
-    {
-        _products = context.Products;
-        _context = context;
-    }
-    public async Task<Product?> GetByIdAsync(int productId) =>
-        await _products.FirstOrDefaultAsync(p => p.Id == productId);
-    public async Task AddAsync(Product product) => await _products.AddAsync(product);
-    public void Update(Product product) => _products.Update(product);
-    public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
+    public ProductRepository(WriteDbContext context) : base(context) { }
+
+    public async Task SaveChangesAsync(CancellationToken cancellationToken) => await _context.SaveChangesAsync(cancellationToken);
 }

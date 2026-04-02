@@ -1,10 +1,9 @@
+using BuildingBlocks.Infra.Interfaces;
 using Stock.Domain.Models;
+
 namespace Stock.Domain.Interfaces;
 
-public interface IProductRepository
+public interface IProductRepository : IRepository<Product>
 {
-    Task<Product?> GetByIdAsync(int productId);
-    Task AddAsync(Product product);
-    void Update(Product product);
-    Task SaveChangesAsync();
+    Task SaveChangesAsync(CancellationToken cancellationToken = default);
 }

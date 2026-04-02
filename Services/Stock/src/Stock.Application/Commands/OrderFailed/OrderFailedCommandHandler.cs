@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Serilog;
-using Stock.Application.Commands.CreateProduct;
 using Stock.Application.Interfaces;
+using Stock.Application.Specifications;
 using Stock.Domain.Interfaces;
 
 namespace Stock.Application.Commands.OrderFailed;
@@ -27,25 +27,25 @@ public class OrderFailedCommandHandler : IRequestHandler<OrderFailedCommand, Uni
         {
             await _dbTransactionManager.ExecuteResilientTransactionAsync(async () =>
             {
-                foreach (var items in request.Items)
+                foreach (var item in request.Items)
                 {
-                    _logger.Information("[INFO] Restoring stock for Product ID {ProductId} with Quantity {Quantity}", items.ProductId, items.Quantity);
+                    _logger.Information("[INFO] Restoring stock for Product ID {ProductId} with Quantity {Quantity}", item.ProductId, item.Quantity);
 
-                    var product = await _productRepository.GetByIdAsync(items.ProductId);
+                    var product = await _productRepository.FindOneAsync(new ProductByIdTrackingSpec(item.ProductId));
 
                     if (product == null)
                     {
-                        _logger.Warning("[WARN] Product with ID {ProductId} not found while handling {CommandName}", items.ProductId, nameof(OrderFailedCommandHandler));
+                        _logger.Warning("[WARN] Product with ID {ProductId} not found while handling {CommandName}", item.ProductId, nameof(OrderFailedCommandHandler));
                         continue;
                     }
 
-                    product.Restock(items.Quantity);
+                    product.Restock(item.Quantity);
                     _productRepository.Update(product);
 
-                    _logger.Information("[INFO] Restored stock for Product ID {ProductId}. New Stock Quantity: {StockQuantity}", items.ProductId, product.StockQuantity);
+                    _logger.Information("[INFO] Restored stock for Product ID {ProductId}. New Stock Quantity: {StockQuantity}", item.ProductId, product.StockQuantity);
                 }
 
-                await _productRepository.SaveChangesAsync();
+                await _productRepository.SaveChangesAsync(cancellationToken);
             });
 
             _logger.Information("[INFO] Successfully handled {CommandName}", nameof(OrderFailedCommandHandler));

@@ -1,6 +1,6 @@
 namespace Stock.Application.Responses;
 
-public record GetProductResponse(
+public record ProductResponse(
     int Id,
     string Name,
     string Description,
