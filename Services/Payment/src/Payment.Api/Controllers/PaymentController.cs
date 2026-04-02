@@ -2,11 +2,11 @@ using BuildingBlocks.SharedKernel.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Payment.Application.Commands.ProcessPayment;
 using Payment.Application.Commands.ReceiveMercadoPagoWebhook;
 using Payment.Application.Queries.GetAllPayments;
 using Payment.Application.Queries.GetPaymentById;
 using System.ComponentModel.DataAnnotations;
+
 namespace Payment.Api.Controllers;
 
 [Authorize]
