@@ -1,3 +1,4 @@
+using BuildingBlocks.Infra.Specifications;
 using FluentAssertions;
 using Order.Domain.Models;
 using Order.Infra.Data.Repositories;
@@ -31,11 +32,12 @@ public class OrderRepositoryTests
     {
         //Arrange
         var order = CreateOrder();
+        var cancellationToken = CancellationToken.None;
 
         //Act
-        await _repository.AddAsync(order);
-        await _repository.SaveChangesAsync();
-        var result = await _repository.GetByIdAsync(order.Id);
+        await _repository.AddAsync(order, cancellationToken);
+        await _repository.SaveChangesAsync(cancellationToken);
+        var result = await _repository.FindOneAsync(new OrderByIdSpec(order.Id), cancellationToken);
 
         //Assert
         result.Should().NotBeNull();
@@ -47,17 +49,27 @@ public class OrderRepositoryTests
     {
         //Arrange
         var order = CreateOrder();
+        var cancellationToken = CancellationToken.None;
 
-        await _repository.AddAsync(order);
-        await _repository.SaveChangesAsync();
+        await _repository.AddAsync(order, cancellationToken);
+        await _repository.SaveChangesAsync(cancellationToken);
 
         //Act
         order.Confirmed();
         _repository.Update(order);
-        await _repository.SaveChangesAsync();
-        var result = await _repository.GetByIdAsync(order.Id);
+        await _repository.SaveChangesAsync(cancellationToken);
+        var result = await _repository.FindOneAsync(new OrderByIdSpec(order.Id), cancellationToken);
 
         //Assert
         result!.Status.Should().Be(Status.Reserved);
+    }
+
+    private sealed class OrderByIdSpec : Specification<Domain.Models.Order>
+    {
+        public OrderByIdSpec(int id)
+        {
+            AddCriteria(o => o.Id == id);
+            EnableTracking();
+        }
     }
 }

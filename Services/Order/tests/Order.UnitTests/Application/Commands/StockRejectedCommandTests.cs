@@ -1,4 +1,5 @@
 using BuildingBlocks.Contracts.MongoEvents;
+using BuildingBlocks.Infra.Interfaces;
 using BuildingBlocks.Messaging;
 using FluentAssertions;
 using MediatR;
@@ -19,14 +20,14 @@ public class StockRejectedCommandTests
     {
         //Arrange
         var command = new StockRejectedCommand(1, "out of stock");
-        var cancellationToken = It.IsAny<CancellationToken>();
+        var cancellationToken = CancellationToken.None;
         var order = new Order.Domain.Models.Order("1", new List<OrderItem> { new OrderItem(1, 2) });
 
         _mockRepo
-            .Setup(r => r.GetByIdAsync(command.OrderId))
+            .Setup(r => r.FindOneAsync(It.IsAny<ISpecification<Order.Domain.Models.Order>>(), cancellationToken))
             .ReturnsAsync(order);
         _mockRepo
-            .Setup(r => r.SaveChangesAsync())
+            .Setup(r => r.SaveChangesAsync(cancellationToken))
             .Returns(Task.CompletedTask);
 
         var handler = new StockRejectedCommandHandler(_mockRepo.Object, _mockEventBus.Object);
@@ -38,7 +39,7 @@ public class StockRejectedCommandTests
         result.Should().Be(Unit.Value);
         order.Status.Should().Be(Status.Cancelled);
         _mockRepo.Verify(r => r.Update(order), Times.Once);
-        _mockRepo.Verify(r => r.SaveChangesAsync(), Times.Once);
+        _mockRepo.Verify(r => r.SaveChangesAsync(cancellationToken), Times.Once);
         _mockEventBus.Verify(e => e.PublishAsync(It.IsAny<OrderUpdatedEvent>()), Times.Once);
     }
 
@@ -47,10 +48,10 @@ public class StockRejectedCommandTests
     {
         //Arrange
         var command = new StockRejectedCommand(999, "not found");
-        var cancellationToken = It.IsAny<CancellationToken>();
+        var cancellationToken = CancellationToken.None;
 
         _mockRepo
-            .Setup(r => r.GetByIdAsync(command.OrderId))
+            .Setup(r => r.FindOneAsync(It.IsAny<ISpecification<Order.Domain.Models.Order>>(), cancellationToken))
             .ReturnsAsync((Order.Domain.Models.Order?)null);
 
         var handler = new StockRejectedCommandHandler(_mockRepo.Object, _mockEventBus.Object);
@@ -61,7 +62,7 @@ public class StockRejectedCommandTests
         //Assert
         result.Should().Be(Unit.Value);
         _mockRepo.Verify(r => r.Update(It.IsAny<Order.Domain.Models.Order>()), Times.Never);
-        _mockRepo.Verify(r => r.SaveChangesAsync(), Times.Never);
+        _mockRepo.Verify(r => r.SaveChangesAsync(cancellationToken), Times.Never);
         _mockEventBus.Verify(e => e.PublishAsync(It.IsAny<OrderUpdatedEvent>()), Times.Never);
     }
 }

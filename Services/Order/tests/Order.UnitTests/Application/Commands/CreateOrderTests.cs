@@ -25,9 +25,9 @@ public class CreateOrderTests
     public async Task CreateOrder_WithValidItems_ShouldReturnOrderId()
     {
         //Arrange
-        var _cancellationToken = It.IsAny<CancellationToken>();
+        var cancellationToken = CancellationToken.None;
         _mockValidator
-            .Setup(v => v.ValidateAsync(_request, _cancellationToken))
+            .Setup(v => v.ValidateAsync(_request, cancellationToken))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
         _mockUserContext    
             .Setup(u => u.IsAuthenticated)
@@ -36,18 +36,18 @@ public class CreateOrderTests
             .Setup(u => u.UserId)
             .Returns("1");
         _mockRepo
-            .Setup(r => r.AddAsync(It.IsAny<Order.Domain.Models.Order>()))
+            .Setup(r => r.AddAsync(It.IsAny<Order.Domain.Models.Order>(), cancellationToken))
             .Returns(Task.CompletedTask);
         _mockRepo
-            .Setup(r => r.SaveChangesAsync())
+            .Setup(r => r.SaveChangesAsync(cancellationToken))
             .Returns(Task.CompletedTask);
         var handler = new CreateOrderCommandHandler(_mockRepo.Object, _mockValidator.Object, _mockEventBus.Object, _mockUserContext.Object);
         //Act
-        var result = await handler.Handle(_request, _cancellationToken);
+        var result = await handler.Handle(_request, cancellationToken);
         //Assert
         result.IsSuccess.Should().BeTrue();
-        _mockRepo.Verify(r => r.AddAsync(It.IsAny<Order.Domain.Models.Order>()), Times.Once);
-        _mockRepo.Verify(r => r.SaveChangesAsync(), Times.Once);
+        _mockRepo.Verify(r => r.AddAsync(It.IsAny<Order.Domain.Models.Order>(), cancellationToken), Times.Once);
+        _mockRepo.Verify(r => r.SaveChangesAsync(cancellationToken), Times.Once);
         _mockEventBus.Verify(e => e.PublishAsync(It.IsAny<OrderCreatedEvent>()), Times.Once);
         _mockEventBus.Verify(e => e.PublishAsync(It.IsAny<OrderRequestedEvent>()), Times.Once);
     }
@@ -56,23 +56,23 @@ public class CreateOrderTests
     public async Task CreateOrder_WithInvalidItems_ShouldReturnValidationErrors()
     {
         //Arrange
-        var _cancellationToken = It.IsAny<CancellationToken>();
+        var cancellationToken = CancellationToken.None;
         var validationErrors = new List<FluentValidation.Results.ValidationFailure>
         {
             new FluentValidation.Results.ValidationFailure("Items", "Items cannot be empty")
         };
         _mockValidator
-            .Setup(v => v.ValidateAsync(_request, _cancellationToken))
+            .Setup(v => v.ValidateAsync(_request, cancellationToken))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult(validationErrors));
         _mockUserContext
             .Setup(u => u.IsAuthenticated)
             .Returns(true);
         var handler = new CreateOrderCommandHandler(_mockRepo.Object, _mockValidator.Object, _mockEventBus.Object, _mockUserContext.Object);
         //Act
-        var result = await handler.Handle(_request, _cancellationToken);
+        var result = await handler.Handle(_request, cancellationToken);
         //Assert
         result.IsFailed.Should().BeTrue();
-        _mockRepo.Verify(r => r.AddAsync(It.IsAny<Order.Domain.Models.Order>()), Times.Never);
+        _mockRepo.Verify(r => r.AddAsync(It.IsAny<Order.Domain.Models.Order>(), cancellationToken), Times.Never);
         _mockEventBus.Verify(e => e.PublishAsync(It.IsAny<OrderCreatedEvent>()), Times.Never);
     }
 
@@ -80,9 +80,9 @@ public class CreateOrderTests
     public async Task CreateOrder_WhenUserIsUnauthorized_ShouldReturnFailure()
     {
         //Arrange
-        var _cancellationToken = It.IsAny<CancellationToken>();
+        var cancellationToken = CancellationToken.None;
         _mockValidator
-            .Setup(v => v.ValidateAsync(_request, _cancellationToken))
+            .Setup(v => v.ValidateAsync(_request, cancellationToken))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
         _mockUserContext
             .Setup(u => u.IsAuthenticated)
@@ -91,11 +91,11 @@ public class CreateOrderTests
         var handler = new CreateOrderCommandHandler(_mockRepo.Object, _mockValidator.Object, _mockEventBus.Object, _mockUserContext.Object);
 
         //Act
-        var result = await handler.Handle(_request, _cancellationToken);
+        var result = await handler.Handle(_request, cancellationToken);
 
         //Assert
         result.IsFailed.Should().BeTrue();
-        _mockRepo.Verify(r => r.AddAsync(It.IsAny<Order.Domain.Models.Order>()), Times.Never);
+        _mockRepo.Verify(r => r.AddAsync(It.IsAny<Order.Domain.Models.Order>(), cancellationToken), Times.Never);
         _mockEventBus.Verify(e => e.PublishAsync(It.IsAny<OrderCreatedEvent>()), Times.Never);
     }
 }
