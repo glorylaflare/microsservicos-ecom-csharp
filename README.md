@@ -1,8 +1,10 @@
-﻿# Microsserviços E-Commerce em C# (.NET 8)
+﻿# 🛍️ Microsserviços E-Commerce em C# (.NET 8)
 
 Projeto de estudo e referência para arquitetura de microsserviços com .NET 8, focado em desacoplamento, resiliência, observabilidade, mensageria orientada a eventos e autenticação centralizada.
 
 ## Visão Geral
+
+![Diagrama de arquitetura do projeto](resources/images/system_design.png)
 
 Este repositório implementa um ecossistema de serviços para um domínio de e-commerce:
 

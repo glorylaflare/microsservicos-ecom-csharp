@@ -1,0 +1,591 @@
+{
+  "info": {
+    "_postman_id": "a30e038e-6c32-49ce-96d5-062437a72f60",
+    "name": "Ecommerce Avanade",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "22917042"
+  },
+  "item": [
+    {
+      "name": "Stock",
+      "item": [
+        {
+          "name": "Listar todos os produtos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/stock?Skip=0&Take=10",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "stock"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar produto por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/stock/{{id}}",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "stock",
+                "{{id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Criar um produto",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Cadeira Gamer Ergonômica Reclinável\",\r\n  \"description\": \"Cadeira gamer com ajuste de altura, apoio lombar e reclinação de até 180 graus.\",\r\n  \"price\": 899.90,\r\n  \"stockQuantity\": 10\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/stock/create",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "stock",
+                "create"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Criar um produto",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "  {\r\n    \"name\": \"Carregador Portátil Power Bank 30.000mAh Turbo\",\r\n    \"description\": \"Power bank ultra potente com carregamento turbo, ideal para múltiplos dispositivos simultaneamente.\",\r\n    \"price\": 249.90,\r\n    \"stockQuantity\": 25\r\n  }",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseURL}}/stock/api/products/create",
+                  "host": [
+                    "{{baseURL}}"
+                  ],
+                  "path": [
+                    "stock",
+                    "api",
+                    "products",
+                    "create"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "",
+              "header": [],
+              "cookie": [
+                {
+                  "expires": "Invalid Date",
+                  "domain": "",
+                  "path": ""
+                }
+              ],
+              "body": "  {\r\n    \"name\": \"nome do produto\",\r\n    \"description\": \"descrição do produto\",\r\n    \"price\": 20.00,\r\n    \"stockQuantity\": 75\r\n  }"
+            }
+          ]
+        },
+        {
+          "name": "Atualizar um produto",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": " {\r\n    \"productId\": 1,\r\n    \"name\": \"Camiseta Algodão Premium\",\r\n    \"description\": \"Camiseta 100% algodão, macia e confortável, disponível em várias cores.\",\r\n    \"price\": 79.90\r\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/stock/update",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "stock",
+                "update"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar estoque do produto",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"productId\": 3,\r\n    \"quantity\": 33\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/stock/restock",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "stock",
+                "restock"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Order",
+      "item": [
+        {
+          "name": "Listar pedido por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/order/{{id}}",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "order",
+                "{{id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Criar um pedido",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"items\": [\r\n    {\r\n        \"productId\": 1,\r\n        \"quantity\": 1\r\n    }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/order/create",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "order",
+                "create"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Criar um pedido",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"items\": [\r\n    {\r\n        \"productId\": 7,\r\n        \"quantity\": 1\r\n    }\r\n  ]\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseURL}}/order/api/orders/create",
+                  "host": [
+                    "{{baseURL}}"
+                  ],
+                  "path": [
+                    "order",
+                    "api",
+                    "orders",
+                    "create"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": "",
+              "header": [],
+              "cookie": [
+                {
+                  "expires": "Invalid Date",
+                  "domain": "",
+                  "path": ""
+                }
+              ],
+              "body": "{\r\n  \"items\": [\r\n    {\r\n        \"productId\": 1,\r\n        \"quantity\": 1\r\n    }\r\n  ]\r\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Lista todos os usuários",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/user?Skip=0&Take=10",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "user"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Lista usuário por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/user/{{id}}",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "user",
+                "{{id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cadastra um usuário",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"Username\": \"glorylaflare\",\r\n    \"Email\": \"teste_@teste.com\",\r\n    \"Password\": \"Teste2026*\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/user/create",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "user",
+                "create"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Cadastra um usuário",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"Username\": \"glorylaflare\",\r\n    \"Email\": \"teste@teste.com\",\r\n    \"Password\": \"Teste2026*\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseURL}}/user/public/create",
+                  "host": [
+                    "{{baseURL}}"
+                  ],
+                  "path": [
+                    "user",
+                    "public",
+                    "create"
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "",
+              "header": [
+                {
+                  "key": "Content-Length",
+                  "value": "0"
+                },
+                {
+                  "key": "Date",
+                  "value": "Fri, 27 Mar 2026 10:00:54 GMT"
+                },
+                {
+                  "key": "Server",
+                  "value": "Kestrel"
+                },
+                {
+                  "key": "WWW-Authenticate",
+                  "value": "Bearer"
+                },
+                {
+                  "key": "X-Correlation-ID",
+                  "value": "4dbcf6e5-34ac-4872-9278-a1c435c523ba"
+                }
+              ],
+              "cookie": [
+                {
+                  "expires": "Invalid Date",
+                  "domain": "",
+                  "path": ""
+                }
+              ],
+              "body": "{\r\n    \"Username\": \"glorylaflare\",\r\n    \"Email\": \"teste@teste.com\",\r\n    \"Password\": \"Teste2026*\"\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "Desativar um usuário",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"glory@email.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/user/deactivate",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "user",
+                "deactivate"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Autentica um usuário",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"Email\": \"teste@teste.com\",\r\n    \"Password\": \"Teste2026*\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseURL}}/auth/login",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Autentica admin",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"email\": \"admin@admin.com\",\r\n    \"password\": \"@Dmin123\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseURL}}/auth/api/auth/login",
+                  "host": [
+                    "{{baseURL}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "api",
+                    "auth",
+                    "login"
+                  ]
+                }
+              },
+              "_postman_previewlanguage": null,
+              "header": null,
+              "cookie": [],
+              "body": "{\r\n    \"email\": \"admin@admin.com\",\r\n    \"password\": \"@Dmin123\"\r\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/health",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Payment",
+      "item": [
+        {
+          "name": "Listar todos os registros de pagamentos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/payment?Skip=0&Take=10",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "payment"
+              ],
+              "query": [
+                {
+                  "key": "Skip",
+                  "value": "0"
+                },
+                {
+                  "key": "Take",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar registro de pagamento por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseURL}}/payment/{{id}}",
+              "host": [
+                "{{baseURL}}"
+              ],
+              "path": [
+                "payment",
+                "{{id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseURL",
+      "value": ""
+    }
+  ]
+}
