@@ -2,6 +2,7 @@ using FluentResults;
 using FluentValidation;
 using MediatR;
 using Serilog;
+using Stock.Application.Specifications;
 using Stock.Domain.Interfaces;
 
 namespace Stock.Application.Commands.UpdateStock;
@@ -28,14 +29,15 @@ public class UpdateStockCommandHandler : IRequestHandler<UpdateStockCommand, Res
         {
             var errors = validationResult.Errors
                 .Select(e => new Error(e.ErrorMessage));
+            
             _logger.Warning("[WARN] Validation failed for {EventName}: {Errors}", nameof(UpdateStockCommand), errors);
+
             return Result.Fail(errors);
         }
 
         try
         {
-            var product = await _productRepository.GetByIdAsync(request.ProductId);
-
+            var product = await _productRepository.FindOneAsync(new ProductByIdTrackingSpec(request.ProductId));
             if (product is null)
             {
                 _logger.Warning("[WARN] Product with ID {ProductId} not found", request.ProductId);
@@ -44,7 +46,7 @@ public class UpdateStockCommandHandler : IRequestHandler<UpdateStockCommand, Res
 
             product.Restock(request.Quantity);
             _productRepository.Update(product);
-            await _productRepository.SaveChangesAsync();
+            await _productRepository.SaveChangesAsync(cancellationToken);
 
             _logger.Information("[INFO] Stock for product ID {ProductId} updated successfully", request.ProductId);
 

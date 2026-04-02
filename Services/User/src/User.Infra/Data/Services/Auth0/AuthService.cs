@@ -4,7 +4,8 @@ using Microsoft.Extensions.Options;
 using Serilog;
 using User.Application.Interfaces;
 using User.Domain.Models;
-namespace User.Application.Services;
+
+namespace User.Infra.Data.Services.Auth0;
 
 public class AuthService : IAuthService
 {
@@ -22,6 +23,7 @@ public class AuthService : IAuthService
     public async Task<SignupUserResponse> SignupUserAsync(string email, string password)
     {
         _logger.Information("[INFO] Signing up new user");
+
         return await _authClient.SignupUserAsync(new SignupUserRequest
         {
             ClientId = _auth0Settings.ClientId,

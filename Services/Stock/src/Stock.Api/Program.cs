@@ -9,7 +9,8 @@ using Stock.Api.Extensions;
 using Stock.Application.Commands.CreateProduct;
 using Stock.Application.Interfaces;
 using Stock.Domain.Interfaces;
-using Stock.Infra.Data.Context;
+using Stock.Infra.Data.Context.Read;
+using Stock.Infra.Data.Context.Write;
 using Stock.Infra.Data.Repositories;
 using Stock.Infra.Data.Services;
 

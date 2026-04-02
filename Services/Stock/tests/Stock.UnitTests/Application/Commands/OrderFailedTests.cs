@@ -1,4 +1,5 @@
 using BuildingBlocks.Contracts;
+using BuildingBlocks.Infra.Interfaces;
 using FluentAssertions;
 using MediatR;
 using Moq;
@@ -23,7 +24,7 @@ public class OrderFailedTests
             new OrderItemDto(1, 2),
             new OrderItemDto(2, 1)
         });
-        var cancellationToken = It.IsAny<CancellationToken>();
+        var cancellationToken = CancellationToken.None;
 
         var product1 = new Product("Mouse", "Mouse Gamer", 120m, 3);
         var product2 = new Product("Teclado", "Teclado Mecânico", 250m, 5);
@@ -32,13 +33,11 @@ public class OrderFailedTests
             .Setup(t => t.ExecuteResilientTransactionAsync(It.IsAny<Func<Task>>()))
             .Returns<Func<Task>>(operation => operation());
         _mockRepo
-            .Setup(r => r.GetByIdAsync(1))
-            .ReturnsAsync(product1);
-        _mockRepo
-            .Setup(r => r.GetByIdAsync(2))
+            .SetupSequence(r => r.FindOneAsync(It.IsAny<ISpecification<Product>>(), cancellationToken))
+            .ReturnsAsync(product1)
             .ReturnsAsync(product2);
         _mockRepo
-            .Setup(r => r.SaveChangesAsync())
+            .Setup(r => r.SaveChangesAsync(cancellationToken))
             .Returns(Task.CompletedTask);
 
         var handler = new OrderFailedCommandHandler(_mockRepo.Object, _mockTransactionManager.Object);
@@ -52,7 +51,7 @@ public class OrderFailedTests
         product2.StockQuantity.Should().Be(6);
         _mockRepo.Verify(r => r.Update(product1), Times.Once);
         _mockRepo.Verify(r => r.Update(product2), Times.Once);
-        _mockRepo.Verify(r => r.SaveChangesAsync(), Times.Once);
+        _mockRepo.Verify(r => r.SaveChangesAsync(cancellationToken), Times.Once);
     }
 
     [Fact]
@@ -63,7 +62,7 @@ public class OrderFailedTests
         {
             new OrderItemDto(1, 2)
         });
-        var cancellationToken = It.IsAny<CancellationToken>();
+        var cancellationToken = CancellationToken.None;
 
         _mockTransactionManager
             .Setup(t => t.ExecuteResilientTransactionAsync(It.IsAny<Func<Task>>()))

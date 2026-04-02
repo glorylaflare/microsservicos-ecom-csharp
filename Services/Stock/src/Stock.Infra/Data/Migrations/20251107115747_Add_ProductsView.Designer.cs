@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Stock.Infra.Data.Context;
+using Stock.Infra.Data.Context.Write;
 #nullable disable
 namespace Stock.Infra.Data.Migrations
 {

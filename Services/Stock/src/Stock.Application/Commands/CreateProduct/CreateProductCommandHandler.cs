@@ -41,8 +41,8 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
                 request.Price,
                 request.StockQuantity
             );
-            await _productRepository.AddAsync(product);
-            await _productRepository.SaveChangesAsync();
+            await _productRepository.AddAsync(product, cancellationToken);
+            await _productRepository.SaveChangesAsync(cancellationToken);
 
             _logger.Information("[INFO] Product created successfully with ID: {ProductId}", product.Id);
             

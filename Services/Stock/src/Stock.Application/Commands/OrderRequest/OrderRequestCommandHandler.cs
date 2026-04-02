@@ -4,8 +4,8 @@ using BuildingBlocks.Contracts.Events;
 using BuildingBlocks.Messaging;
 using MediatR;
 using Serilog;
-using Stock.Application.Commands.OrderFailed;
 using Stock.Application.Interfaces;
+using Stock.Application.Specifications;
 using Stock.Domain.Exceptions;
 using Stock.Domain.Interfaces;
 
@@ -39,7 +39,7 @@ public class OrderRequestCommandHandler : IRequestHandler<OrderRequestCommand, U
             {
                 foreach (var item in request.Items)
                 {
-                    var product = await _productRepository.GetByIdAsync(item.ProductId);
+                    var product = await _productRepository.FindOneAsync(new ProductByIdTrackingSpec(item.ProductId));
 
                     if (product is null)
                     {
@@ -68,7 +68,7 @@ public class OrderRequestCommandHandler : IRequestHandler<OrderRequestCommand, U
                     _productRepository.Update(product);
                 }
 
-                await _productRepository.SaveChangesAsync();
+                await _productRepository.SaveChangesAsync(cancellationToken);
             });
 
             var data = StockReservationResultData.Success(

@@ -1,4 +1,5 @@
 using BuildingBlocks.Infra.ReadModels;
+using BuildingBlocks.Infra.Interfaces;
 using FluentAssertions;
 using Moq;
 using Stock.Application.Interfaces;
@@ -25,11 +26,11 @@ public class GetProductByIdTests
     public async Task GetProductByIdQuery_WhenProductExists_ShouldReturnSuccess()
     {
         //Arrange
-        var cancellationToken = It.IsAny<CancellationToken>();
+        var cancellationToken = CancellationToken.None;
         _mockService
-            .Setup(s => s.GetByIdAsync(id))
+            .Setup(s => s.FindOneAsync(It.IsAny<ISpecification<ProductReadModel, ProductReadModel>>(), cancellationToken))
             .ReturnsAsync(_productReadModel);
-        var response = new GetProductResponse(
+        var response = new ProductResponse(
             _productReadModel.Id,
             _productReadModel.Name,
             _productReadModel.Description,
@@ -49,9 +50,9 @@ public class GetProductByIdTests
     public async Task GetProductByIdQuery_WhenProductDoesNotExist_ShouldReturnFailure()
     {
         //Arrange
-        var cancellationToken = It.IsAny<CancellationToken>();
+        var cancellationToken = CancellationToken.None;
         _mockService
-            .Setup(s => s.GetByIdAsync(id))
+            .Setup(s => s.FindOneAsync(It.IsAny<ISpecification<ProductReadModel, ProductReadModel>>(), cancellationToken))
             .ReturnsAsync((ProductReadModel?)null);
         var handler = new GetProductByIdQueryHandler(_mockService.Object);
         //Act

@@ -1,4 +1,5 @@
 using BuildingBlocks.Contracts.MongoEvents;
+using BuildingBlocks.Infra.Interfaces;
 using BuildingBlocks.Messaging;
 using FluentAssertions;
 using MediatR;
@@ -21,14 +22,14 @@ public class PaymentUpdatedCommandTests
     {
         //Arrange
         var command = new PaymentUpdatedCommand(1, "paid", "http://checkout-url");
-        var cancellationToken = It.IsAny<CancellationToken>();
+        var cancellationToken = CancellationToken.None;
         var order = new Order.Domain.Models.Order("user-1", new List<OrderItem> { new OrderItem(1, 2) });
 
         _mockRepo
-            .Setup(r => r.GetByIdAsync(command.OrderId))
+            .Setup(r => r.FindOneAsync(It.IsAny<ISpecification<Order.Domain.Models.Order>>(), cancellationToken))
             .ReturnsAsync(order);
         _mockRepo
-            .Setup(r => r.SaveChangesAsync())
+            .Setup(r => r.SaveChangesAsync(cancellationToken))
             .Returns(Task.CompletedTask);
 
         var handler = new PaymentUpdatedCommandHandler(_mockRepo.Object, _mockEventBus.Object, _mockOrderEmailPublisher.Object);
@@ -51,14 +52,14 @@ public class PaymentUpdatedCommandTests
     {
         //Arrange
         var command = new PaymentUpdatedCommand(1, "failed", "http://checkout-url");
-        var cancellationToken = It.IsAny<CancellationToken>();
+        var cancellationToken = CancellationToken.None;
         var order = new Order.Domain.Models.Order("user-1", new List<OrderItem> { new OrderItem(1, 2) });
 
         _mockRepo
-            .Setup(r => r.GetByIdAsync(command.OrderId))
+            .Setup(r => r.FindOneAsync(It.IsAny<ISpecification<Order.Domain.Models.Order>>(), cancellationToken))
             .ReturnsAsync(order);
         _mockRepo
-            .Setup(r => r.SaveChangesAsync())
+            .Setup(r => r.SaveChangesAsync(cancellationToken))
             .Returns(Task.CompletedTask);
         var handler = new PaymentUpdatedCommandHandler(_mockRepo.Object, _mockEventBus.Object, _mockOrderEmailPublisher.Object);
 
@@ -80,10 +81,10 @@ public class PaymentUpdatedCommandTests
     {
         //Arrange
         var command = new PaymentUpdatedCommand(999, "paid", "http://checkout-url");
-        var cancellationToken = It.IsAny<CancellationToken>();
+        var cancellationToken = CancellationToken.None;
 
         _mockRepo
-            .Setup(r => r.GetByIdAsync(command.OrderId))
+            .Setup(r => r.FindOneAsync(It.IsAny<ISpecification<Order.Domain.Models.Order>>(), cancellationToken))
             .ReturnsAsync((Order.Domain.Models.Order?)null);
 
         var handler = new PaymentUpdatedCommandHandler(_mockRepo.Object, _mockEventBus.Object, _mockOrderEmailPublisher.Object);

@@ -1,4 +1,5 @@
 using BuildingBlocks.Infra.ReadModels;
+using BuildingBlocks.Infra.Interfaces;
 using FluentAssertions;
 using Moq;
 using Stock.Application.Interfaces;
@@ -8,7 +9,7 @@ namespace Stock.UnitTests.Application.Queries;
 
 public class GetAllProductTests
 {
-    private readonly GetAllProductsQuery _request = new GetAllProductsQuery();
+    private readonly GetAllProductsQuery _request = new GetAllProductsQuery(0, 10);
     private readonly Mock<IProductReadService> _mockService = new();
     private readonly List<ProductReadModel> _productReadModels = new List<ProductReadModel>
     {
@@ -37,11 +38,11 @@ public class GetAllProductTests
     public async Task GetAllProductsQuery_WhenListExists_ShouldReturnSuccess()
     {
         //Arrange
-        var cancellationToken = It.IsAny<CancellationToken>();
+        var cancellationToken = CancellationToken.None;
         _mockService
-            .Setup(s => s.GetAllAsync())
+            .Setup(s => s.WhereAsync(It.IsAny<ISpecification<ProductReadModel, ProductReadModel>>(), cancellationToken))
             .ReturnsAsync(_productReadModels);
-        var response = _productReadModels.Select(p => new GetProductResponse(
+        var response = _productReadModels.Select(p => new ProductResponse(
             p.Id,
             p.Name,
             p.Description,
@@ -55,15 +56,15 @@ public class GetAllProductTests
         var result = await handler.Handle(_request, cancellationToken);
         //Assert
         result.IsSuccess.Should().BeTrue();
-        result.Value.Should().BeEquivalentTo(response);
+        result.Value.Items.Should().BeEquivalentTo(response);
     }
     [Fact]
     public async Task GetAllProductsQuery_WhenNoProductsExist_ShouldReturnFailure()
     {
         //Arrange
-        var cancellationToken = It.IsAny<CancellationToken>();
+        var cancellationToken = CancellationToken.None;
         _mockService
-            .Setup(s => s.GetAllAsync())
+            .Setup(s => s.WhereAsync(It.IsAny<ISpecification<ProductReadModel, ProductReadModel>>(), cancellationToken))
             .ReturnsAsync(new List<ProductReadModel>());
         var handler = new GetAllProductsQueryHandler(_mockService.Object);
         //Act

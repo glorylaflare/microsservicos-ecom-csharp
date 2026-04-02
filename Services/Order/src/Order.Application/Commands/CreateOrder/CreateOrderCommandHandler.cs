@@ -9,6 +9,7 @@ using FluentValidation;
 using MediatR;
 using Order.Domain.Interfaces;
 using Serilog;
+
 namespace Order.Application.Commands.CreateOrder;
 
 public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Result<int>>
@@ -38,6 +39,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
             var errors = validationResult.Errors
                 .Select(e => new Error(e.ErrorMessage));
             _logger.Warning("[WARN] Validation failed for {EventName}: {Errors}", nameof(CreateOrderCommand), errors);
+
             return Result.Fail(errors);
         }
 
@@ -57,8 +59,8 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
 
             var order = new Domain.Models.Order(userId, request.Items);
 
-            await _orderRepository.AddAsync(order);
-            await _orderRepository.SaveChangesAsync();
+            await _orderRepository.AddAsync(order, cancellationToken);
+            await _orderRepository.SaveChangesAsync(cancellationToken);
 
             var orderDto = order.Items
                 .Select(i => new OrderItemDto(i.ProductId, i.Quantity))

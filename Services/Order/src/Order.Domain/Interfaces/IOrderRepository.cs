@@ -1,9 +1,8 @@
+using BuildingBlocks.Infra.Interfaces;
+
 namespace Order.Domain.Interfaces;
 
-public interface IOrderRepository
+public interface IOrderRepository : IRepository<Models.Order>
 {
-    Task<Models.Order?> GetByIdAsync(int orderId);
-    Task AddAsync(Models.Order order);
-    void Update(Models.Order order);
-    Task SaveChangesAsync();
+    Task SaveChangesAsync(CancellationToken cancellationToken = default);
 }

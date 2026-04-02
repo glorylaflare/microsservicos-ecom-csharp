@@ -2,6 +2,7 @@ using BuildingBlocks.Contracts.Datas;
 using BuildingBlocks.Contracts.MongoEvents;
 using BuildingBlocks.Messaging;
 using MediatR;
+using Order.Application.Specifications;
 using Order.Domain.Interfaces;
 using Serilog;
 
@@ -24,7 +25,7 @@ public class StockReservedCommandHandler : IRequestHandler<StockReservedCommand,
     {
         _logger.Information("[INFO] Handling {EventName} for OrderId: {OrderId}", nameof(StockReservedCommand), request.OrderId);
 
-        var order = await _orderRepository.GetByIdAsync(request.OrderId);
+        var order = await _orderRepository.FindOneAsync(new OrderByIdSpec(request.OrderId));
         if (order is null)
         {
             _logger.Warning("[WARN] Order with ID {OrderId} not found", request.OrderId);
@@ -35,7 +36,7 @@ public class StockReservedCommandHandler : IRequestHandler<StockReservedCommand,
         order.Confirmed();
 
         _orderRepository.Update(order);
-        await _orderRepository.SaveChangesAsync();
+        await _orderRepository.SaveChangesAsync(cancellationToken);
 
         #region MongoDb update view
         _logger.Information("[INFO] OrderReadModel with ID {OrderId} status updated to {Status}", order.Id, order.Status);

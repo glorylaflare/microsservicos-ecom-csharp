@@ -37,6 +37,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
         {
             var errors = validationResult.Errors
                 .Select(e => new Error(e.ErrorMessage));
+
             _logger.Warning("[WARN] Validation failed for {EventName}: {Errors}", nameof(CreateUserCommand), errors);
             return Result.Fail(errors);
         }
@@ -51,8 +52,8 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
                 request.Email
             );
 
-            await _userRepository.AddAsync(user);
-            await _userRepository.SaveChangesAsync();
+            await _userRepository.AddAsync(user, cancellationToken);
+            await _userRepository.SaveChangesAsync(cancellationToken);
 
             #region MongoDB Event Sourcing
             _logger.Information("[INFO] Publishing UserCreatedEvent for user ID {UserId}", user.Id);

@@ -41,10 +41,10 @@ public class CreateUserTests
             .Setup(a => a.SignupUserAsync(_request.Email, _request.Password))
             .ReturnsAsync(_response);
         _mockRepo
-            .Setup(r => r.AddAsync(It.IsAny<User.Domain.Models.User>()))
+            .Setup(r => r.AddAsync(It.IsAny<User.Domain.Models.User>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
         _mockRepo
-            .Setup(r => r.SaveChangesAsync())
+            .Setup(r => r.SaveChangesAsync(It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
         var handler = new CreateUserCommandHandler(_mockRepo.Object, _mockValidator.Object, _mockAuth.Object, _mockEventBus.Object);
         //Act
@@ -52,7 +52,7 @@ public class CreateUserTests
         //Assert
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().Be(0);
-        _mockRepo.Verify(r => r.AddAsync(It.IsAny<User.Domain.Models.User>()), Times.Once);
+        _mockRepo.Verify(r => r.AddAsync(It.IsAny<User.Domain.Models.User>(), It.IsAny<CancellationToken>()), Times.Once);
         _mockEventBus.Verify(e => e.PublishAsync(It.IsAny<UserCreatedEvent>()), Times.Once);
     }
     [Fact]
@@ -72,7 +72,7 @@ public class CreateUserTests
         var result = await handler.Handle(_request, _cancellationToken);
         //Assert
         result.IsFailed.Should().BeTrue();
-        _mockRepo.Verify(r => r.AddAsync(It.IsAny<User.Domain.Models.User>()), Times.Never);
+        _mockRepo.Verify(r => r.AddAsync(It.IsAny<User.Domain.Models.User>(), It.IsAny<CancellationToken>()), Times.Never);
         _mockEventBus.Verify(e => e.PublishAsync(It.IsAny<UserCreatedEvent>()), Times.Never);
     }
 }

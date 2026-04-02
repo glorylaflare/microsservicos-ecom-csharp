@@ -1,5 +1,6 @@
 using BuildingBlocks.Contracts;
 using BuildingBlocks.Contracts.Events;
+using BuildingBlocks.Infra.Interfaces;
 using BuildingBlocks.Messaging;
 using FluentAssertions;
 using MediatR;
@@ -25,17 +26,17 @@ public class OrderRequestTests
         {
             new OrderItemDto(1, 2)
         });
-        var cancellationToken = It.IsAny<CancellationToken>();
+        var cancellationToken = CancellationToken.None;
         var product = new Product("Notebook", "Notebook gamer", 1000m, 10);
 
         _mockTransactionManager
             .Setup(t => t.ExecuteResilientTransactionAsync(It.IsAny<Func<Task>>()))
             .Returns<Func<Task>>(operation => operation());
         _mockRepo
-            .Setup(r => r.GetByIdAsync(1))
+            .Setup(r => r.FindOneAsync(It.IsAny<ISpecification<Product>>(), cancellationToken))
             .ReturnsAsync(product);
         _mockRepo
-            .Setup(r => r.SaveChangesAsync())
+            .Setup(r => r.SaveChangesAsync(cancellationToken))
             .Returns(Task.CompletedTask);
 
         var handler = new OrderRequestCommandHandler(_mockRepo.Object, _mockTransactionManager.Object, _mockEventBus.Object);
@@ -47,7 +48,7 @@ public class OrderRequestTests
         result.Should().Be(Unit.Value);
         product.StockQuantity.Should().Be(8);
         _mockRepo.Verify(r => r.Update(product), Times.Once);
-        _mockRepo.Verify(r => r.SaveChangesAsync(), Times.Once);
+        _mockRepo.Verify(r => r.SaveChangesAsync(cancellationToken), Times.Once);
         _mockEventBus.Verify(e => e.PublishAsync(It.IsAny<StockReservationResultEvent>()), Times.Once);
     }
 
@@ -59,13 +60,13 @@ public class OrderRequestTests
         {
             new OrderItemDto(99, 2)
         });
-        var cancellationToken = It.IsAny<CancellationToken>();
+        var cancellationToken = CancellationToken.None;
 
         _mockTransactionManager
             .Setup(t => t.ExecuteResilientTransactionAsync(It.IsAny<Func<Task>>()))
             .Returns<Func<Task>>(operation => operation());
         _mockRepo
-            .Setup(r => r.GetByIdAsync(99))
+            .Setup(r => r.FindOneAsync(It.IsAny<ISpecification<Product>>(), cancellationToken))
             .ReturnsAsync((Product?)null);
 
         var handler = new OrderRequestCommandHandler(_mockRepo.Object, _mockTransactionManager.Object, _mockEventBus.Object);
@@ -75,7 +76,7 @@ public class OrderRequestTests
 
         //Assert
         result.Should().Be(Unit.Value);
-        _mockRepo.Verify(r => r.SaveChangesAsync(), Times.Never);
+        _mockRepo.Verify(r => r.SaveChangesAsync(cancellationToken), Times.Never);
         _mockEventBus.Verify(e => e.PublishAsync(It.IsAny<StockReservationResultEvent>()), Times.Once);
     }
 }

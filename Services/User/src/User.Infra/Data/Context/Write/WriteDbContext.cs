@@ -1,18 +1,22 @@
 using BuildingBlocks.SharedKernel.Config;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-namespace User.Infra.Data.Context;
+
+namespace User.Infra.Data.Context.Write;
 
 public class WriteDbContext : DbContext
 {
     private readonly DatabaseSettings _databaseSettings;
+    
     public WriteDbContext(
         DbContextOptions<WriteDbContext> options,
         IOptions<DatabaseSettings> databaseSettings) : base(options)
     {
         _databaseSettings = databaseSettings.Value;
     }
+    
     public DbSet<Domain.Models.User> Users { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured &&
@@ -28,8 +32,10 @@ public class WriteDbContext : DbContext
                 ));
         }
     }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder) =>
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(WriteDbContext).Assembly, MappingFilter);
+    
     private static bool MappingFilter(Type type) =>
         type.Namespace != null && type.Namespace.EndsWith("Mappings.Write", StringComparison.Ordinal);
 }

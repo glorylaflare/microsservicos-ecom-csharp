@@ -19,25 +19,19 @@ public class CreateProductTests
     public async Task CreateProduct_WithValidData_ShouldReturnProductId()
     {
         //Arrange
-        var product = new Product(
-            _request.Name,
-            _request.Description,
-            _request.Price,
-            _request.StockQuantity
-        );
-        var _cancellationToken = It.IsAny<CancellationToken>();
+        var cancellationToken = CancellationToken.None;
         _mockValidator
-            .Setup(v => v.ValidateAsync(_request, _cancellationToken))
+            .Setup(v => v.ValidateAsync(_request, cancellationToken))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult());
         _mockRepo
-            .Setup(r => r.AddAsync(product))
+            .Setup(r => r.AddAsync(It.IsAny<Product>(), cancellationToken))
             .Returns(Task.CompletedTask);
         _mockRepo
-            .Setup(r => r.SaveChangesAsync())
+            .Setup(r => r.SaveChangesAsync(cancellationToken))
             .Returns(Task.CompletedTask);
         var handler = new CreateProductCommandHandler(_mockRepo.Object, _mockValidator.Object);
         //Act
-        var result = await handler.Handle(_request, _cancellationToken);
+        var result = await handler.Handle(_request, cancellationToken);
         //Assert
         result.IsSuccess.Should().BeTrue();
     }
@@ -45,17 +39,17 @@ public class CreateProductTests
     public async Task CreateProduct_WithInvalidData_ShouldReturnValidationErrors()
     {
         //Arrange
-        var _cancellationToken = It.IsAny<CancellationToken>();
+        var cancellationToken = CancellationToken.None;
         var validationErrors = new List<FluentValidation.Results.ValidationFailure>
         {
             new FluentValidation.Results.ValidationFailure("Name", "Name cannot be empty")
         };
         _mockValidator
-            .Setup(v => v.ValidateAsync(_request, _cancellationToken))
+            .Setup(v => v.ValidateAsync(_request, cancellationToken))
             .ReturnsAsync(new FluentValidation.Results.ValidationResult(validationErrors));
         var handler = new CreateProductCommandHandler(_mockRepo.Object, _mockValidator.Object);
         //Act
-        var result = await handler.Handle(_request, _cancellationToken);
+        var result = await handler.Handle(_request, cancellationToken);
         //Assert
         result.IsFailed.Should().BeTrue();
     }

@@ -2,29 +2,36 @@ using BuildingBlocks.Infra.ReadModels;
 using BuildingBlocks.SharedKernel.Config;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-namespace User.Infra.Data.Context;
+
+namespace Stock.Infra.Data.Context.Read;
 
 public class ReadDbContext : DbContext
 {
     private readonly DatabaseSettings _databaseSettings;
+    
     public ReadDbContext(
         DbContextOptions<ReadDbContext> options,
         IOptions<DatabaseSettings> databaseSettings) : base(options)
     {
         _databaseSettings = databaseSettings.Value;
     }
-    public DbSet<UserReadModel> Users => Set<UserReadModel>();
+    
+    public DbSet<ProductReadModel> Products => Set<ProductReadModel>();
+    
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseSqlServer(_databaseSettings.ToConnectionString())
+            optionsBuilder.UseSqlServer(_databaseSettings.ToConnectionStringWithoutPooling())
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         }
     }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder) =>
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ReadDbContext).Assembly, MappingFilter);
-    public IQueryable<UserReadModel> GetUsers() => Users.AsNoTracking();
+    
+    public IQueryable<ProductReadModel> GetProducts() => Products.AsNoTracking();
+
     private static bool MappingFilter(Type type) =>
         type.Namespace != null && type.Namespace.EndsWith("Mappings.Read", StringComparison.Ordinal);
 }

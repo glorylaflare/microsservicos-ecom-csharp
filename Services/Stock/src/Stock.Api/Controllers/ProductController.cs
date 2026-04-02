@@ -1,3 +1,4 @@
+using BuildingBlocks.SharedKernel.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ using Stock.Application.Commands.UpdateStock;
 using Stock.Application.Queries.GetAllProducts;
 using Stock.Application.Queries.GetProductById;
 using System.ComponentModel.DataAnnotations;
+
 namespace Stock.Api.Controllers;
 
 [Authorize]
@@ -24,9 +26,9 @@ public class ProductController : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> GetAllProducts()
+    public async Task<ActionResult> GetAllProducts([FromQuery] Pagination pagination)
     {
-        var result = await _mediator.Send(new GetAllProductsQuery());
+        var result = await _mediator.Send(new GetAllProductsQuery(pagination.Skip, pagination.Take));
         return result.IsFailed
             ? NotFound(result.Errors.Select(e => e.Message))
             : Ok(result.Value);

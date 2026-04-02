@@ -1,31 +1,38 @@
+using BuildingBlocks.SharedKernel.Common;
 using FluentResults;
 using MediatR;
 using Serilog;
 using Stock.Application.Interfaces;
 using Stock.Application.Responses;
+using Stock.Application.Specifications;
+
 namespace Stock.Application.Queries.GetAllProducts;
 
-public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, Result<IEnumerable<GetProductResponse>>>
+public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, Result<PageResult<ProductResponse>>>
 {
     private readonly IProductReadService _productService;
     private readonly ILogger _logger;
+
     public GetAllProductsQueryHandler(IProductReadService productService)
     {
         _productService = productService;
         _logger = Log.ForContext<GetAllProductsQueryHandler>();
     }
-    public async Task<Result<IEnumerable<GetProductResponse>>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
+    
+    public async Task<Result<PageResult<ProductResponse>>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
     {
         try
         {
             _logger.Information("[INFO] Handling {EventName}", nameof(GetAllProductsQuery));
-            var products = await _productService.GetAllAsync();
+
+            var products = await _productService.WhereAsync(new AllProductsSpec(request.Skip, request.Take));
             if (products is null || !products.Any())
             {
                 _logger.Warning("[WARN] No products found in the repository");
-                return Result.Fail<IEnumerable<GetProductResponse>>("No products found.");
+                return Result.Fail("No products found.");
             }
-            var response = products.Select(product => new GetProductResponse(
+
+            var response = products.Select(product => new ProductResponse(
                 product.Id,
                 product.Name,
                 product.Description,
@@ -34,13 +41,21 @@ public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, R
                 product.CreatedAt,
                 product.UpdatedAt
             ));
+
             _logger.Information("[INFO] Successfully fetched and mapped {ProductCount} products", response.Count());
-            return Result.Ok(response);
+            
+            return Result.Ok(new PageResult<ProductResponse>
+            {
+                Items = response,
+                Total = response.Count(),
+                Skip = request.Skip,
+                Take = request.Take
+            });
         }
         catch (Exception ex)
         {
             _logger.Error(ex, "[ERROR] Error occurred while fetching all products");
-            return Result.Fail<IEnumerable<GetProductResponse>>("An error occurred while processing your request.");
+            return Result.Fail("An error occurred while processing your request.");
         }
     }
 }

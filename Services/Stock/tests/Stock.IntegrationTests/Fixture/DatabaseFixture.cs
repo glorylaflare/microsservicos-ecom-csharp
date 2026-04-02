@@ -1,7 +1,7 @@
 using BuildingBlocks.SharedKernel.Config;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Stock.Infra.Data.Context;
+using Stock.Infra.Data.Context.Write;
 namespace Stock.IntegrationTests.Fixture;
 
 public class DatabaseFixture : IDisposable

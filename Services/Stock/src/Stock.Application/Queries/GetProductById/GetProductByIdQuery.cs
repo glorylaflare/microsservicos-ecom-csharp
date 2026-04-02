@@ -3,4 +3,4 @@ using MediatR;
 using Stock.Application.Responses;
 namespace Stock.Application.Queries.GetProductById;
 
-public record GetProductByIdQuery(int Id) : IRequest<Result<GetProductResponse>>;
+public record GetProductByIdQuery(int Id) : IRequest<Result<ProductResponse>>;

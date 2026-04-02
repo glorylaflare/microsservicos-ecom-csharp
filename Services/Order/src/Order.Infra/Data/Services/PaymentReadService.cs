@@ -14,8 +14,6 @@ public class PaymentReadService : IPaymentReadService
         _payments = context.Payments;
     }
 
-    public Task<PaymentReadModel?> GetByIdAsync(int orderId)
-    {
-        return _payments.Find(p => p.OrderId == orderId).FirstOrDefaultAsync()!;
-    }
+    public async Task<PaymentReadModel?> GetByIdAsync(int orderId)
+        => await _payments.Find(p => p.OrderId == orderId).FirstOrDefaultAsync();
 }

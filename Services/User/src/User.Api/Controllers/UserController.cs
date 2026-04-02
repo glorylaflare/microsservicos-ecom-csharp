@@ -1,3 +1,4 @@
+using BuildingBlocks.SharedKernel.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +7,7 @@ using User.Application.Commands.CreateUser;
 using User.Application.Commands.DeactivateUser;
 using User.Application.Queries.GetAllUsers;
 using User.Application.Queries.GetUsersById;
+
 namespace User.Api.Controllers;
 
 [Authorize]
@@ -23,9 +25,9 @@ public class UserController : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> GetAllUsers()
+    public async Task<ActionResult> GetAllUsers([FromQuery] Pagination pagination)
     {
-        var result = await _mediator.Send(new GetAllUsersQuery());
+        var result = await _mediator.Send(new GetAllUsersQuery(pagination.Skip, pagination.Take));
         return result.IsFailed
             ? NotFound(result.Errors.Select(e => e.Message))
             : Ok(result.Value);

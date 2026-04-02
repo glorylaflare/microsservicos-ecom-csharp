@@ -1,6 +1,6 @@
 namespace User.Application.Responses;
 
-public record GetUserResponse(
+public record UserResponse(
     int Id,
     string Username,
     string Email,
