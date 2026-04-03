@@ -14,7 +14,7 @@ public class UserCreatedEmailRequestConsumer : IIntegrationEventHandler<UserCrea
     public UserCreatedEmailRequestConsumer(IMediator mediator)
     {
         _mediator = mediator;
-        _logger = Log.ForContext<OrderEmailRequestConsumer>();
+        _logger = Log.ForContext<UserCreatedEmailRequestConsumer>();
     }
 
     public async Task HandleAsync(UserCreatedEmailRequestEvent @event)
