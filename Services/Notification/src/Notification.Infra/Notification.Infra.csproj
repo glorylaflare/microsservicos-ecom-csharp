@@ -15,7 +15,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Templates\" />
 		<None Include="Templates\*.html" CopyToOutputDirectory="Always" />
 	</ItemGroup>
 

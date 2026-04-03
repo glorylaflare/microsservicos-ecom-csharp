@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Notification.Application.Commands.OrderCompleted;
 using Notification.Application.Interfaces;
 using Notification.Domain.Exceptions;
 using Notification.Domain.Models;
