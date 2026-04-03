@@ -2,6 +2,15 @@
 
 Projeto de estudo e referência para arquitetura de microsserviços com .NET 8, focado em desacoplamento, resiliência, observabilidade, mensageria orientada a eventos e autenticação centralizada.
 
+Este projeto foi concluído com os principais fluxos de negócio do e-commerce funcionando ponta a ponta, incluindo:
+
+- Cadastro de usuário com autenticação centralizada e publicação de eventos.
+- Criação e processamento de pedidos com orquestração orientada a eventos (choreography).
+- Reserva/baixa de estoque e atualização de status de pagamento.
+- Processamento assíncrono de webhooks e expiração de pagamento com jobs recorrentes.
+- Envio de e-mails transacionais desacoplado via worker e RabbitMQ.
+- Observabilidade centralizada com logs estruturados e health checks.
+
 ## Visão Geral
 
 ![Diagrama de arquitetura do projeto](resources/images/system_design.png)
@@ -14,7 +23,7 @@ Este repositório implementa um ecossistema de serviços para um domínio de e-c
 - `User`
 - `Payment`
 - `Auth`
-- `Notification.Worker` (consumidor de eventos para envio de e-mails transacionais)
+- `Notification.Worker` (consumidor de eventos para envio de e-mails transacionais de pedido e boas-vindas de usuário)
 - `BuildingBlocks` compartilhados (mensageria, observabilidade, segurança, infraestrutura e contratos)
 
 Os serviços seguem princípios de separação por responsabilidade, comunicação assíncrona por eventos (RabbitMQ) e composição de dados para leitura.
@@ -181,6 +190,14 @@ Fluxo macro orientado a eventos:
 8. Em falha de pagamento, `Order` publica `OrderFailedEvent` para ações compensatórias no `Stock`.
 9. `Order` publica `OrderEmailRequestEvent` e o `Notification.Worker` envia e-mail conforme status (`Pending`, `Completed`, `Failed`).
 
+### 4) Fluxo de onboarding do usuário
+
+Fluxo de boas-vindas orientado a eventos:
+
+1. `User` cria o usuário e publica `UserCreatedEvent` para projeções.
+2. `User` também publica `UserCreatedEmailRequestEvent` para notificação.
+3. `Notification.Worker` consome o evento e aciona o envio do e-mail de boas-vindas usando template dedicado.
+
 ## Background Service de Pagamento
 
 O serviço `Payment` possui processamento em background com Hangfire:
@@ -203,9 +220,11 @@ Responsabilidades do job:
 
 O `Notification.Worker` processa envio de e-mails transacionais de forma assíncrona:
 
-- Assina o evento `OrderEmailRequestEvent` via RabbitMQ.
-- Resolve o template de e-mail por status do pedido.
-- Envia e-mails com `Resend` (`Pending`, `Completed`, `Failed`).
+- Assina os eventos `OrderEmailRequestEvent` e `UserCreatedEmailRequestEvent` via RabbitMQ.
+- Resolve o template de e-mail por tipo de evento.
+- Envia e-mails com `Resend`:
+	- Pedido: `Pending`, `Completed`, `Failed`.
+	- Usuário: `UserCreated` (boas-vindas personalizadas).
 
 Como executar somente o worker:
 
@@ -235,6 +254,7 @@ dotnet test Services/Order/Order.sln
 dotnet test Services/Stock/Stock.sln
 dotnet test Services/User/User.sln
 dotnet test Services/Payment/Payment.slnx
+dotnet test Services/Notification/Notification.slnx
 ```
 
 ## CI/CD
