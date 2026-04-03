@@ -10,6 +10,7 @@ public static class DependencyInjection
     public static IServiceCollection AddConsumers(this IServiceCollection services)
     {
         services.AddTransient<OrderEmailRequestConsumer>();
+        services.AddTransient<UserCreatedEmailRequestConsumer>();
         return services;
     }
 
@@ -18,5 +19,6 @@ public static class DependencyInjection
         using var scope = services.CreateScope();
         var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
         await eventBus.SubscribeAsync<OrderEmailRequestEvent, OrderEmailRequestConsumer>();
+        await eventBus.SubscribeAsync<UserCreatedEmailRequestEvent, UserCreatedEmailRequestConsumer>();
     }
 }

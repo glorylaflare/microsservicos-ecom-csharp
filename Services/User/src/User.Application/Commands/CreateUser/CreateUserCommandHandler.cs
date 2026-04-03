@@ -8,6 +8,7 @@ using Serilog;
 using User.Application.Interfaces;
 using User.Domain.Interfaces;
 using BuildingBlocks.Contracts.MongoEvents;
+using BuildingBlocks.Contracts.Events;
 
 namespace User.Application.Commands.CreateUser;
 
@@ -62,9 +63,13 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Resul
                 user.Username, 
                 user.Email
             );
-            var mongoEvnt = new UserCreatedEvent(data);
-            await _eventBus.PublishAsync(mongoEvnt);
+            var mongoEvt = new UserCreatedEvent(data);
+            await _eventBus.PublishAsync(mongoEvt);
             #endregion
+
+            var emailData = new UserCreatedEmailRequestData(user.Username, user.Email);
+            var emailEvt = new UserCreatedEmailRequestEvent(emailData);
+            await _eventBus.PublishAsync(emailEvt);
 
             _logger.Information("[INFO] User {UserName} created successfully with ID {UserId}", request.Username, user.Id);
 

@@ -13,6 +13,9 @@ namespace User.Api.Controllers;
 [Authorize]
 [Route("api/users")]
 [ApiController]
+/// <summary>
+/// Controller responsável pelos endpoints de UserController.
+/// </summary>
 public class UserController : ControllerBase
 {
     private readonly IMediator _mediator;

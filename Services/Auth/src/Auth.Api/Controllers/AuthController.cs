@@ -6,6 +6,9 @@ namespace Auth.Api.Controllers;
 
 [Route("api/auth")]
 [ApiController]
+/// <summary>
+/// Controller responsável pelos endpoints de AuthController.
+/// </summary>
 public class AuthController : ControllerBase
 {
     private readonly IMediator _mediator;

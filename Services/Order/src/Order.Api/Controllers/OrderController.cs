@@ -10,6 +10,9 @@ namespace Order.Api.Controllers;
 [Authorize]
 [Route("api/orders")]
 [ApiController]
+/// <summary>
+/// Controller responsável pelos endpoints de OrderController.
+/// </summary>
 public class OrderController : ControllerBase
 {
     private readonly IMediator _mediator;
