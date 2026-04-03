@@ -12,6 +12,9 @@ namespace Payment.Api.Controllers;
 [Authorize]
 [Route("api/payments")]
 [ApiController]
+/// <summary>
+/// Controller responsável pelos endpoints de PaymentController.
+/// </summary>
 public class PaymentController : ControllerBase
 {
     private readonly IMediator _mediator;

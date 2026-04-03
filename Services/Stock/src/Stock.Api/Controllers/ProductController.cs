@@ -14,6 +14,9 @@ namespace Stock.Api.Controllers;
 [Authorize]
 [Route("api/products")]
 [ApiController]
+/// <summary>
+/// Controller responsável pelos endpoints de ProductController.
+/// </summary>
 public class ProductController : ControllerBase
 {
     private readonly IMediator _mediator;
