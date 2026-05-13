@@ -105,7 +105,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{84DD474F-C77
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{6DB130A1-4CA8-4B43-9F41-265AD03375D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification.Worker", "Services\Notification\src\Notification.Worker\Notification.Worker.csproj", "{8BDEE223-C707-4E10-DEF4-2D65CC5740BA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification.Consumer", "Services\Notification\src\Notification.Worker\Notification.Consumer.csproj", "{8BDEE223-C707-4E10-DEF4-2D65CC5740BA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification.Application", "Services\Notification\src\Notification.Application\Notification.Application.csproj", "{EC612C8E-7B29-4054-B24A-25DCB079182F}"
 EndProject

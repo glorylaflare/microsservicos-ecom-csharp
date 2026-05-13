@@ -8,7 +8,7 @@ Este projeto foi concluído com os principais fluxos de negócio do e-commerce f
 - Criação e processamento de pedidos com orquestração orientada a eventos (choreography).
 - Reserva/baixa de estoque e atualização de status de pagamento.
 - Processamento assíncrono de webhooks e expiração de pagamento com jobs recorrentes.
-- Envio de e-mails transacionais desacoplado via worker e RabbitMQ.
+- Envio de e-mails transacionais desacoplado via consumer e RabbitMQ.
 - Observabilidade centralizada com logs estruturados e health checks.
 
 ## Visão Geral
@@ -23,7 +23,7 @@ Este repositório implementa um ecossistema de serviços para um domínio de e-c
 - `User`
 - `Payment`
 - `Auth`
-- `Notification.Worker` (consumidor de eventos para envio de e-mails transacionais de pedido e boas-vindas de usuário)
+- `Notification.Consumer` (consumidor de eventos para envio de e-mails transacionais de pedido e boas-vindas de usuário)
 - `BuildingBlocks` compartilhados (mensageria, observabilidade, segurança, infraestrutura e contratos)
 
 Os serviços seguem princípios de separação por responsabilidade, comunicação assíncrona por eventos (RabbitMQ) e composição de dados para leitura.
@@ -44,7 +44,7 @@ Os serviços seguem princípios de separação por responsabilidade, comunicaç�
 - `Serilog` + `Seq` para observabilidade centralizada.
 - `Auth0` para autenticação e autorização.
 - `YARP` como gateway de entrada único.
-- `Worker Service` para processamento assíncrono de notificações de e-mail.
+- `Consumer Service` para processamento assíncrono de notificações de e-mail.
 - `Central Package Management` via `Directory.Packages.props`.
 
 ## Componentes de Infraestrutura
@@ -71,7 +71,7 @@ Configuração padrão de desenvolvimento:
 - User API: `http://localhost:5003`
 - Auth API: `http://localhost:5004`
 - Payment API: `http://localhost:5005`
-- Notification Worker: sem porta HTTP (processo de background)
+- Notification Consumer: sem porta HTTP (processo de background)
 
 Roteamento via gateway (prefixo por domínio):
 
@@ -89,7 +89,7 @@ Instale as ferramentas abaixo antes de executar o projeto:
 2. Docker Desktop
 3. SQL Server local acessível em `127.0.0.1:1433` (autenticação integrada do Windows)
 4. Git
-5. (Opcional, recomendado para webhook externo) Ngrok
+5. Ngrok (Opcional, recomendado para webhook externo) 
 
 Integrações externas necessárias:
 
@@ -116,14 +116,14 @@ Revise os `appsettings.Development.json` de cada API e ajuste para seu ambiente:
 - `Auth0:ClientSecret`
 - `MercadoPago:AccessToken`
 - `MercadoPago:NotificationUrl`
-- `ResendSettings:FromEmail` (worker de notificação)
-- `ResendSettings:ApiKey` (worker de notificação)
+- `ResendSettings:FromEmail` (consumer de notificação)
+- `ResendSettings:ApiKey` (consumer de notificação)
 - `RabbitMqSettings` (quando necessário sobrescrever host/credenciais padrão)
 - `DatabaseSettings` e conexões com SQL Server
 
 Recomendação: usar variáveis de ambiente ou Secret Manager para segredos, evitando persistir credenciais reais em arquivos versionados.
 
-Observação importante para o `Notification.Worker`: o perfil local define `DOTNET_ENVIRONMENT=Development`. Garanta esse ambiente ao executar via CLI para carregar o `appsettings.Development.json` local (não versionado).
+Observação importante para o `Notification.Consumer`: o perfil local define `DOTNET_ENVIRONMENT=Development`. Garanta esse ambiente ao executar via CLI para carregar o `appsettings.Development.json` local (não versionado).
 
 ### 3) Subir infraestrutura de apoio
 
@@ -135,7 +135,7 @@ docker compose up -d
 
 ### Opção A: Visual Studio
 
-Abra a solução `Ecommerce.sln` e inicie os projetos de API (`ApiGateways`, `Order.Api`, `Stock.Api`, `User.Api`, `Auth.Api`, `Payment.Api`) e o worker (`Notification.Worker`).
+Abra a solução `Ecommerce.sln` e inicie os projetos de API (`ApiGateways`, `Order.Api`, `Stock.Api`, `User.Api`, `Auth.Api`, `Payment.Api`) e o consumer (`Notification.Consumer`).
 
 ### Opção B: CLI (um terminal por serviço)
 
@@ -148,7 +148,7 @@ dotnet run --project Services/Stock/src/Stock.Api/Stock.Api.csproj
 dotnet run --project Services/User/src/User.Api/User.Api.csproj
 dotnet run --project Services/Auth/src/Auth.Api/Auth.Api.csproj
 dotnet run --project Services/Payment/src/Payment.Api/Payment.Api.csproj
-dotnet run --project Services/Notification/src/Notification.Worker/Notification.Worker.csproj
+dotnet run --project Services/Notification/src/Notification.Consumer/Notification.Consumer.csproj
 ```
 
 Observação: as migrações EF Core são aplicadas automaticamente no startup dos serviços de escrita.
@@ -188,7 +188,7 @@ Fluxo macro orientado a eventos:
 6. `Payment` publica `PaymentUpdatedEvent`.
 7. `Order` consome atualização e finaliza como `Completed` ou `Cancelled`.
 8. Em falha de pagamento, `Order` publica `OrderFailedEvent` para ações compensatórias no `Stock`.
-9. `Order` publica `OrderEmailRequestEvent` e o `Notification.Worker` envia e-mail conforme status (`Pending`, `Completed`, `Failed`).
+9. `Order` publica `OrderEmailRequestEvent` e o `Notification.Consumer` envia e-mail conforme status (`Pending`, `Completed`, `Failed`).
 
 ### 4) Fluxo de onboarding do usuário
 
@@ -196,7 +196,7 @@ Fluxo de boas-vindas orientado a eventos:
 
 1. `User` cria o usuário e publica `UserCreatedEvent` para projeções.
 2. `User` também publica `UserCreatedEmailRequestEvent` para notificação.
-3. `Notification.Worker` consome o evento e aciona o envio do e-mail de boas-vindas usando template dedicado.
+3. `Notification.Consumer` consome o evento e aciona o envio do e-mail de boas-vindas usando template dedicado.
 
 ## Background Service de Pagamento
 
@@ -216,9 +216,9 @@ Responsabilidades do job:
 - Buscar webhooks pendentes salvos no banco de `Payment`.
 - Processar webhooks e atualizar seu status para `Processed` ou `Failed`.
 
-## Worker de Notificação (E-mail)
+## Consumer de Notificação (E-mail)
 
-O `Notification.Worker` processa envio de e-mails transacionais de forma assíncrona:
+O `Notification.Consumer` processa envio de e-mails transacionais de forma assíncrona:
 
 - Assina os eventos `OrderEmailRequestEvent` e `UserCreatedEmailRequestEvent` via RabbitMQ.
 - Resolve o template de e-mail por tipo de evento.
@@ -226,10 +226,10 @@ O `Notification.Worker` processa envio de e-mails transacionais de forma assínc
 	- Pedido: `Pending`, `Completed`, `Failed`.
 	- Usuário: `UserCreated` (boas-vindas personalizadas).
 
-Como executar somente o worker:
+Como executar somente o consumer:
 
 ```bash
-dotnet run --project Services/Notification/src/Notification.Worker/Notification.Worker.csproj
+dotnet run --project Services/Notification/src/Notification.Consumer/Notification.Consumer.csproj
 ```
 
 ## Observabilidade e Saúde

@@ -8,7 +8,7 @@ using Notification.Application.Interfaces;
 using Notification.Infra.Configurations;
 using Notification.Infra.Services;
 using Notification.Infra.Services.Resend;
-using Notification.Worker.Configurations;
+using Notification.Consumer.Configurations;
 using Resend;
 
 var builder = Host.CreateApplicationBuilder(new HostApplicationBuilderSettings

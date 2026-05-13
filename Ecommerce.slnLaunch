@@ -33,9 +33,9 @@
         "DebugTarget": "http"
       },
       {
-        "Path": "Services\\Notification\\src\\Notification.Worker\\Notification.Worker.csproj",
+        "Path": "Services\\Notification\\src\\Notification.Consumer\\Notification.Consumer.csproj",
         "Action": "Start",
-        "DebugTarget": "Notification.Worker"
+        "DebugTarget": "Notification.Consumer"
       }
     ]
   }
