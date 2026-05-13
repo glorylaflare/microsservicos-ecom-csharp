@@ -3,7 +3,7 @@ using BuildingBlocks.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using Notification.Application.Consumers;
 
-namespace Notification.Worker.Configurations;
+namespace Notification.Consumer.Configurations;
 
 public static class DependencyInjection
 {
